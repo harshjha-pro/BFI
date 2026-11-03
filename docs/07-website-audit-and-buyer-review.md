@@ -116,3 +116,10 @@ Change them in `tools/build_website.py` (top of file) and run `python3 tools/bui
 ### Email sender (Gmail SMTP)
 1. Google Account → Security → 2-Step Verification on → App passwords → create one named "BFI Supabase".
 2. Supabase → Authentication → Emails → SMTP Settings → enable: host `smtp.gmail.com`, port `465`, user and sender `myselfhkjha@gmail.com`, password = the app password, sender name "BFI Marwari Invitations".
+
+## 6. Update: illustrations, invitations, live demo, free card maker
+
+- **No repeated images.** 22 new illustrations: one per How It Works step, a Shekhawati fresco and a studio desk for About, the studio for Contact, four ritual paintings in the Guide, three story images for the demo and eight card backgrounds. The palace skyline now appears only on Home.
+- **Invitations look finished.** Every design card, design page, customize preview and the demo now carry real invitation wording (blessing, "together with their families", names in a script font, date and venue), placed inside each artwork's empty centre.
+- **Live demo rebuilt** on the patterns premium e-invite sites use: envelope with a wax seal that opens, falling petals, the couple's story, live countdown, events with dress-code colours, directions and add-to-calendar, venue map, RSVP, guest wishes, share buttons, a music toggle and a switcher to view the demo in any of the 8 designs.
+- **New page: Free Card Maker** (`free-cards.html`): 8 templates (kids' and adult birthday, anniversary, Griha Pravesh, Godh Bharai, Sagai, puja / bhajan sandhya, Diwali). Type details, see a live preview, download a 1080×1620 PNG or share straight to WhatsApp. Free, no sign-up; each card carries a small "Made free with BFI" line so it brings people back.

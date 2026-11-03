@@ -99,6 +99,17 @@ const FALLBACK = [
 ].map(([slug, name, collection, tier, price_from, tagline], i) => ({ slug, name, collection, tier, price_from, tagline, description: tagline + ".", features: ["Customizable names, dates and text", "Shareable link and QR code", "RSVP (optional)"], image: `inv-${slug}.jpg`, sort: i + 1 }));
 const DARK = new Set(["rajwada-royale", "mor-pankh", "neel-mahal", "sheesh-mahal"]);
 const COLLECTIONS = { royal: "Royal", traditional: "Traditional", elegant: "Elegant", modern: "Modern" };
+const INSET = { "rajwada-royale": "24% 20% 37% 20%", "gulmohar-classic": "15% 17% 15% 17%", "gulabi-bagh": "17% 19% 17% 19%",
+  "mor-pankh": "14% 24% 30% 16%", "neel-mahal": "13% 16% 40% 16%", "gajraj-swagat": "12% 15% 43% 15%",
+  "sheesh-mahal": "23% 22% 47% 22%", "chhatri": "14% 17% 30% 17%" };
+function inviteText(slug, o = {}) {
+  const tone = DARK.has(slug) ? "pv-dark" : "pv-light";
+  const [a, b] = [o.a || "Priya", o.b || "Rohan"];
+  if (o.mini) return `<div class="inv-text ${tone}" style="inset:${INSET[slug] || "15%"}"><span class="it-caps">Wedding Invitation</span><span class="it-script">${esc(a)} <small>&amp;</small> ${esc(b)}</span><span class="it-rule"></span></div>`;
+  return `<div class="inv-text ${tone}" style="inset:${INSET[slug] || "15%"}">${o.blessing === "" ? "" : `<span class="it-deva" lang="hi">${esc(o.blessing || "॥ श्री गणेशाय नमः ॥")}</span>`}
+    <span class="it-caps">Together with their families</span><span class="it-script">${esc(a)}<small>weds</small>${esc(b)}</span>
+    <span class="it-rule"></span><span class="it-date">${esc(o.date || "Saturday, 14 February")}</span><span class="it-ven">${esc(o.venue || "Rambagh Gardens, Jaipur")}</span></div>`;
+}
 let _inv;
 async function invitations() {
   if (_inv) return _inv;
@@ -166,8 +177,7 @@ function card(inv) {
   const on = favs.has(inv.slug);
   return `<article class="card">
     <button class="fav" data-fav="${esc(inv.slug)}" aria-pressed="${on}" aria-label="Save ${esc(inv.name)} to favourites">${ic("heart")}</button>
-    <a class="card-img" href="design-${encodeURIComponent(inv.slug)}.html"><img src="${IMG(inv.image)}" alt="${esc(inv.name)} invitation: ${esc(inv.tagline)}" loading="lazy" width="360" height="540">
-      <span class="script ${DARK.has(inv.slug) ? "pv-dark" : "pv-light"}">Wedding Invitation</span></a>
+    <a class="card-img" href="design-${encodeURIComponent(inv.slug)}.html"><img src="${IMG(inv.image)}" alt="${esc(inv.name)} invitation: ${esc(inv.tagline)}" loading="lazy" width="360" height="540">${inviteText(inv.slug, { mini: true })}</a>
     <div class="card-body">
       <span class="tag">${COLLECTIONS[inv.collection]}</span>
       <h3><a href="design-${encodeURIComponent(inv.slug)}.html">${esc(inv.name)}</a></h3>
@@ -284,14 +294,10 @@ pages.customize = async () => {
 
   function preview() {
     const i = inv();
-    $("#pv").style.backgroundImage = `url("${IMG(i.image)}")`;
     const main = D.events.find((e) => /phera/i.test(e.type)) || D.events[0] || {};
     const [a, b] = D.order === "groom" ? [D.groom, D.bride] : [D.bride, D.groom];
-    $("#pv").innerHTML = `<div class="pv-text ${DARK.has(i.slug) ? "pv-dark" : "pv-light"}">
-      ${D.blessing ? `<span class="pv-deva" lang="hi">${esc(D.blessing)}</span>` : ""}
-      <span class="pv-names">${esc(a || "Bride")}<br><small class="pv-weds">weds</small><br>${esc(b || "Groom")}</span>
-      <span class="pv-date">${esc(fmtDate(main.date) || "Wedding date")}</span>
-      <span class="pv-ven">${esc(main.venue || "Venue")}</span></div>`;
+    const pv = $("#pv"); pv.classList.add("inv-wrap"); pv.style.backgroundImage = "";
+    pv.innerHTML = `<img src="${IMG(i.image)}" alt="">` + inviteText(i.slug, { a: a || "Bride", b: b || "Groom", blessing: D.blessing, date: fmtDate(main.date) || "Wedding date", venue: main.venue || "Venue" });
     $("#pv-name").textContent = i.name;
     $("#pv-events").textContent = `${D.events.length} event${D.events.length === 1 ? "" : "s"} · ${D.language}${D.music && D.music !== "None" ? " · " + D.music : ""}${D.rsvp ? " · RSVP on" : ""}`;
   }
@@ -567,40 +573,161 @@ pages.account = async () => {
 pages.demo = async () => {
   const all = await invitations();
   const inv = all.find((i) => i.slug === params.get("design")) || all.find((i) => i.slug === "rajwada-royale") || all[0];
-  const cover = $("#dv-cover");
-  cover.style.backgroundImage = `url("${IMG(inv.image)}")`;
-  cover.classList.toggle("dark", DARK.has(inv.slug));
-  $("#demo-cta").href = $("#demo-cta2").href = `customize.html?design=${inv.slug}`;
-  document.title = `Live Demo in ${inv.name} · BFI Marwari Invitations`;
-  // Sample wedding ~60 days from today so the countdown always runs
   const day = (n) => { const d = new Date(); d.setHours(0, 0, 0, 0); d.setDate(d.getDate() + n); return d; };
   const wedding = day(60); wedding.setHours(19, 30);
   const fmt = (d) => d.toLocaleDateString("en-IN", { weekday: "long", day: "numeric", month: "long", year: "numeric" });
-  $("#dv-date").textContent = fmt(wedding);
-  const ev = [
-    [56, "Ganesh Puja", "10:00 am", "Agarwal Niwas, C-Scheme, Jaipur"],
-    [57, "Mayra", "11:00 am", "Agarwal Niwas, C-Scheme, Jaipur"],
-    [58, "Pithi & Mehendi", "4:00 pm", "The Heritage Lawns, Jaipur"],
-    [59, "Mahila Sangeet", "7:30 pm", "The Heritage Lawns, Jaipur"],
-    [60, "Baraat & Phere", "7:30 pm", "Royal Palace Gardens, Jaipur"],
-    [61, "Reception", "8:00 pm", "Royal Palace Gardens, Jaipur"],
-  ];
-  $("#dv-events").innerHTML = ev.map(([n, name, time, venue]) => { const d = day(n); return `<div class="dv-ev"><div class="d"><b>${d.getDate()}</b><span>${d.toLocaleDateString("en-IN", { month: "short" })}</span></div>
-    <div><h3>${name}</h3><p>${d.toLocaleDateString("en-IN", { weekday: "long" })} · ${time}<br>${venue}</p><a href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent("Jaipur, Rajasthan")}" target="_blank" rel="noopener">Open in Google Maps →</a></div></div>`; }).join("");
+  $("#dv-card").innerHTML = `<img src="${IMG(inv.image)}" alt="${esc(inv.name)} invitation cover">` + inviteText(inv.slug, { date: fmt(wedding), venue: "Royal Palace Gardens, Jaipur" });
+  $("#env-card").style.backgroundImage = `url("${IMG(inv.image)}")`;
+  $("#demo-cta").href = $("#demo-cta2").href = `customize.html?design=${inv.slug}`;
+  document.title = `Live Demo in ${inv.name} · BFI Marwari Invitations`;
+
+  // envelope intro + falling petals
+  const env = $("#env");
+  const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const petals = (n) => { if (reduce) return; const box = $("#petals"); for (let k = 0; k < n; k++) { const p = document.createElement("i"); p.style.left = Math.random() * 100 + "vw"; p.style.setProperty("--dx", (Math.random() * 160 - 80) + "px"); p.style.animationDuration = 5 + Math.random() * 5 + "s"; p.style.animationDelay = Math.random() * 3 + "s"; box.append(p); setTimeout(() => p.remove(), 14000); } };
+  const open = () => { env.classList.add("open"); setTimeout(() => { env.classList.add("gone"); petals(36); }, 1100); setTimeout(() => env.remove(), 2000); };
+  $("#env-open").onclick = open;
+  if (params.get("open") === "1") open();
+
+  // gentle music: a soft tanpura-like drone made in the browser (real invitations use your chosen track)
+  let ctx, nodes = [];
+  $("#music").onclick = (e) => {
+    const btn = e.currentTarget, on = btn.getAttribute("aria-pressed") !== "true";
+    btn.setAttribute("aria-pressed", on); btn.setAttribute("aria-label", on ? "Pause music" : "Play music");
+    if (!on) { nodes.forEach((n) => { try { n.stop(); } catch {} }); nodes = []; return; }
+    ctx = ctx || new (window.AudioContext || window.webkitAudioContext)();
+    const gain = ctx.createGain(); gain.gain.value = 0.05; gain.connect(ctx.destination);
+    [146.83, 220, 293.66, 146.83 * 2.0045].forEach((f, k) => {
+      const o = ctx.createOscillator(); o.type = k % 2 ? "triangle" : "sine"; o.frequency.value = f;
+      const lfo = ctx.createOscillator(), lg = ctx.createGain(); lfo.frequency.value = 0.15 + k * 0.07; lg.gain.value = 0.6; lfo.connect(lg); lg.connect(o.frequency);
+      o.connect(gain); o.start(); lfo.start(); nodes.push(o, lfo);
+    });
+  };
+
   const tick = () => {
     let t = Math.max(0, wedding - new Date());
     const u = { d: 864e5, h: 36e5, m: 6e4, s: 1e3 };
     for (const k of ["d", "h", "m", "s"]) { const v = Math.floor(t / u[k]); t -= v * u[k]; $(`[data-u=${k}]`).textContent = v; }
   };
   tick(); setInterval(tick, 1000);
-  $("#dv-designs").innerHTML = all.map((i) => `<a href="demo.html?design=${i.slug}" aria-current="${i.slug === inv.slug}"><img src="${IMG(i.image)}" alt="" loading="lazy">${esc(i.name)}</a>`).join("");
+
+  const ev = [
+    [56, "Ganesh Puja", "10:00", "Agarwal Niwas, C-Scheme, Jaipur", "Family only", [["#F2C230", "Yellow"], ["#E86A2C", "Orange"]]],
+    [57, "Mayra", "11:00", "Agarwal Niwas, C-Scheme, Jaipur", "Traditional", [["#B0122C", "Red"], ["#C6A15B", "Gold"]]],
+    [58, "Pithi & Mehendi", "16:00", "The Heritage Lawns, Jaipur", "Leheriya & florals", [["#F7D84A", "Yellow"], ["#3E9B5B", "Green"]]],
+    [59, "Mahila Sangeet", "19:30", "The Heritage Lawns, Jaipur", "Indo-western glam", [["#D8457A", "Pink"], ["#7B3FA0", "Purple"]]],
+    [60, "Baraat & Phere", "19:30", "Royal Palace Gardens, Jaipur", "Royal traditional", [["#641E2B", "Maroon"], ["#F3E3C3", "Ivory"]]],
+    [61, "Reception", "20:00", "Royal Palace Gardens, Jaipur", "Formal / sherwani & saree", [["#1B2A4A", "Navy"], ["#C6A15B", "Gold"]]],
+  ];
+  const ics = (name, d, time, venue) => {
+    const [hh, mm] = time.split(":"); const st = new Date(d); st.setHours(+hh, +mm); const en = new Date(st.getTime() + 3 * 36e5);
+    const z = (x) => x.toISOString().replace(/[-:]/g, "").replace(/\.\d{3}/, "");
+    const body = ["BEGIN:VCALENDAR", "VERSION:2.0", "PRODID:-//BFI//Invitation//EN", "BEGIN:VEVENT", `UID:${Date.now()}@bfi`, `DTSTAMP:${z(new Date())}`, `DTSTART:${z(st)}`, `DTEND:${z(en)}`, `SUMMARY:${name} · Priya & Rohan`, `LOCATION:${venue}`, "END:VEVENT", "END:VCALENDAR"].join("\r\n");
+    const a = document.createElement("a"); a.href = URL.createObjectURL(new Blob([body], { type: "text/calendar" })); a.download = `${name.replace(/\W+/g, "-")}.ics`; a.click();
+  };
+  $("#dv-events").innerHTML = ev.map(([n, name, time, venue, dress, cols], k) => { const d = day(n); const t = new Date(d); t.setHours(+time.split(":")[0], +time.split(":")[1]);
+    return `<div class="dv-ev"><div class="d"><b>${d.getDate()}</b><span>${d.toLocaleDateString("en-IN", { month: "short" })}</span></div>
+    <div><h3>${name}</h3><p>${d.toLocaleDateString("en-IN", { weekday: "long" })} · ${t.toLocaleTimeString("en-IN", { hour: "numeric", minute: "2-digit" })}<br>${venue}</p>
+    <div class="dress">Dress code: ${dress} ${cols.map(([c, l]) => `<i style="background:${c}" title="${l}"></i>`).join("")}</div>
+    <div class="acts"><a href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(venue)}" target="_blank" rel="noopener">Directions</a><button type="button" data-ics="${k}">Add to calendar</button></div></div></div>`; }).join("");
+  $("#dv-events").addEventListener("click", (e) => { const b = e.target.closest("[data-ics]"); if (b) { const [n, name, time, venue] = ev[+b.dataset.ics]; ics(name, day(n), time, venue); } });
+
+  $("#dv-designs").innerHTML = all.map((i) => `<a href="demo.html?design=${i.slug}&open=1" aria-current="${i.slug === inv.slug}"><img src="${IMG(i.image)}" alt="" loading="lazy">${esc(i.name)}</a>`).join("");
   $("#dv-rsvp").addEventListener("submit", (e) => {
     e.preventDefault(); if (!validate(e.target)) return;
-    e.target.outerHTML = `<div class="notice ok">This is a demo, so nothing was sent. On your real invitation, RSVPs reach you instantly with the guest count.</div>`;
+    e.target.outerHTML = `<div class="notice ok">Thank you! (This is a demo, so nothing was sent. On your real invitation, RSVPs reach you instantly with the guest count.)</div>`;
+    petals(20);
   });
-  const link = location.href;
-  $("#dv-share").onclick = () => window.open(waHref(`Look at this wedding invitation by BFI: ${link}`).replace(`wa.me/${CFG.whatsapp}`, "wa.me/"), "_blank", "noopener");
+  $("#dv-wish").addEventListener("submit", (e) => {
+    e.preventDefault(); if (!validate(e.target)) return;
+    $("#wishes").insertAdjacentHTML("afterbegin", `<div class="wish"><b>${esc($("#w-name").value)}</b><p>${esc($("#w-msg").value)}</p></div>`);
+    e.target.reset(); toast("Wish posted (demo only)");
+  });
+  const link = location.href.split("&open")[0];
+  $("#dv-share").onclick = () => window.open(`https://wa.me/?text=${encodeURIComponent(`Look at this wedding invitation by BFI: ${link}`)}`, "_blank", "noopener");
   $("#dv-copy").onclick = async () => { try { await navigator.clipboard.writeText(link); toast("Link copied"); } catch { toast(link); } };
+  const io = "IntersectionObserver" in window && new IntersectionObserver((es) => es.forEach((x) => { if (x.isIntersecting) { x.target.classList.add("in"); io.unobserve(x.target); } }), { rootMargin: "0px 0px -10% 0px" });
+  $$(".reveal-dv").forEach((el) => (io ? io.observe(el) : el.classList.add("in")));
+};
+
+/* ---------- free card maker ---------- */
+const TEMPLATES = [
+  { id: "birthday-kids", name: "Kids' Birthday", note: "Balloons & elephant", dark: false, color: "#3A3F8F", inset: [16, 14, 34, 14],
+    d: { top: "You're invited to", title: "Aarav's 5th Birthday", sub: "Join us for cake, games and lots of fun!", venue: "Our home, Malviya Nagar, Jaipur", host: "RSVP: Neha (98xxx xxxxx)" } },
+  { id: "birthday-gold", name: "Birthday (Elegant)", note: "Black & gold", dark: true, color: "#F3DFA8", inset: [22, 14, 26, 14],
+    d: { top: "Please join us to celebrate", title: "Neha turns 30", sub: "An evening of music, dinner and memories", venue: "The Terrace, C-Scheme, Jaipur", host: "Hosted by Rahul" } },
+  { id: "anniversary", name: "Anniversary", note: "Roses & rings", dark: false, color: "#7A1F2B", inset: [18, 16, 20, 16],
+    d: { top: "With love and gratitude", title: "Sunita & Mahesh", sub: "invite you to celebrate their 25th wedding anniversary", venue: "Agarwal Bhawan, Jaipur", host: "With best compliments: Agarwal family" } },
+  { id: "griha-pravesh", name: "Griha Pravesh", note: "Kalash & toran", dark: false, color: "#7A2E0E", inset: [14, 16, 38, 16],
+    d: { top: "॥ श्री गणेशाय नमः ॥", title: "Griha Pravesh", sub: "Please bless our new home with your presence at the puja and lunch", venue: "B-12, Vaishali Nagar, Jaipur", host: "Maheshwari family" } },
+  { id: "godh-bharai", name: "Godh Bharai", note: "Jhoola & florals", dark: false, color: "#8A3252", inset: [16, 16, 38, 16],
+    d: { top: "A little one is on the way", title: "Godh Bharai", sub: "for Priya. Join us for blessings, songs and sweets", venue: "Agarwal Niwas, Jaipur", host: "RSVP: Sunita (98xxx xxxxx)" } },
+  { id: "sagai", name: "Sagai / Engagement", note: "Teal & gold arch", dark: true, color: "#F3DFA8", inset: [22, 20, 30, 20],
+    d: { top: "Together with their families", title: "Priya & Rohan", sub: "request your presence at their Sagai ceremony", venue: "Hotel Royal Orchid, Jaipur", host: "Agarwal & Maheshwari families" } },
+  { id: "puja", name: "Puja / Bhajan Sandhya", note: "Diya & bells", dark: true, color: "#FFE7A8", inset: [20, 18, 36, 18],
+    d: { top: "॥ जय श्री कृष्ण ॥", title: "Bhajan Sandhya", sub: "Join us for an evening of bhajans, aarti and prasad", venue: "Shiv Mandir Hall, Jaipur", host: "Agarwal family" } },
+  { id: "diwali", name: "Diwali Party", note: "Diyas & lanterns", dark: true, color: "#FFD98A", inset: [24, 14, 32, 14],
+    d: { top: "Shubh Deepavali", title: "Diwali Get-Together", sub: "Lights, laughter, sweets and card games", venue: "Our home, Raja Park, Jaipur", host: "The Agarwals" } },
+];
+pages["free-cards"] = () => {
+  const grid = $("#tpl-grid"), form = $("#mk-form"), card = $("#mk-card");
+  let t = TEMPLATES.find((x) => x.id === params.get("t")) || TEMPLATES[0];
+  const nextSat = () => { const d = new Date(); d.setDate(d.getDate() + ((6 - d.getDay() + 7) % 7 || 7) + 14); return d.toISOString().slice(0, 10); };
+  grid.innerHTML = TEMPLATES.map((x) => `<button type="button" class="tpl" data-t="${x.id}" aria-pressed="${x.id === t.id}"><img src="${IMG("tpl-" + x.id + ".jpg")}" alt="" loading="lazy" crossorigin="anonymous"><span>${x.name}<small>${x.note}</small></span></button>`).join("");
+  const fill = () => { for (const k of ["top", "title", "sub", "venue", "host"]) form[k].value = t.d[k]; form.date.value = form.date.value || nextSat(); form.time.value = form.time.value || "18:00"; };
+  const val = () => { const v = formData(form); const d = v.date ? new Date(v.date + "T00:00") : null;
+    v.when = [d && !isNaN(d) ? d.toLocaleDateString("en-IN", { weekday: "long", day: "numeric", month: "long", year: "numeric" }) : "", v.time ? new Date("2000-01-01T" + v.time).toLocaleTimeString("en-IN", { hour: "numeric", minute: "2-digit" }) : ""].filter(Boolean).join(" · "); return v; };
+  const draw = () => {
+    const v = val(), [T, R, B, L] = t.inset;
+    card.innerHTML = `<img src="${IMG("tpl-" + t.id + ".jpg")}" alt="${esc(t.name)} card" crossorigin="anonymous">
+      <div class="inv-text" style="inset:${T}% ${R}% ${B}% ${L}%;color:${t.color};${t.dark ? "text-shadow:0 1px 6px rgba(0,0,0,.4)" : ""}">
+      ${v.top ? `<span class="${/[ऀ-ॿ]/.test(v.top) ? "it-deva" : "it-caps"}">${esc(v.top)}</span>` : ""}<span class="it-script" style="font-size:12cqw">${esc(v.title)}</span>
+      ${v.sub ? `<span class="it-ven" style="font-size:3.8cqw">${esc(v.sub)}</span>` : ""}<span class="it-rule"></span>
+      ${v.when ? `<span class="it-date">${esc(v.when)}</span>` : ""}${v.venue ? `<span class="it-ven">${esc(v.venue)}</span>` : ""}${v.host ? `<span class="it-caps" style="font-size:2.8cqw;margin-top:1cqw">${esc(v.host)}</span>` : ""}</div>`;
+  };
+  grid.addEventListener("click", (e) => { const b = e.target.closest("[data-t]"); if (!b) return; t = TEMPLATES.find((x) => x.id === b.dataset.t); $$(".tpl").forEach((x) => x.setAttribute("aria-pressed", x === b)); fill(); draw(); history.replaceState(null, "", "?t=" + t.id); $("#maker").scrollIntoView({ behavior: "smooth", block: "start" }); });
+  form.addEventListener("input", draw);
+  fill(); draw();
+
+  // Render the card to a 1080x1620 PNG with the same layout
+  async function render() {
+    await document.fonts.ready;
+    await Promise.all(["400 40px 'Great Vibes'", "600 40px 'Cormorant Garamond'", "500 40px 'DM Sans'", "400 40px 'Tiro Devanagari Hindi'"].map((f) => document.fonts.load(f).catch(() => {})));
+    const W = 1080, H = 1620, c = document.createElement("canvas"); c.width = W; c.height = H; const g = c.getContext("2d");
+    const img = await new Promise((res, rej) => { const i = new Image(); i.crossOrigin = "anonymous"; i.onload = () => res(i); i.onerror = rej; i.src = IMG("tpl-" + t.id + ".jpg"); });
+    g.drawImage(img, 0, 0, W, H);
+    const v = val(), [T, R, B, L] = t.inset; const x0 = W * L / 100, x1 = W * (1 - R / 100), boxW = x1 - x0, cx = (x0 + x1) / 2;
+    const lines = [];
+    const wrap = (text, font, size, gap) => { g.font = `${font.replace("SIZE", size + "px")}`; const words = String(text).split(" "); let line = ""; const out = [];
+      for (const w of words) { const test = line ? line + " " + w : w; if (g.measureText(test).width > boxW && line) { out.push(line); line = w; } else line = test; } if (line) out.push(line);
+      out.forEach((l) => lines.push({ l, font: font.replace("SIZE", size + "px"), size, gap })); };
+    if (v.top) wrap(/[ऀ-ॿ]/.test(v.top) ? v.top : v.top.toUpperCase(), /[ऀ-ॿ]/.test(v.top) ? "400 SIZE 'Tiro Devanagari Hindi'" : "600 SIZE 'DM Sans'", 30, 14);
+    wrap(v.title, "400 SIZE 'Great Vibes'", 120, 18);
+    if (v.sub) wrap(v.sub, "500 SIZE 'DM Sans'", 38, 10);
+    lines.push({ rule: true, size: 30, gap: 10 });
+    if (v.when) wrap(v.when, "600 SIZE 'Cormorant Garamond'", 46, 8);
+    if (v.venue) wrap(v.venue, "500 SIZE 'DM Sans'", 34, 8);
+    if (v.host) wrap(v.host.toUpperCase(), "600 SIZE 'DM Sans'", 27, 8);
+    const total = lines.reduce((a, l) => a + l.size * 1.15 + l.gap, 0);
+    const top = H * T / 100, bottom = H * (1 - B / 100); let y = top + Math.max(0, (bottom - top - total) / 2);
+    g.textAlign = "center"; g.textBaseline = "top"; g.fillStyle = t.color; g.strokeStyle = t.color;
+    if (t.dark) { g.shadowColor = "rgba(0,0,0,.45)"; g.shadowBlur = 8; }
+    for (const ln of lines) {
+      if (ln.rule) { g.globalAlpha = .6; g.fillRect(cx - 150, y + ln.size / 2, 300, 2); g.save(); g.translate(cx, y + ln.size / 2 + 1); g.rotate(Math.PI / 4); g.fillRect(-9, -9, 18, 18); g.restore(); g.globalAlpha = 1; y += ln.size + ln.gap; continue; }
+      g.font = ln.font; g.fillText(ln.l, cx, y); y += ln.size * 1.15 + ln.gap;
+    }
+    g.shadowBlur = 0; g.globalAlpha = .7; g.font = "500 22px 'DM Sans'"; g.fillStyle = t.dark ? "#fff" : "#392820"; g.fillText("Made free with BFI · bfi-royal-heritage.vercel.app", W / 2, H - 40); g.globalAlpha = 1;
+    return new Promise((res) => c.toBlob(res, "image/png"));
+  }
+  const fname = () => `bfi-${t.id}-card.png`;
+  $("#mk-download").onclick = async (e) => { const btn = e.currentTarget; setBusy(btn, true, "Preparing…");
+    try { const blob = await render(); const a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = fname(); a.click(); toast("Card downloaded"); }
+    catch { toast("Couldn't create the image. Please try again."); } finally { setBusy(btn, false); } };
+  $("#mk-share").onclick = async (e) => { const btn = e.currentTarget; setBusy(btn, true, "Preparing…");
+    try { const blob = await render(); const file = new File([blob], fname(), { type: "image/png" });
+      if (navigator.canShare?.({ files: [file] })) await navigator.share({ files: [file], text: `${val().title} – you're invited!` });
+      else { const a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = fname(); a.click(); window.open(`https://wa.me/?text=${encodeURIComponent(`${val().title} – you're invited! (card image attached)`)}`, "_blank", "noopener"); toast("Card downloaded: attach it in WhatsApp"); }
+    } catch (err) { if (err?.name !== "AbortError") toast("Couldn't share. Try Download instead."); } finally { setBusy(btn, false); } };
 };
 
 /* ---------- guide: copy wording ---------- */

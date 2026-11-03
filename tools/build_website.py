@@ -11,7 +11,7 @@ from html import escape
 from pathlib import Path
 
 OUT = Path(__file__).resolve().parent.parent / "site"
-V = "20261103c"  # bump to bust browser caches for css/js
+V = "20261103d"  # bump to bust browser caches for css/js
 BASE = "https://bfi-royal-heritage.vercel.app"
 IMGBASE = "https://oaosapkkzoynaqpnmvrj.supabase.co/storage/v1/object/public/site/"
 BIZ = {
@@ -53,6 +53,19 @@ CATALOG = [dict(slug=s, name=n, collection=c, tier=t, price=p, tagline=tg, desc=
            for s, n, c, t, p, tg, d, f in CATALOG]
 COLL = {"royal": "Royal", "traditional": "Traditional", "elegant": "Elegant", "modern": "Modern"}
 DARK = {"rajwada-royale", "mor-pankh", "neel-mahal", "sheesh-mahal"}
+INSET = {"rajwada-royale": "24% 20% 37% 20%", "gulmohar-classic": "15% 17% 15% 17%", "gulabi-bagh": "17% 19% 17% 19%",
+         "mor-pankh": "14% 24% 30% 16%", "neel-mahal": "13% 16% 40% 16%", "gajraj-swagat": "12% 15% 43% 15%",
+         "sheesh-mahal": "23% 22% 47% 22%", "chhatri": "14% 17% 30% 17%"}
+
+
+def invite_text(inv, full=True, names=("Priya", "Rohan"), date="Saturday, 14 February", venue="Rambagh Gardens, Jaipur"):
+    tone = "pv-dark" if inv["slug"] in DARK else "pv-light"
+    if not full:
+        return (f'<div class="inv-text {tone}" style="inset:{INSET[inv["slug"]]}"><span class="it-caps">Wedding Invitation</span>'
+                f'<span class="it-script">{names[0]} <small>&amp;</small> {names[1]}</span><span class="it-rule"></span></div>')
+    return (f'<div class="inv-text {tone}" style="inset:{INSET[inv["slug"]]}"><span class="it-deva" lang="hi">॥ श्री गणेशाय नमः ॥</span>'
+            f'<span class="it-caps">Together with their families</span><span class="it-script">{names[0]}<small>weds</small>{names[1]}</span>'
+            f'<span class="it-rule"></span><span class="it-date">{date}</span><span class="it-ven">{venue}</span></div>')
 inr = lambda n: "₹" + format(n, ",d").replace(",", ",")  # 11,999 style (fine below 1 lakh)
 
 PACKAGES = [
@@ -112,7 +125,7 @@ I = {
 ORN = f'<div class="orn" aria-hidden="true">{icon(I["lotus"])}</div>'
 
 NAV = [("index", "Home"), ("invitations", "Invitations"), ("pricing", "Pricing"), ("how-it-works", "How It Works"),
-       ("about", "About"), ("contact", "Contact")]
+       ("free-cards", "Free Cards"), ("contact", "Contact")]
 
 
 def faq_html(items):
@@ -142,7 +155,7 @@ ORG_LD = {
 
 def header(active):
     links = "".join(f'<a href="{k}.html"{" aria-current=page" if k == active else ""}>{t}</a>' for k, t in NAV)
-    mlinks = "".join(f'<a href="{k}.html">{t}</a>' for k, t in NAV) + '<a href="customize.html">Customize</a><a href="guide.html">Wedding Guide</a>'
+    mlinks = "".join(f'<a href="{k}.html">{t}</a>' for k, t in NAV) + '<a href="about.html">About</a><a href="customize.html">Customize</a><a href="guide.html">Wedding Guide</a>'
     return f'''<a class="skip" href="#main">Skip to content</a>
 <header class="hdr"><div class="wrap hdr-in">
   <a class="brand" href="index.html"><img src="img/logo-sm.webp" alt="BFI Marwari Invitations, home" width="200" height="174"></a>
@@ -167,7 +180,7 @@ def footer():
     <div><img class="ftr-logo" src="img/logo-gold.webp" alt="BFI Marwari Invitations" width="431" height="374" loading="lazy"><p style="margin-top:10px;max-width:280px">Premium digital wedding invitations for Marwari families, crafted with tradition and shared with love.</p>
       <a class="btn btn-sm btn-gold" style="margin-top:14px" href="bfi-contact.vcf" download>{icon(I["download"])} Save our contact</a></div>
     <div><h4>Invitations</h4><ul><li><a href="invitations.html">All designs</a></li><li><a href="invitations.html?c=royal">Royal collection</a></li><li><a href="invitations.html?c=traditional">Traditional collection</a></li><li><a href="invitations.html?c=elegant">Elegant collection</a></li><li><a href="invitations.html?c=modern">Modern collection</a></li><li><a href="demo.html">See a live demo</a></li></ul></div>
-    <div><h4>Studio</h4><ul><li><a href="pricing.html">Pricing</a></li><li><a href="how-it-works.html">How it works</a></li><li><a href="customize.html">Customize an invitation</a></li><li><a href="guide.html">Marwari wedding guide</a></li><li><a href="about.html">About BFI</a></li><li><a href="login.html">My account</a></li></ul></div>
+    <div><h4>Studio</h4><ul><li><a href="pricing.html">Pricing</a></li><li><a href="how-it-works.html">How it works</a></li><li><a href="customize.html">Customize an invitation</a></li><li><a href="guide.html">Marwari wedding guide</a></li><li><a href="free-cards.html">Free card maker</a></li><li><a href="about.html">About BFI</a></li><li><a href="login.html">My account</a></li></ul></div>
     <div><h4>Contact</h4><ul><li><a data-wa>WhatsApp {BIZ["phone"]}</a></li><li><a href="tel:{BIZ["tel"]}">Call {BIZ["phone"]}</a></li><li><a href="mailto:{BIZ["email"]}">{BIZ["email"]}</a></li><li>{BIZ["city"]}, {BIZ["region"]}, India</li><li>{BIZ["hours"]}</li></ul></div>
   </div>
   <div class="ftr-bot"><span>© <span data-year></span> BFI · Marwari Invitations · <a href="privacy.html">Privacy</a> · <a href="terms.html">Terms</a></span><span lang="hi" style="font-family:var(--deva);color:var(--gold)">॥ शुभ विवाह ॥</span></div>
@@ -203,7 +216,7 @@ def page(slug, title, desc, body, active=None, bar=True, ld=None, index=True, og
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="preconnect" href="https://oaosapkkzoynaqpnmvrj.supabase.co" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500;1,600&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&family=Tiro+Devanagari+Hindi&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500;1,600&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&family=Tiro+Devanagari+Hindi&family=Great+Vibes&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/site.css?v={V}">{lds}
 </head>'''
     scripts = f'''<script src="js/vendor/supabase.js?v=2.45.4"></script>
@@ -242,7 +255,7 @@ def card(inv):
     tone = "pv-dark" if inv["slug"] in DARK else "pv-light"
     return f'''<article class="card">
     <button class="fav" data-fav="{inv["slug"]}" aria-pressed="false" aria-label="Save {inv["name"]} to favourites">{icon(I["heart"])}</button>
-    <a class="card-img" href="design-{inv["slug"]}.html"><img src="{IMGBASE}{inv["image"]}" alt="{inv["name"]} invitation: {inv["tagline"]}" loading="lazy" width="360" height="540"><span class="script {tone}">Wedding Invitation</span></a>
+    <a class="card-img" href="design-{inv["slug"]}.html"><img src="{IMGBASE}{inv["image"]}" alt="{inv["name"]} invitation: {inv["tagline"]}" loading="lazy" width="360" height="540">{invite_text(inv, full=False)}</a>
     <div class="card-body"><span class="tag">{COLL[inv["collection"]]}</span><h3><a href="design-{inv["slug"]}.html">{inv["name"]}</a></h3>
       <div class="card-meta"><span>{inv["tier"]}</span><span>from <b>{inr(inv["price"])}</b></span></div></div></article>'''
 
@@ -393,13 +406,13 @@ for inv in CATALOG:
   <div class="detail" id="detail" data-slug="{inv["slug"]}" data-name="{inv["name"]}">
     <div class="gallery">
       <div class="big" id="slide">
-        <div class="slide"><img src="{IMGBASE}{inv["image"]}" alt="{inv["name"]} invitation cover: {inv["tagline"]}" width="720" height="1080" fetchpriority="high"></div>
-        <div class="slide" hidden><img src="{IMGBASE}{inv["image"]}" alt="" loading="lazy"><div class="pv-text {tone}"><span class="pv-deva" lang="hi">॥ श्री गणेशाय नमः ॥</span><span class="pv-names">Priya<br>&amp; Rohan</span><span class="pv-date">Sample wording</span><span class="pv-ven">Your venue, your city</span></div></div>
-        <div class="slide" hidden><img src="{IMGBASE}couple.jpg" alt="Sample inside page with the couple under a floral arch" loading="lazy"></div>
+        <div class="slide inv-wrap"><img src="{IMGBASE}{inv["image"]}" alt="{inv["name"]} invitation cover with sample wording" width="720" height="1080" fetchpriority="high">{invite_text(inv)}</div>
+        <div class="slide" hidden><img src="{IMGBASE}{inv["image"]}" alt="{inv["name"]} artwork: {inv["tagline"]}" loading="lazy"></div>
+        <div class="slide slide-phone" hidden><div class="phone"><div class="phone-screen inv-wrap"><img src="{IMGBASE}{inv["image"]}" alt="{inv["name"]} invitation on a phone" loading="lazy">{invite_text(inv)}</div></div></div>
       </div>
       <button class="nav-arrow prev" aria-label="Previous image">{icon(I["left"])}</button>
       <button class="nav-arrow next" aria-label="Next image">{icon(I["right"])}</button>
-      <div class="dots"><button aria-label="Cover" aria-current="true"></button><button aria-label="With sample names" aria-current="false"></button><button aria-label="Inside page" aria-current="false"></button></div>
+      <div class="dots"><button aria-label="Cover with wording" aria-current="true"></button><button aria-label="Artwork" aria-current="false"></button><button aria-label="On a phone" aria-current="false"></button></div>
     </div>
     <div>
       <div class="d-head"><div><h1 style="font-size:clamp(32px,5vw,44px)">{inv["name"]}</h1><p class="eyebrow" style="margin-top:8px">{COLL[inv["collection"]]} Collection · {inv["tier"]}</p></div>
@@ -490,13 +503,13 @@ HOW_FAQ = [
     ("What if I don't like the first preview?", "Tell us what to change. One full round of changes is included, and we can switch to another design of the same package."),
 ]
 HOW_STEPS = [
-    ("1", "Choose a Design", "image", "inv-rajwada-royale.jpg", "Browse Royal, Traditional, Elegant and Modern designs, or ask for a bespoke Luxury design. Not sure? Send us your wedding colours and we'll suggest three.",
+    ("1", "Choose a Design", "image", "step-choose.jpg", "Browse Royal, Traditional, Elegant and Modern designs, or ask for a bespoke Luxury design. Not sure? Send us your wedding colours and we'll suggest three.",
      ["Large preview of every design", "Live demo on your phone", "Prices shown upfront"], ("invitations.html", "Browse designs")),
-    ("2", "Share Your Details", "edit", "inv-gulmohar-classic.jpg", "Fill our simple form or just send the details on WhatsApp: names, families, functions, venues, language and music. Voice notes are fine too.",
+    ("2", "Share Your Details", "edit", "step-details.jpg", "Fill our simple form or just send the details on WhatsApp: names, families, functions, venues, language and music. Voice notes are fine too.",
      ["6-step form with live preview", "Save a draft and finish later", "Or send everything on WhatsApp"], ("customize.html", "Start customizing")),
-    ("3", "Preview & Approve", "eye", "couple.jpg", "Our designer builds your invitation and sends a private preview link. Check every name and date on your own phone, and ask for changes.",
+    ("3", "Preview & Approve", "eye", "step-preview.jpg", "Our designer builds your invitation and sends a private preview link. Check every name and date on your own phone, and ask for changes.",
      ["Every name checked by hand", "One free round of changes", "Pay the balance only after approval"], None),
-    ("4", "Share With Everyone", "share", "inv-gajraj-swagat.jpg", "You receive the final link, a ready-to-forward WhatsApp message and a QR code for printed cards. Update details anytime; the link stays the same.",
+    ("4", "Share With Everyone", "share", "step-share.jpg", "You receive the final link, a ready-to-forward WhatsApp message and a QR code for printed cards. Update details anytime; the link stays the same.",
      ["One link for all guests", "QR code for printed kankotri", "Updates without re-sending"], ("demo.html", "See what guests receive")),
 ]
 how_rows = "".join(f'''<div class="hrow reveal">
@@ -511,7 +524,6 @@ HOW = f'''
   <div class="steps">{"".join(f'<div class="step" id="step-{n}"><div class="step-ic">{icon(I[ic])}</div><h3>{n}. {t}</h3></div>' for n, t, ic, *_ in HOW_STEPS)}</div>
 </div></section>
 <section class="sec" style="padding-top:0"><div class="wrap hrows">{how_rows}</div></section>
-<div class="skyline" data-img="skyline.jpg" aria-hidden="true"></div>
 <section class="sec sec-tint" style="padding-top:48px"><div class="wrap">
   <div class="sec-head center"><h2>Delivery Timeline</h2>{ORN}</div>
   <div class="timeline">
@@ -579,40 +591,53 @@ page("customize", "Customize Your Wedding Invitation | BFI Marwari Invitations",
 
 # ---------------- Live demo invitation ----------------
 DEMO = f'''
+<div class="env" id="env" role="dialog" aria-label="Open the invitation">
+  <div class="env-box"><p class="env-names">Priya &amp; Rohan</p>
+    <div class="env-body"></div><div class="env-card" id="env-card"></div><div class="env-flap"></div>
+    <button class="env-seal" id="env-open" aria-label="Open the invitation">P&amp;R</button>
+    <p class="env-hint">Tap the seal to open</p></div>
+</div>
+<div class="petals" id="petals" aria-hidden="true"></div>
 <div class="demo-ribbon"><span>Sample invitation by <b>BFI</b></span><a class="btn btn-sm btn-gold" id="demo-cta" href="customize.html">Create yours</a></div>
-<header class="dv-cover" id="dv-cover">
-  <div class="dv-cover-text" id="dv-cover-text">
-    <p class="pv-deva" lang="hi">॥ श्री गणेशाय नमः ॥</p>
-    <p class="dv-small">Together with their families</p>
-    <h1 class="dv-names">Priya <span>&amp;</span> Rohan</h1>
-    <p class="dv-small">request the pleasure of your company</p>
-    <p class="dv-date" id="dv-date"></p>
-    <a class="dv-open" href="#dv-blessing">Open invitation ↓</a>
-  </div>
-</header>
+<header class="dv-cover"><div class="inv-wrap" id="dv-card"></div><a class="dv-scroll" href="#dv-blessing">Scroll to see the celebrations ↓</a></header>
 <main id="main" class="dv">
-  <section class="dv-sec" id="dv-blessing">
+  <section class="dv-sec reveal-dv" id="dv-blessing">
     <p class="deva" lang="hi">॥ शुभ विवाह ॥</p>
     <h2>With the blessings of our elders</h2>
     <p>Smt. Kamla Devi &amp; Late Shri Ramniwas Agarwal<br>Smt. Shanti Devi &amp; Shri Gopal Maheshwari</p>
-    <div class="dv-fam"><div><b>Priya</b><span>D/o Smt. Sunita &amp; Shri Mahesh Agarwal</span></div><div class="dv-weds">weds</div><div><b>Rohan</b><span>S/o Smt. Rekha &amp; Shri Anil Maheshwari</span></div></div>
+    <div class="dv-fam"><div><b>Priya</b><span>D/o Smt. Sunita &amp; Shri Mahesh Agarwal, Jaipur</span></div><div class="dv-weds">weds</div><div><b>Rohan</b><span>S/o Smt. Rekha &amp; Shri Anil Maheshwari, Jodhpur</span></div></div>
   </section>
-  <section class="dv-sec dv-count"><h2>Counting down to the wedding</h2>
+  <section class="dv-sec reveal-dv"><h2>Our story</h2>
+    <div class="dv-story">
+      <figure><img data-img="demo-fort.jpg" alt="Illustration of the couple on the ramparts of a hill fort" loading="lazy"><figcaption><small>2023 · Jodhpur</small><b>We met at a cousin's sangeet</b><p>One dance, one long walk along the fort walls, and a lot of chai.</p></figcaption></figure>
+      <figure><img data-img="demo-lake.jpg" alt="Illustration of the couple in a boat by a lake palace" loading="lazy"><figcaption><small>2025 · Udaipur</small><b>The question by the lake</b><p>Rohan asked; Priya said yes before he finished.</p></figcaption></figure>
+      <figure><img data-img="demo-rings.jpg" alt="Illustration of mehendi hands holding a ring box" loading="lazy"><figcaption><small>This winter · Jaipur</small><b>Now, forever</b><p>Our families are coming together. We'd love you to be there.</p></figcaption></figure>
+    </div></section>
+  <section class="dv-sec dv-count reveal-dv"><h2>Counting down to the wedding</h2>
     <div class="count" id="count"><div><b data-u="d">0</b><span>Days</span></div><div><b data-u="h">0</b><span>Hours</span></div><div><b data-u="m">0</b><span>Minutes</span></div><div><b data-u="s">0</b><span>Seconds</span></div></div></section>
-  <section class="dv-sec"><h2>Wedding celebrations</h2><div class="dv-events" id="dv-events"></div></section>
-  <section class="dv-sec"><h2>Our moments</h2><div class="dv-gallery"><img data-img="couple.jpg" alt="Illustration of the couple under a floral arch" loading="lazy"><img data-img="palace.jpg" alt="Jaipur palace" loading="lazy"></div></section>
-  <section class="dv-sec" id="rsvp"><h2>Will you join us?</h2><p class="muted">Please let us know by one week before the wedding.</p>
+  <section class="dv-sec reveal-dv"><h2>Wedding celebrations</h2><p class="muted" style="margin-bottom:14px">Tap “Add to calendar” so you never miss a function.</p><div class="dv-events" id="dv-events"></div></section>
+  <section class="dv-sec reveal-dv"><h2>Wedding venue</h2><p><b>Royal Palace Gardens</b><br>Amer Road, Jaipur, Rajasthan</p>
+    <div class="dv-map"><iframe title="Map of the wedding venue" loading="lazy" referrerpolicy="no-referrer-when-downgrade" src="https://www.google.com/maps?q=Amer+Road,+Jaipur&amp;output=embed"></iframe></div>
+    <p class="muted" style="margin-top:12px;font-size:14px">Stay: rooms are booked for outstation guests. Message the family for details.</p></section>
+  <section class="dv-sec reveal-dv" id="rsvp"><h2>Will you join us?</h2><p class="muted">Please let us know by one week before the wedding.</p>
     <form class="form dv-rsvp" id="dv-rsvp" novalidate>
       <div class="field"><label for="r-name">Your name</label><input id="r-name" required autocomplete="name"></div>
       <div class="f2"><div class="field"><label for="r-att">Attending?</label><select id="r-att"><option>Yes, with joy</option><option>Sorry, can't make it</option></select></div>
       <div class="field"><label for="r-n">Number of guests</label><input id="r-n" type="number" min="1" max="20" value="2" inputmode="numeric"></div></div>
       <button class="btn btn-primary btn-block" type="submit">Send RSVP</button>
     </form></section>
-  <section class="dv-sec"><h2>Share the invitation</h2><div class="row" style="justify-content:center"><button class="btn btn-wa" id="dv-share">{WA} Share on WhatsApp</button><button class="btn btn-ghost" id="dv-copy">{icon(I["link"])} Copy link</button></div></section>
+  <section class="dv-sec reveal-dv"><h2>Blessings &amp; wishes</h2>
+    <form class="form dv-rsvp" id="dv-wish" novalidate><div class="field"><label for="w-name">Your name</label><input id="w-name" required></div>
+      <div class="field"><label for="w-msg">Your wish for the couple</label><textarea id="w-msg" required style="min-height:80px"></textarea></div><button class="btn btn-outline btn-block" type="submit">Post wish</button></form>
+    <div class="wishes" id="wishes">
+      <div class="wish"><b>Nani</b><p>Sada sukhi raho, mere bachchon. Bahut saara aashirwad.</p></div>
+      <div class="wish"><b>Ankit &amp; Shruti</b><p>Can't wait to dance at the sangeet! Love you both.</p></div></div></section>
+  <section class="dv-sec reveal-dv"><h2>Share the invitation</h2><div class="row" style="justify-content:center"><button class="btn btn-wa" id="dv-share">{WA} Share on WhatsApp</button><button class="btn btn-ghost" id="dv-copy">{icon(I["link"])} Copy link</button></div></section>
   <section class="dv-sec dv-switch"><p class="eyebrow">See this demo in another design</p><div class="dv-designs" id="dv-designs"></div></section>
   <footer class="dv-foot"><img src="img/logo-gold.webp" alt="BFI Marwari Invitations" width="431" height="374" loading="lazy"><p>This is a sample. Your invitation will carry your names, your functions and your design.</p>
     <div class="row" style="justify-content:center;margin-top:14px"><a class="btn btn-gold" id="demo-cta2" href="customize.html">Create my invitation</a><a class="btn btn-wa" data-wa="Namaste BFI 🙏 I saw the live demo and would like an invitation like this.">{WA} WhatsApp us</a></div></footer>
-</main>'''
+</main>
+<button class="music-btn" id="music" aria-pressed="false" aria-label="Play music">{icon(I["music"])}</button>'''
 page("demo", "Live Demo: Digital Marwari Wedding Invitation | BFI",
      "Open a sample BFI digital wedding invitation: blessings, family names, countdown, every function with maps, gallery and RSVP. See it in any design.",
      DEMO, None, chrome=False)
@@ -630,6 +655,10 @@ RITUALS = [
     ("Phere", "The couple take seven rounds around the sacred fire, each with a vow. This is the main wedding ceremony and usually the main date on the invitation."),
     ("Vidaai and Griha Pravesh", "The emotional farewell of the bride, followed by her welcome into the groom's home."),
 ]
+RIMG = {"Mayra (Bhaat)": ("ritual-mayra.jpg", "Miniature-style painting of the Mayra procession arriving with gifts"),
+        "Pithi / Haldi": ("ritual-pithi.jpg", "Miniature-style painting of women applying pithi to the bride"),
+        "Nikasi and Baraat": ("ritual-baraat.jpg", "Miniature-style painting of the groom on a mare in the baraat"),
+        "Phere": ("ritual-phere.jpg", "Miniature-style painting of the couple taking phere around the sacred fire")}
 GUIDE_FAQ = [
     ("When should we send a Marwari wedding invitation?", "Send it 4–8 weeks before the wedding (8–12 weeks for NRI guests), and a reminder on WhatsApp about one week before. A digital link makes the reminder easy."),
     ("What should a Marwari wedding invitation include?", "An opening blessing, the couple's names, both sets of parents (and often grandparents), the list of functions with date, time and venue, the RSVP contact, and a line of welcome. Many families also list the Mayra and Mahila Sangeet separately."),
@@ -643,7 +672,7 @@ GUIDE = f'''
 <article class="sec guide"><div class="wrap narrow">
   <h2 id="rituals">Marwari wedding rituals, in order</h2>
   <p class="lead" style="margin-top:10px">Customs vary by family and region, so always check with your elders. This is the order most Marwari weddings follow.</p>
-  <ol class="ritual-list">{"".join(f"<li><h3>{t}</h3><p>{d}</p></li>" for t, d in RITUALS)}</ol>
+  <ol class="ritual-list">{"".join(f"<li><h3>{t}</h3><p>{d}</p>" + (f'<figure><img data-img="{RIMG[t][0]}" alt="{RIMG[t][1]}" loading="lazy" width="1000" height="666"></figure>' if t in RIMG else "") + "</li>" for t, d in RITUALS)}</ol>
 
   <h2 id="wording" style="margin-top:56px">Invitation wording you can use</h2>
   <p class="lead" style="margin-top:10px">Copy, change the names and send to us, or paste it into the <a href="customize.html">customize form</a>.</p>
@@ -685,12 +714,13 @@ ABOUT = f'''
     <p style="margin-top:14px">We blend Marwari customs, royal Rajasthani art and modern convenience: from the first ॥ श्री गणेशाय नमः ॥ to the last reception dinner, every function and every elder's name is in its right place.</p>
     <div class="row" style="margin-top:22px"><a class="btn btn-primary" href="invitations.html">See our designs</a><a class="btn btn-wa" data-wa>{WA} Talk to us</a></div>
   </div>
-  <div class="arch-img" data-img="palace.jpg" role="img" aria-label="Jaipur palace with jharokha windows and bougainvillea"></div>
+  <div class="arch-img" data-img="about-haveli.jpg" role="img" aria-label="Shekhawati haveli courtyard with painted frescoes"></div>
 </div></section>
 <section class="sec sec-tint"><div class="wrap split">
   <div><p class="eyebrow">Our story</p><h2 style="margin-top:8px">From kankotri to your phone</h2>
     <p class="lead" style="margin-top:14px">Every Marwari wedding begins with a kankotri: an invitation carried with care to every relative. Families now share invitations on WhatsApp, but most digital cards forget the rituals, the elders and the language that make a Marwari wedding what it is.</p>
-    <p style="margin-top:12px">BFI was started to fix that: invitations that honour every ritual, list every elder correctly and still feel effortless for guests to open.</p></div>
+    <p style="margin-top:12px">BFI was started to fix that: invitations that honour every ritual, list every elder correctly and still feel effortless for guests to open.</p>
+    <img class="wide-img" style="margin-top:22px" data-img="about-studio-desk.jpg" alt="Designer's desk with invitation sketches, gold pen and colour swatches" loading="lazy" width="1200" height="800"></div>
   <div><p class="eyebrow">Our heritage</p><h2 style="margin-top:8px">Inspired by Rajasthan</h2>
     <p class="lead" style="margin-top:14px">Shekhawati havelis, jharokha windows, royal elephants, peacocks and the colours of Gangaur: our designs carry the same craft, made for the screens your family uses every day.</p>
     <a class="guide-teaser" href="guide.html" style="margin-top:20px">{icon(I["book"])}<span><b>Read our Marwari Wedding Guide</b><br><small>Rituals in order and invitation wording in Hindi &amp; English.</small></span></a></div>
@@ -714,12 +744,12 @@ CONTACT_FAQ = [
     ("What should I send in my first message?", "Your wedding date, city, the functions you want on the invitation and any design you liked. We'll suggest designs and a package."),
 ]
 CONTACT = f'''
-<section class="phead"><div class="wrap"><h1>Contact BFI</h1><p class="lead">Have a question or want a custom invitation? Talk to a designer today; we reply within an hour.</p>
+<section class="phead"><div class="wrap phead-split"><div><h1>Contact BFI</h1><p class="lead">Have a question or want a custom invitation? Talk to a designer today; we reply within an hour.</p>
   <div class="quick">
     <a class="btn btn-wa" data-wa>{WA} WhatsApp</a>
     <a class="btn btn-outline" href="tel:{BIZ["tel"]}">{icon(I["call"])} Call</a>
     <a class="btn btn-outline" href="mailto:{BIZ["email"]}">{icon(I["mail"])} Email</a>
-  </div></div></section>
+  </div></div><img data-img="contact-studio.jpg" alt="The BFI studio: a desk by a jharokha window overlooking Jaipur" width="1200" height="800"></div></section>
 <section class="sec" style="padding-top:36px"><div class="wrap contact">
   <div class="cinfo">
     <a class="wa" data-wa><span class="ci-ic">{WA}</span><span><b>WhatsApp (fastest)</b><span>{BIZ["phone"]} · replies within an hour</span></span></a>
@@ -818,11 +848,64 @@ page("terms", "Terms of Service · BFI Marwari Invitations", "Orders, payment, d
 
 # ---------------- 404 ----------------
 NF = f'''<section class="sec center"><div class="wrap"><p class="deva" lang="hi">॥ शुभ विवाह ॥</p><h1 style="margin-top:10px">This door is closed</h1><p class="lead" style="margin:14px auto 24px">The page you're looking for isn't here. Let's take you somewhere beautiful.</p><div class="row" style="justify-content:center"><a class="btn btn-primary" href="index.html">Go home</a><a class="btn btn-ghost" href="invitations.html">See invitations</a></div></div></section>
-<div class="skyline" data-img="skyline.jpg" aria-hidden="true"></div>'''
+'''
 page("404", "Page not found · BFI Marwari Invitations", "Page not found.", NF, None, index=False)
 
+
+# ---------------- Free digital card maker (any occasion) ----------------
+FREE_FAQ = [
+    ("Is the card maker really free?", "Yes. Choose a template, type your details and download the card as an image or share it on WhatsApp. No sign-up and no watermark on your text."),
+    ("Which occasions are included?", "Kids' and adult birthdays, wedding anniversary, Griha Pravesh (housewarming), Godh Bharai (baby shower), Sagai (engagement), puja or bhajan sandhya, and Diwali get-togethers."),
+    ("Can I write in Hindi?", "Yes. Type in Hindi or English; Devanagari is supported in every text box."),
+    ("Can BFI make a full invitation website for my event?", "Yes. For weddings and big family functions we make a full invitation website with every event, maps, music and RSVP. See <a href='pricing.html'>pricing</a>."),
+]
+FREE_PAGE = f'''
+<section class="phead"><div class="wrap"><p class="eyebrow">Free tool</p><h1 style="margin-top:8px">Free Digital Invitation Card Maker</h1>
+  <p class="lead">Birthday, anniversary, Griha Pravesh, Godh Bharai, Sagai, puja or Diwali: pick a template, add your details and share on WhatsApp in a minute. Free, no sign-up.</p></div></section>
+<section class="sec" style="padding-top:32px"><div class="wrap">
+  <h2 style="font-size:26px;margin-bottom:14px">1. Choose a template</h2>
+  <div class="tpl-grid" id="tpl-grid"></div>
+  <div class="maker" id="maker">
+    <div class="panel"><h2 style="font-size:26px;margin-bottom:14px">2. Add your details</h2>
+      <form class="form" id="mk-form" novalidate>
+        <div class="field"><label for="mk-top">Top line</label><input id="mk-top" name="top" maxlength="60"></div>
+        <div class="field"><label for="mk-title">Main title</label><input id="mk-title" name="title" maxlength="40"></div>
+        <div class="field"><label for="mk-sub">Message</label><textarea id="mk-sub" name="sub" maxlength="140" style="min-height:70px"></textarea></div>
+        <div class="f2"><div class="field"><label for="mk-date">Date</label><input id="mk-date" name="date" type="date"></div><div class="field"><label for="mk-time">Time</label><input id="mk-time" name="time" type="time"></div></div>
+        <div class="field"><label for="mk-venue">Venue</label><input id="mk-venue" name="venue" maxlength="80"></div>
+        <div class="field"><label for="mk-host">Hosted by / RSVP</label><input id="mk-host" name="host" maxlength="70"></div>
+      </form></div>
+    <aside class="maker-preview"><p class="eyebrow center" style="margin-bottom:12px">3. Preview, download &amp; share</p>
+      <div class="mk-card inv-wrap" id="mk-card"></div>
+      <div class="mk-actions"><button class="btn btn-primary" id="mk-download" type="button">{icon(I["download"])} Download card (PNG)</button>
+        <button class="btn btn-wa" id="mk-share" type="button">{WA} Share on WhatsApp</button>
+        <p class="center muted" style="font-size:13px">Planning a wedding? <a href="demo.html">See a full invitation website</a>.</p></div></aside>
+  </div>
+</div></section>
+<section class="sec sec-tint"><div class="wrap">
+  <div class="sec-head center"><h2>Cards for Every Family Occasion</h2>{ORN}</div>
+  <div class="occasions">
+    <div><h3>Birthday invitations</h3><p>Cheerful cards for kids' parties and elegant gold cards for 30th, 50th or 60th birthdays.</p></div>
+    <div><h3>Anniversary invitations</h3><p>Celebrate 25 or 50 years with roses, rings and your family's blessings.</p></div>
+    <div><h3>Griha Pravesh invitations</h3><p>Auspicious kalash, toran and rangoli designs for your new home's puja.</p></div>
+    <div><h3>Godh Bharai &amp; baby shower</h3><p>Soft jhoola and floral designs to welcome the little one.</p></div>
+    <div><h3>Sagai &amp; ring ceremony</h3><p>Rich teal and gold for the engagement; upgrade to a full wedding website later.</p></div>
+    <div><h3>Puja, jagran &amp; Diwali</h3><p>Diyas, bells and rangoli for satsang, bhajan sandhya and festival get-togethers.</p></div>
+  </div>
+</div></section>
+<section class="sec"><div class="wrap split" style="align-items:start">
+  <div><h2>Questions</h2><p class="lead" style="margin-top:12px">Want something more? We make full invitation websites for weddings and big family functions.</p>
+    <div class="row" style="margin-top:18px"><a class="btn btn-primary" href="invitations.html">Wedding invitations</a><a class="btn btn-wa" data-wa>{WA} Ask on WhatsApp</a></div></div>
+  <div>{faq_html(FREE_FAQ)}</div>
+</div></section>'''
+page("free-cards", "Free Digital Invitation Card Maker: Birthday, Anniversary, Griha Pravesh | BFI",
+     "Make a free digital invitation card for a birthday, anniversary, Griha Pravesh, Godh Bharai, Sagai, puja or Diwali. Add your details, download and share on WhatsApp.",
+     FREE_PAGE, "free-cards", ld=[faq_ld(FREE_FAQ), {"@context": "https://schema.org", "@type": "WebApplication", "name": "BFI Free Digital Invitation Card Maker",
+     "url": BASE + "/free-cards.html", "applicationCategory": "DesignApplication", "operatingSystem": "Any", "offers": {"@type": "Offer", "price": 0, "priceCurrency": "INR"},
+     "provider": {"@id": BASE + "/#business"}}])
+
 # ---------------- robots, sitemap, llms.txt, vCard ----------------
-PUBLIC = ["", "invitations.html", "pricing.html", "how-it-works.html", "demo.html", "guide.html", "about.html", "contact.html", "customize.html",
+PUBLIC = ["", "invitations.html", "pricing.html", "how-it-works.html", "demo.html", "guide.html", "free-cards.html", "about.html", "contact.html", "customize.html",
           "privacy.html", "terms.html"] + [f"design-{i['slug']}.html" for i in CATALOG]
 (OUT / "robots.txt").write_text(f"User-agent: *\nAllow: /\nDisallow: /account.html\nDisallow: /login.html\n\nSitemap: {BASE}/sitemap.xml\n")
 (OUT / "sitemap.xml").write_text('<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n' +
@@ -844,6 +927,7 @@ PUBLIC = ["", "invitations.html", "pricing.html", "how-it-works.html", "demo.htm
 - [How it works]({BASE}/how-it-works.html): choose, share details, preview and approve, share
 - [Live demo]({BASE}/demo.html): a sample invitation as guests see it
 - [Marwari wedding guide]({BASE}/guide.html): rituals in order, invitation wording in Hindi and English, send-out checklist
+- [Free card maker]({BASE}/free-cards.html): free digital cards for birthdays, anniversaries, Griha Pravesh, Godh Bharai, Sagai, puja and Diwali
 - [About]({BASE}/about.html) · [Contact]({BASE}/contact.html)
 """ + "".join(f"- [{i['name']}]({BASE}/design-{i['slug']}.html): {COLL[i['collection']]} collection, from ₹{i['price']:,}\n" for i in CATALOG))
 (OUT / "bfi-contact.vcf").write_text(f"""BEGIN:VCARD\r\nVERSION:3.0\r\nFN:BFI Marwari Invitations\r\nORG:BFI · Marwari Invitations\r\nTITLE:Digital wedding invitations\r\nTEL;TYPE=CELL,VOICE:{BIZ['tel']}\r\nEMAIL;TYPE=INTERNET:{BIZ['email']}\r\nURL:{BASE}/\r\nADR;TYPE=WORK:;;;{BIZ['city']};{BIZ['region']};;India\r\nNOTE:WhatsApp us for wedding invitations. {BIZ['hours']}.\r\nEND:VCARD\r\n""")

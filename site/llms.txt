@@ -15,6 +15,7 @@
 - [How it works](https://bfi-royal-heritage.vercel.app/how-it-works.html): choose, share details, preview and approve, share
 - [Live demo](https://bfi-royal-heritage.vercel.app/demo.html): a sample invitation as guests see it
 - [Marwari wedding guide](https://bfi-royal-heritage.vercel.app/guide.html): rituals in order, invitation wording in Hindi and English, send-out checklist
+- [Free card maker](https://bfi-royal-heritage.vercel.app/free-cards.html): free digital cards for birthdays, anniversaries, Griha Pravesh, Godh Bharai, Sagai, puja and Diwali
 - [About](https://bfi-royal-heritage.vercel.app/about.html) · [Contact](https://bfi-royal-heritage.vercel.app/contact.html)
 - [Rajwada Royale](https://bfi-royal-heritage.vercel.app/design-rajwada-royale.html): Royal collection, from ₹11,999
 - [Gulmohar Classic](https://bfi-royal-heritage.vercel.app/design-gulmohar-classic.html): Traditional collection, from ₹6,999
