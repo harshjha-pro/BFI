@@ -8,6 +8,7 @@ This repository holds the brand, the design mockups, the product docs and the st
 
 | Folder | What's inside |
 |---|---|
+| [`DESIGN.md`](DESIGN.md) | **Royal Heritage website spec**: tokens, typography, motifs, components, 7 pages, image & Rajasthani illustration list with AI prompts, Figma vs Canva, MCP workflow |
 | [`brand/`](brand) | Logo files, monogram, app icons, favicons and the WhatsApp/social share image |
 | [`design/`](design) | **Mockups of every page** (website + app), desktop and mobile, in the Royal Marwari design. Open [`design/index.html`](design/index.html) in a browser for the gallery |
 | [`docs/`](docs) | Design audit, design system, PRD, database design, go-to-market plan, launch checklist |
