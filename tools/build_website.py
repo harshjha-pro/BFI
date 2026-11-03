@@ -7,7 +7,7 @@ Pages share one header, footer, mobile menu and WhatsApp buttons. Page logic liv
 from pathlib import Path
 
 OUT = Path(__file__).resolve().parent.parent / "site"
-V = "20261103"  # bump to bust browser caches for css/js
+V = "20261103b"  # bump to bust browser caches for css/js
 
 WA = ('<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2Zm0 18.2a8.2 8.2 0 0 1-4.2-1.1l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2Zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1l-.8 1c-.1.2-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.2-.4.2-.4.7-1.3.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.2 5.2 0 0 0 1.1 2.7 11.8 11.8 0 0 0 4.5 4c1.7.7 2.3.8 3.2.6a2.7 2.7 0 0 0 1.8-1.3 2.2 2.2 0 0 0 .1-1.3c0-.1-.2-.2-.4-.3Z"/></svg>')
 
@@ -50,7 +50,7 @@ def header(active):
         f'<a href="{k}.html"{" aria-current=\"page\"" if k == active else ""}>{t}</a>' for k, t in NAV)
     return f'''<a class="skip" href="#main">Skip to content</a>
 <header class="hdr"><div class="wrap hdr-in">
-  <a class="brand" href="index.html" aria-label="BFI Marwari Invitations, home"><img src="img/logo-mark.webp" alt="" width="42" height="42"><span><b>BFI</b><small>MARWARI INVITATIONS</small></span></a>
+  <a class="brand" href="index.html"><img src="img/logo-sm.webp" alt="BFI Marwari Invitations, home" width="200" height="174"></a>
   <nav class="nav" aria-label="Main">{links}</nav>
   <div class="hdr-actions">
     <a class="btn btn-wa btn-sm" data-wa>{WA} Enquire on WhatsApp</a>
@@ -60,7 +60,7 @@ def header(active):
   </div>
 </div></header>
 <div class="sheet" id="menu" role="dialog" aria-modal="true" aria-label="Menu"><div class="sheet-bg"></div><div class="sheet-panel">
-  <div style="display:flex;justify-content:space-between;align-items:center"><a class="brand" href="index.html"><img src="img/logo-mark.webp" alt="" width="42" height="42"><span><b>BFI</b><small>MARWARI INVITATIONS</small></span></a><button class="icon-btn" data-menu-close aria-label="Close menu">{icon(I["x"])}</button></div>
+  <div style="display:flex;justify-content:space-between;align-items:center"><a class="brand" href="index.html"><img src="img/logo-sm.webp" alt="BFI Marwari Invitations, home" width="200" height="174"></a><button class="icon-btn" data-menu-close aria-label="Close menu">{icon(I["x"])}</button></div>
   <nav aria-label="Mobile">{"".join(f'<a href="{k}.html">{t}</a>' for k, t in NAV)}<a href="customize.html">Customize</a></nav>
   <div style="margin-top:auto"><div data-auth-menu><a class="btn btn-ghost btn-block" href="login.html">Login or create account</a></div><a class="btn btn-wa btn-block" data-wa>{WA} Chat on WhatsApp</a></div>
 </div></div>'''
@@ -69,7 +69,7 @@ def header(active):
 def footer():
     return f'''<footer class="ftr"><div class="wrap">
   <div class="ftr-grid">
-    <div><img src="img/logo-full.webp" alt="BFI Marwari Invitations" width="180" height="148" loading="lazy"><p style="margin-top:10px;max-width:280px">Premium digital wedding invitations, crafted with Marwari tradition and shared with love.</p></div>
+    <div><img class="ftr-logo" src="img/logo-gold.webp" alt="BFI Marwari Invitations" width="431" height="374" loading="lazy"><p style="margin-top:10px;max-width:280px">Premium digital wedding invitations, crafted with Marwari tradition and shared with love.</p></div>
     <div><h4>Explore</h4><ul><li><a href="invitations.html">All invitations</a></li><li><a href="invitations.html?c=royal">Royal collection</a></li><li><a href="invitations.html?c=traditional">Traditional collection</a></li><li><a href="invitations.html?c=elegant">Elegant collection</a></li><li><a href="invitations.html?c=modern">Modern collection</a></li></ul></div>
     <div><h4>Studio</h4><ul><li><a href="how-it-works.html">How it works</a></li><li><a href="customize.html">Customize an invitation</a></li><li><a href="about.html">About BFI</a></li><li><a href="login.html">My account</a></li></ul></div>
     <div><h4>Contact</h4><ul><li><a data-wa>WhatsApp <span data-cfg="whatsappDisplay"></span></a></li><li><a data-mailto><span data-cfg="email"></span></a></li><li><span data-cfg="city"></span></li><li><span data-cfg="hours"></span></li></ul></div>
@@ -129,7 +129,7 @@ HOME = f'''
   <div class="hero-in"><div class="hero-content">
     <p class="deva" lang="hi">॥ श्री गणेशाय नमः ॥</p>
     <h1 class="sr">BFI Marwari Invitations</h1>
-    <img class="hero-logo" src="img/logo-full.webp" alt="BFI Marwari Invitations" width="250" height="206">
+    <img class="hero-logo" src="img/logo.webp" alt="BFI Marwari Invitations" width="431" height="374" fetchpriority="high">
     <p class="h1 hero-title" style="font:600 clamp(26px,5vw,38px)/1.15 var(--serif);color:var(--brown);margin-top:14px">Premium Digital Wedding Invitations <br>for Your <em style="color:var(--maroon)">Grand Celebrations</em></p>
     <div class="row"><a class="btn btn-primary" href="invitations.html">Explore Invitations {icon(I["arrow"])}</a><a class="btn btn-outline" href="customize.html">Create Your Invitation</a></div>
     <p class="trust">Made in Jaipur · Ready in 24 hours · Private &amp; secure</p>
@@ -353,7 +353,7 @@ GOOGLE = '<svg viewBox="0 0 48 48" aria-hidden="true"><path fill="#FFC107" d="M4
 LOGIN = f'''
 <section class="sec" style="padding-top:40px;background:var(--tint)"><div class="wrap">
   <div class="auth">
-    <div class="center" style="margin-bottom:20px"><img src="img/logo-mark.webp" alt="" width="64" height="64" style="margin:0 auto 10px;border-radius:14px"><h1 style="font-size:36px">Welcome to BFI</h1><p class="muted" style="margin-top:6px">Save designs, track your invitation and enquiries.</p></div>
+    <div class="center" style="margin-bottom:20px"><img src="img/logo.webp" alt="BFI Marwari Invitations" width="431" height="374" style="width:190px;height:auto;margin:0 auto 6px"><h1 style="font-size:36px">Welcome to BFI</h1><p class="muted" style="margin-top:6px">Save designs, track your invitation and enquiries.</p></div>
     <div class="panel panel-gold">
       <div id="why"></div>
       <div class="tabs" role="tablist"><button role="tab" data-mode="signin" aria-selected="true">Login</button><button role="tab" data-mode="signup" aria-selected="false">Create account</button></div>
