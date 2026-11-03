@@ -28,7 +28,19 @@ This repository holds the brand, the design mockups, the product docs and the st
 Typography: **Cormorant Garamond** (headings) · **Inter** (body) · **Tiro Devanagari Hindi** (one ceremonial line per page).
 Why this direction: see [`docs/01-design-audit.md`](docs/01-design-audit.md).
 
-## Mockups
+## Four homepage concepts
+
+Same content and logo, four different design directions. Compare them in [`design/concepts/index.html`](design/concepts/index.html).
+
+| 1 · Darbar: dark royal palace | 2 · Kankotri: ivory editorial |
+|---|---|
+| <img src="design/screens/desktop/concept-darbar.jpg" alt="Darbar concept" width="100%"> | <img src="design/screens/desktop/concept-kankotri.jpg" alt="Kankotri concept" width="100%"> |
+| **3 · Gulabi: modern luxury** | **4 · Utsav: festive celebration** |
+| <img src="design/screens/desktop/concept-gulabi.jpg" alt="Gulabi concept" width="100%"> | <img src="design/screens/desktop/concept-utsav.jpg" alt="Utsav concept" width="100%"> |
+
+Mobile versions: `design/screens/mobile/concept-*.jpg`. Regenerate with `python3 design/build_concepts.py`.
+
+## Mockups (Royal Marwari, all pages)
 
 **Homepage** — desktop and mobile
 
