@@ -166,11 +166,11 @@ function card(inv) {
   const on = favs.has(inv.slug);
   return `<article class="card">
     <button class="fav" data-fav="${esc(inv.slug)}" aria-pressed="${on}" aria-label="Save ${esc(inv.name)} to favourites">${ic("heart")}</button>
-    <a class="card-img" href="invitation.html?slug=${encodeURIComponent(inv.slug)}"><img src="${IMG(inv.image)}" alt="${esc(inv.name)} invitation: ${esc(inv.tagline)}" loading="lazy" width="360" height="540">
+    <a class="card-img" href="design-${encodeURIComponent(inv.slug)}.html"><img src="${IMG(inv.image)}" alt="${esc(inv.name)} invitation: ${esc(inv.tagline)}" loading="lazy" width="360" height="540">
       <span class="script ${DARK.has(inv.slug) ? "pv-dark" : "pv-light"}">Wedding Invitation</span></a>
     <div class="card-body">
       <span class="tag">${COLLECTIONS[inv.collection]}</span>
-      <h3><a href="invitation.html?slug=${encodeURIComponent(inv.slug)}">${esc(inv.name)}</a></h3>
+      <h3><a href="design-${encodeURIComponent(inv.slug)}.html">${esc(inv.name)}</a></h3>
       <div class="card-meta"><span>${esc(inv.tier)}</span><span>from <b>${inr(inv.price_from)}</b></span></div>
     </div></article>`;
 }
@@ -185,11 +185,12 @@ function bindFavs(root) {
 const pages = {};
 
 pages.index = async () => {
-  const grid = $("#featured");
-  if (!grid) return;
-  const all = await invitations();
-  grid.innerHTML = ["rajwada-royale", "gulmohar-classic", "gulabi-bagh", "mor-pankh"].map((s) => all.find((i) => i.slug === s)).filter(Boolean).map(card).join("");
-  bindFavs(grid);
+  // Real, studio-approved reviews only; the section stays hidden until there are some.
+  if (!sb) return;
+  const { data } = await sb.from("reviews").select("name,city,rating,body,design_slug").eq("approved", true).order("created_at", { ascending: false }).limit(6);
+  if (!data?.length) return;
+  $("#reviews").innerHTML = data.map((r) => `<figure class="review"><div class="stars" aria-label="${r.rating} out of 5">${"★".repeat(r.rating)}${"☆".repeat(5 - r.rating)}</div><p>“${esc(r.body)}”</p><small>${esc(r.name)}${r.city ? ", " + esc(r.city) : ""}</small></figure>`).join("");
+  $("#reviews-sec").hidden = false;
 };
 
 pages.invitations = async () => {
@@ -213,58 +214,27 @@ pages.invitations = async () => {
   draw();
 };
 
+// Old dynamic URL: invitation.html?slug=x -> design-x.html
 pages.invitation = async () => {
-  const all = await invitations();
-  const inv = all.find((i) => i.slug === params.get("slug"));
+  const slug = params.get("slug");
+  location.replace(slug && /^[a-z0-9-]+$/.test(slug) ? `design-${slug}.html` : "invitations.html");
+};
+
+// Static design page: gallery, favourite, ask modal
+function initDesignPage() {
   const root = $("#detail");
-  if (!inv) { root.innerHTML = `<div class="empty"><h2>Invitation not found</h2><p class="lead" style="margin:10px auto 20px">It may have been renamed. Browse the full collection instead.</p><a class="btn btn-primary" href="invitations.html">View all invitations</a></div>`; return; }
-  document.title = `${inv.name} · BFI Marwari Invitations`;
-  $("#crumb").textContent = inv.name;
-  $("#crumb-col").textContent = COLLECTIONS[inv.collection] + " Collection";
-  $("#crumb-col").href = `invitations.html?c=${inv.collection}`;
-  const tone = DARK.has(inv.slug) ? "pv-dark" : "pv-light";
-  const slides = [
-    `<img src="${IMG(inv.image)}" alt="${esc(inv.name)} cover">`,
-    `<img src="${IMG(inv.image)}" alt=""><div class="pv-text ${tone}"><span class="pv-deva" lang="hi">॥ श्री गणेशाय नमः ॥</span><span class="pv-names">Priya<br>&amp; Rohan</span><span class="pv-date">Sunday, 14 February</span><span class="pv-ven">Rambagh Palace, Jaipur</span></div>`,
-    `<img src="${IMG("couple.jpg")}" alt="Sample inside page: the couple under a floral arch">`,
-  ];
-  root.innerHTML = `
-  <div class="gallery">
-    <div class="big" id="slide">${slides[0]}</div>
-    <button class="nav-arrow prev" aria-label="Previous image">${ic("left")}</button>
-    <button class="nav-arrow next" aria-label="Next image">${ic("right")}</button>
-    <div class="dots">${slides.map((_, i) => `<button aria-label="Image ${i + 1}" aria-current="${i === 0}"></button>`).join("")}</div>
-  </div>
-  <div>
-    <div class="d-head"><div><h1 style="font-size:clamp(32px,5vw,44px)">${esc(inv.name)}</h1><p class="eyebrow" style="margin-top:8px">${COLLECTIONS[inv.collection]} Collection · ${esc(inv.tier)}</p></div>
-      <button class="icon-btn" data-fav="${esc(inv.slug)}" aria-pressed="${favs.has(inv.slug)}" aria-label="Save to favourites">${ic("heart")}</button></div>
-    <p class="lead" style="margin-top:14px">${esc(inv.description)}</p>
-    <p class="d-price">from ${inr(inv.price_from)}</p><p class="muted" style="font-size:14px">Ready in 24–72 hours · one free round of changes</p>
-    <ul class="feat">${inv.features.map((f) => `<li>${ic(FEATURE_ICON(f))}<span>${esc(f)}</span></li>`).join("")}</ul>
-    <div class="d-actions">
-      <a class="btn btn-primary" href="customize.html?design=${encodeURIComponent(inv.slug)}">Customize This Design ${ic("arrow")}</a>
-      <a class="btn btn-outline" style="border-color:var(--whatsapp);color:var(--whatsapp)" data-wa="${esc(waText(inv.name))}">${WA_SVG} Enquire on WhatsApp</a>
-    </div>
-    <p style="margin-top:14px"><button class="linkbtn" id="ask">Ask a question by email instead</button></p>
-    <div style="margin-top:22px">
-      <details class="acc"><summary>What's included</summary><p>A mobile invitation website with your names, families, every function with date, time and Google Maps, a private share link, a QR code for printed cards, and ${/rsvp/i.test(inv.features.join()) ? "optional RSVP." : "an easy WhatsApp share message."}</p></details>
-      <details class="acc"><summary>Customization</summary><p>Change names, dates, venues, the number of events, language (English, Hindi, Marwari + Hindi or bilingual), opening blessing and music. Colours can be adjusted on Premium and Luxury.</p></details>
-      <details class="acc"><summary>Delivery &amp; changes</summary><p>Basic in 24 hours, Premium in 48 hours, Luxury in 72 hours after we receive your details. One free round of changes is included; spelling fixes are always free.</p></details>
-    </div>
-  </div>`;
-  initChrome();
+  if (!root) return;
+  const inv = { slug: root.dataset.slug, name: root.dataset.name };
+  const slides = $$("#slide .slide");
   let i = 0;
-  const show = (n) => { i = (n + slides.length) % slides.length; $("#slide").innerHTML = slides[i]; $$(".dots button").forEach((d, k) => d.setAttribute("aria-current", k === i)); };
+  const show = (n) => { i = (n + slides.length) % slides.length; slides.forEach((s, k) => (s.hidden = k !== i)); $$(".dots button").forEach((d, k) => d.setAttribute("aria-current", k === i)); };
   $(".prev").onclick = () => show(i - 1); $(".next").onclick = () => show(i + 1);
   $$(".dots button").forEach((d, k) => (d.onclick = () => show(k)));
   let x0 = null; $("#slide").addEventListener("touchstart", (e) => (x0 = e.touches[0].clientX), { passive: true });
   $("#slide").addEventListener("touchend", (e) => { if (x0 == null) return; const dx = e.changedTouches[0].clientX - x0; if (Math.abs(dx) > 40) show(i + (dx < 0 ? 1 : -1)); x0 = null; });
-  bindFavs(root);
+  bindFavs(root); bindFavs($("#similar"));
   $("#ask").onclick = () => enquiryModal(inv);
-  const sim = all.filter((x) => x.slug !== inv.slug && x.collection === inv.collection).concat(all.filter((x) => x.slug !== inv.slug && x.collection !== inv.collection)).slice(0, 4);
-  $("#similar").innerHTML = sim.map(card).join("");
-  bindFavs($("#similar"));
-};
+}
 
 function enquiryModal(inv) {
   const u = user();
@@ -425,8 +395,7 @@ pages.customize = async () => {
 /* ---------- contact ---------- */
 pages.contact = async () => {
   const form = $("#contact-form");
-  const all = await invitations();
-  $("#c-design").insertAdjacentHTML("beforeend", all.map((i) => `<option value="${i.slug}">${esc(i.name)}</option>`).join(""));
+  if (params.get("design")) form.design.value = params.get("design");
   if (user()) { form.name.value = displayName(); form.email.value = user().email || ""; }
   form.addEventListener("submit", async (e) => {
     e.preventDefault(); if (!validate(form)) return;
@@ -434,25 +403,32 @@ pages.contact = async () => {
     const btn = $("button[type=submit]", form); setBusy(btn, true, "Sending…");
     try {
       await sendEnquiry({ name: d.name, phone: d.phone, email: d.email || null, wedding_date: d.wedding_date || null, city: d.city || null, package: d.package || "Not sure", design_slug: d.design || null, message: d.message || null, source: "contact" });
-      form.outerHTML = `<div class="notice ok" style="font-size:16px"><b>Dhanyavaad, ${esc(d.name)}!</b> Your enquiry has reached us. We'll reply on WhatsApp within an hour (${esc(CFG.hours)}).</div>`;
+      const waMsg = `Namaste BFI 🙏 I just sent an enquiry on your website.\nName: ${d.name}\nWedding date: ${d.wedding_date || "not fixed"}\nCity: ${d.city || "-"}\nPackage: ${d.package || "Not sure"}\n${d.message || ""}`;
+      form.outerHTML = `<div class="notice ok" style="font-size:16px"><b>Dhanyavaad, ${esc(d.name)}!</b> Your enquiry has reached us. We'll reply on WhatsApp within an hour (${esc(CFG.hours)}).</div>
+        <p style="margin-top:14px">Want a faster reply? Send the same details on WhatsApp:</p><a class="btn btn-wa" style="margin-top:10px" target="_blank" rel="noopener" href="${waHref(waMsg)}">${WA_SVG} Send on WhatsApp</a>`;
     } catch { setBusy(btn, false); $("#c-status").innerHTML = `<div class="notice bad">Couldn't send your message. Please try again, or message us on WhatsApp.</div>`; }
   });
 };
 
 /* ---------- login ---------- */
 pages.login = async () => {
-  const next = params.get("next") && /^[\w\-./?=&%]+$/.test(params.get("next")) && !params.get("next").startsWith("//") ? params.get("next") : "account.html";
+  const nx = params.get("next") || "";
+  const next = /^[\w\-./?=&%]+$/.test(nx) && !nx.startsWith("//") && !nx.includes("://") ? nx : "account.html";
   if (user()) { location.replace(next); return; }
-  const why = { fav: "Login to save favourites.", save: "Login to save your invitation draft." }[params.get("why")];
+  const why = { fav: "Login to save favourites.", save: "Login to save your invitation draft.", review: "Login to write a review." }[params.get("why")];
   if (why) $("#why").innerHTML = `<div class="notice info">${why}</div>`;
   const redirectTo = new URL(next, location.href).href;
   const status = $("#auth-status");
   const say = (cls, msg) => (status.innerHTML = `<div class="notice ${cls}">${msg}</div>`);
+  const waHelp = `<a href="${waHref("Namaste BFI 🙏 I need help logging in to my account.")}" target="_blank" rel="noopener">message us on WhatsApp</a>`;
+  // Email links (magic link, password reset) need the studio's email sender to be set up in Supabase.
+  if (!CFG.authEmails) { $("#magic").hidden = true; }
   let mode = "signin";
   const setMode = (m) => {
     mode = m;
     $$(".tabs button").forEach((b) => b.setAttribute("aria-selected", b.dataset.mode === m));
     $("#name-field").hidden = m !== "signup";
+    $("#pass-help").hidden = m !== "signup";
     $("#a-name").required = m === "signup";
     $("#a-pass").autocomplete = m === "signup" ? "new-password" : "current-password";
     $("#auth-submit").textContent = m === "signup" ? "Create account" : "Login";
@@ -463,35 +439,42 @@ pages.login = async () => {
   if (params.get("mode") === "signup") setMode("signup");
   $("#google").onclick = async () => {
     const { error } = await sb.auth.signInWithOAuth({ provider: "google", options: { redirectTo } });
-    if (error) say("bad", /provider is not enabled/i.test(error.message) ? "Google login isn't switched on yet. Please use email for now." : esc(error.message));
+    if (error) say("bad", /provider is not enabled|Unsupported provider/i.test(error.message) ? "Google login is being set up. Please create an account with your email for now." : esc(error.message));
   };
+  if (/error_description=/.test(location.hash) || params.get("error_description")) {
+    const msg = new URLSearchParams(location.hash.slice(1)).get("error_description") || params.get("error_description");
+    say("bad", /provider is not enabled/i.test(msg) ? "Google login is being set up. Please use email for now." : esc(msg));
+  }
   const form = $("#auth-form");
   form.addEventListener("submit", async (e) => {
     e.preventDefault(); if (!validate(form)) return;
-    const d = formData(form); const btn = $("#auth-submit"); setBusy(btn, true);
+    const d = formData(form); const btn = $("#auth-submit");
+    if (mode === "signup" && d.password.length < 8) { say("bad", "Use at least 8 characters for your password."); return; }
+    setBusy(btn, true);
     try {
       if (mode === "signup") {
-        if (d.password.length < 8) { say("bad", "Use at least 8 characters for your password."); return; }
-        const { data, error } = await sb.auth.signUp({ email: d.email, password: d.password, options: { data: { full_name: d.name }, emailRedirectTo: redirectTo } });
-        if (error) throw error;
-        if (data.session) location.replace(next);
-        else say("ok", `Almost done! We've sent a confirmation link to <b>${esc(d.email)}</b>. Open it to activate your account.`);
-      } else {
-        const { error } = await sb.auth.signInWithPassword({ email: d.email, password: d.password });
-        if (error) throw error;
-        location.replace(next);
+        const r = await fetch(`${CFG.supabaseUrl}/functions/v1/signup`, { method: "POST", headers: { "content-type": "application/json", apikey: CFG.supabaseKey },
+          body: JSON.stringify({ email: d.email, password: d.password, name: d.name, company: d.company }) });
+        const out = await r.json().catch(() => ({}));
+        if (!r.ok) throw new Error(out.error || "Couldn't create the account. Please try again.");
       }
+      const { error } = await sb.auth.signInWithPassword({ email: d.email, password: d.password });
+      if (error) throw error;
+      location.replace(next);
     } catch (err) {
-      say("bad", /invalid login/i.test(err.message) ? "Email or password is incorrect." : /not confirmed/i.test(err.message) ? "Please confirm your email first (check your inbox)." : /already registered/i.test(err.message) ? "This email already has an account. Please login." : esc(err.message));
+      const m = err.message || "";
+      say("bad", /invalid login/i.test(m) ? "Email or password is incorrect." : /not confirmed/i.test(m) ? `This account isn't activated yet. Please ${waHelp} and we'll activate it.` : /already has an account/i.test(m) ? `${esc(m)} <button class="linkbtn" data-to="signin">Go to login</button>` : esc(m));
+      $("[data-to=signin]")?.addEventListener("click", () => setMode("signin"));
     } finally { setBusy(btn, false); }
   });
   $("#magic").onclick = async () => {
     const email = form.email.value.trim();
     if (!/^\S+@\S+\.\S+$/.test(email)) { form.email.focus(); return say("bad", "Enter your email above, then tap “Email me a login link”."); }
-    const { error } = await sb.auth.signInWithOtp({ email, options: { emailRedirectTo: redirectTo } });
+    const { error } = await sb.auth.signInWithOtp({ email, options: { emailRedirectTo: redirectTo, shouldCreateUser: false } });
     error ? say("bad", esc(error.message)) : say("ok", `Check <b>${esc(email)}</b> for a login link. It works once and expires in an hour.`);
   };
   $("#forgot").onclick = async () => {
+    if (!CFG.authEmails) return say("info", `To reset your password, ${waHelp} from your registered number and we'll help you right away.`);
     const email = form.email.value.trim();
     if (!/^\S+@\S+\.\S+$/.test(email)) { form.email.focus(); return say("bad", "Enter your email above first."); }
     const { error } = await sb.auth.resetPasswordForEmail(email, { redirectTo: new URL("account.html#reset", location.href).href });
@@ -499,7 +482,6 @@ pages.login = async () => {
   };
 };
 
-/* ---------- account ---------- */
 pages.account = async () => {
   const root = $("#account");
   if (!user()) {
@@ -534,6 +516,15 @@ pages.account = async () => {
       <div class="list">${(drafts || []).length ? drafts.map((c) => `<div class="li">${thumb(c.design_slug)}<div class="grow"><b>${esc(bySlug[c.design_slug]?.name || "Invitation")}${c.data?.bride ? ` · ${esc(c.data.bride)} &amp; ${esc(c.data.groom || "")}` : ""}</b><small>Updated ${when(c.updated_at)}</small></div><span class="status">${c.status === "submitted" ? "Sent to studio" : "Draft"}</span>${c.status === "draft" ? `<a class="btn btn-sm btn-outline" href="customize.html?id=${c.id}">Continue</a>` : ""}</div>`).join("") : `<p class="muted">No saved invitations yet. <a href="invitations.html">Choose a design</a> to start.</p>`}</div></section>
     <section class="panel"><h2 style="font-size:26px;margin-bottom:14px">Favourites</h2>
       <div class="grid-inv" id="fav-grid">${favs.size ? all.filter((i) => favs.has(i.slug)).map(card).join("") : `<p class="muted" style="grid-column:1/-1">Tap the ♡ on any design to save it here.</p>`}</div></section>
+    <section class="panel" id="review-box"><h2 style="font-size:26px;margin-bottom:6px">Write a review</h2><p class="muted" style="margin-bottom:14px">Received your invitation? Tell other families about it. Reviews appear on the website after the studio checks them.</p>
+      <div id="my-reviews"></div>
+      <form class="form" id="rev" novalidate>
+        <div class="f2"><div class="field"><label for="rv-name">Name to show</label><input id="rv-name" name="name" required maxlength="80" value="${esc(prof?.full_name || displayName())}"></div>
+        <div class="field"><label for="rv-city">City</label><input id="rv-city" name="city" maxlength="60" placeholder="e.g. Jaipur"></div></div>
+        <div class="f2"><div class="field"><label for="rv-design">Design</label><select id="rv-design" name="design_slug"><option value="">Choose…</option>${all.map((i) => `<option value="${i.slug}">${esc(i.name)}</option>`).join("")}</select></div>
+        <div class="field"><label for="rv-rating">Rating</label><select id="rv-rating" name="rating"><option value="5">★★★★★ Excellent</option><option value="4">★★★★ Very good</option><option value="3">★★★ Good</option><option value="2">★★ Fair</option><option value="1">★ Poor</option></select></div></div>
+        <div class="field"><label for="rv-body">Your review</label><textarea id="rv-body" name="body" required minlength="10" maxlength="800" placeholder="What did your family and guests think?"></textarea></div>
+        <button class="btn btn-primary" type="submit">Submit review</button></form></section>
     <section class="panel"><h2 style="font-size:26px;margin-bottom:14px">My enquiries</h2>
       <div class="list">${(enq || []).length ? enq.map((q) => `<div class="li">${thumb(q.design_slug)}<div class="grow"><b>${esc(bySlug[q.design_slug]?.name || "General enquiry")}</b><small>${when(q.created_at)} · via ${q.source === "customize" ? "Customize" : q.source === "details" ? "design page" : "Contact"}</small></div><span class="status">${{ new: "Received", contacted: "In touch", won: "Confirmed", lost: "Closed" }[q.status]}</span></div>`).join("") : `<p class="muted">Enquiries you send while logged in appear here.</p>`}</div></section>
   </div>`;
@@ -544,6 +535,20 @@ pages.account = async () => {
     setBusy(btn, false); toast(error ? "Couldn't save. Please try again." : "Profile saved");
   });
   $("#signout").onclick = async () => { await sb.auth.signOut(); location.href = "index.html"; };
+  const drawMine = async () => {
+    const { data: mine } = await sb.from("reviews").select("rating,body,approved,created_at").eq("user_id", u.id).order("created_at", { ascending: false });
+    $("#my-reviews").innerHTML = (mine || []).map((r) => `<div class="li" style="margin-bottom:10px"><div class="grow"><b>${"★".repeat(r.rating)}</b><small>${esc(r.body.slice(0, 120))}</small></div><span class="status">${r.approved ? "Published" : "Awaiting check"}</span></div>`).join("");
+  };
+  drawMine();
+  $("#rev").addEventListener("submit", async (e) => {
+    e.preventDefault(); const f = e.target; if (!validate(f)) return;
+    const d = formData(f); if (d.body.length < 10) return toast("Please write at least a sentence");
+    const btn = $("button", f); setBusy(btn, true, "Sending…");
+    const { error } = await sb.from("reviews").insert({ name: d.name, city: d.city || null, design_slug: d.design_slug || null, rating: +d.rating, body: d.body });
+    setBusy(btn, false);
+    if (error) return toast("Couldn't send your review. Please try again.");
+    f.reset(); f.name.value = prof?.full_name || displayName(); toast("Thank you! Your review will appear after a quick check."); drawMine();
+  });
   const pwForm = () => {
     $("#pw-box").innerHTML = `<form class="form" id="pw" style="margin-top:20px;padding-top:18px;border-top:1px solid var(--beige)" novalidate><div class="field"><label for="pw-new">Set a new password</label><input id="pw-new" name="password" type="password" minlength="8" required autocomplete="new-password"></div><button class="btn btn-outline" type="submit">Update password</button></form>`;
     $("#pw").addEventListener("submit", async (e) => {
@@ -556,6 +561,54 @@ pages.account = async () => {
   };
   if (location.hash === "#reset" || sessionStorage.getItem("bfi.recovery")) { sessionStorage.removeItem("bfi.recovery"); pwForm(); $("#pw-new").focus(); }
   else $("#pw-box").innerHTML = `<p style="margin-top:14px"><button class="linkbtn" id="pw-open">Change password</button></p>`, ($("#pw-open").onclick = pwForm);
+};
+
+/* ---------- live demo invitation ---------- */
+pages.demo = async () => {
+  const all = await invitations();
+  const inv = all.find((i) => i.slug === params.get("design")) || all.find((i) => i.slug === "rajwada-royale") || all[0];
+  const cover = $("#dv-cover");
+  cover.style.backgroundImage = `url("${IMG(inv.image)}")`;
+  cover.classList.toggle("dark", DARK.has(inv.slug));
+  $("#demo-cta").href = $("#demo-cta2").href = `customize.html?design=${inv.slug}`;
+  document.title = `Live Demo in ${inv.name} · BFI Marwari Invitations`;
+  // Sample wedding ~60 days from today so the countdown always runs
+  const day = (n) => { const d = new Date(); d.setHours(0, 0, 0, 0); d.setDate(d.getDate() + n); return d; };
+  const wedding = day(60); wedding.setHours(19, 30);
+  const fmt = (d) => d.toLocaleDateString("en-IN", { weekday: "long", day: "numeric", month: "long", year: "numeric" });
+  $("#dv-date").textContent = fmt(wedding);
+  const ev = [
+    [56, "Ganesh Puja", "10:00 am", "Agarwal Niwas, C-Scheme, Jaipur"],
+    [57, "Mayra", "11:00 am", "Agarwal Niwas, C-Scheme, Jaipur"],
+    [58, "Pithi & Mehendi", "4:00 pm", "The Heritage Lawns, Jaipur"],
+    [59, "Mahila Sangeet", "7:30 pm", "The Heritage Lawns, Jaipur"],
+    [60, "Baraat & Phere", "7:30 pm", "Royal Palace Gardens, Jaipur"],
+    [61, "Reception", "8:00 pm", "Royal Palace Gardens, Jaipur"],
+  ];
+  $("#dv-events").innerHTML = ev.map(([n, name, time, venue]) => { const d = day(n); return `<div class="dv-ev"><div class="d"><b>${d.getDate()}</b><span>${d.toLocaleDateString("en-IN", { month: "short" })}</span></div>
+    <div><h3>${name}</h3><p>${d.toLocaleDateString("en-IN", { weekday: "long" })} · ${time}<br>${venue}</p><a href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent("Jaipur, Rajasthan")}" target="_blank" rel="noopener">Open in Google Maps →</a></div></div>`; }).join("");
+  const tick = () => {
+    let t = Math.max(0, wedding - new Date());
+    const u = { d: 864e5, h: 36e5, m: 6e4, s: 1e3 };
+    for (const k of ["d", "h", "m", "s"]) { const v = Math.floor(t / u[k]); t -= v * u[k]; $(`[data-u=${k}]`).textContent = v; }
+  };
+  tick(); setInterval(tick, 1000);
+  $("#dv-designs").innerHTML = all.map((i) => `<a href="demo.html?design=${i.slug}" aria-current="${i.slug === inv.slug}"><img src="${IMG(i.image)}" alt="" loading="lazy">${esc(i.name)}</a>`).join("");
+  $("#dv-rsvp").addEventListener("submit", (e) => {
+    e.preventDefault(); if (!validate(e.target)) return;
+    e.target.outerHTML = `<div class="notice ok">This is a demo, so nothing was sent. On your real invitation, RSVPs reach you instantly with the guest count.</div>`;
+  });
+  const link = location.href;
+  $("#dv-share").onclick = () => window.open(waHref(`Look at this wedding invitation by BFI: ${link}`).replace(`wa.me/${CFG.whatsapp}`, "wa.me/"), "_blank", "noopener");
+  $("#dv-copy").onclick = async () => { try { await navigator.clipboard.writeText(link); toast("Link copied"); } catch { toast(link); } };
+};
+
+/* ---------- guide: copy wording ---------- */
+pages.guide = () => {
+  $$("[data-copy]").forEach((b) => (b.onclick = async () => {
+    const text = b.previousElementSibling.innerText.trim();
+    try { await navigator.clipboard.writeText(text); toast("Wording copied"); } catch { toast("Select the text to copy it"); }
+  }));
 };
 
 /* ---------- WhatsApp glyph (brand mark, used only on WhatsApp buttons) ---------- */
@@ -573,5 +626,5 @@ var WA_SVG = '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><p
   }
   initChrome();
   const page = document.body.dataset.page;
-  try { await pages[page]?.(); } catch (e) { console.error(e); }
+  try { page.startsWith("design-") ? initDesignPage() : await pages[page]?.(); } catch (e) { console.error(e); }
 })();

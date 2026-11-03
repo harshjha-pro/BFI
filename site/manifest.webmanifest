@@ -2,6 +2,7 @@
   "name": "BFI · Marwari Invitations",
   "short_name": "BFI",
   "description": "Premium digital wedding invitations for Marwari families.",
+  "id": "/",
   "start_url": "index.html",
   "scope": "./",
   "display": "standalone",

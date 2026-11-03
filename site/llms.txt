@@ -1,0 +1,26 @@
+# BFI · Marwari Invitations
+
+> Studio in Jaipur, Rajasthan, India that designs premium digital wedding invitations only for Marwari families. Each invitation is a mobile website with the couple's and families' names, every function (Ganesh puja, Mayra, Pithi/Haldi, Mehendi, Mahila Sangeet, Baraat, Phere, Reception) with date, time and Google Maps, music, photo gallery, RSVP and a QR code, shared on WhatsApp.
+
+## Key facts
+- Packages: Basic from ₹3,999 (ready in 24 hours), Premium from ₹6,999 (48 hours), Luxury from ₹11,999 (72 hours).
+- Payment: 50% to start, 50% after the customer approves the invitation. UPI or bank transfer.
+- Languages: English, Hindi, Marwari + Hindi, bilingual.
+- One free round of changes; spelling fixes always free. Links stay live at least 6 months after the wedding.
+- Contact: WhatsApp/phone +91 89495 09745, email myselfhkjha@gmail.com, 10am – 8pm, all days.
+
+## Pages
+- [Invitation designs](https://bfi-royal-heritage.vercel.app/invitations.html): Royal, Traditional, Elegant and Modern collections
+- [Pricing](https://bfi-royal-heritage.vercel.app/pricing.html): packages and feature comparison
+- [How it works](https://bfi-royal-heritage.vercel.app/how-it-works.html): choose, share details, preview and approve, share
+- [Live demo](https://bfi-royal-heritage.vercel.app/demo.html): a sample invitation as guests see it
+- [Marwari wedding guide](https://bfi-royal-heritage.vercel.app/guide.html): rituals in order, invitation wording in Hindi and English, send-out checklist
+- [About](https://bfi-royal-heritage.vercel.app/about.html) · [Contact](https://bfi-royal-heritage.vercel.app/contact.html)
+- [Rajwada Royale](https://bfi-royal-heritage.vercel.app/design-rajwada-royale.html): Royal collection, from ₹11,999
+- [Gulmohar Classic](https://bfi-royal-heritage.vercel.app/design-gulmohar-classic.html): Traditional collection, from ₹6,999
+- [Gulabi Bagh](https://bfi-royal-heritage.vercel.app/design-gulabi-bagh.html): Elegant collection, from ₹6,999
+- [Mor Pankh](https://bfi-royal-heritage.vercel.app/design-mor-pankh.html): Modern collection, from ₹7,999
+- [Neel Mahal](https://bfi-royal-heritage.vercel.app/design-neel-mahal.html): Royal collection, from ₹11,999
+- [Gajraj Swagat](https://bfi-royal-heritage.vercel.app/design-gajraj-swagat.html): Traditional collection, from ₹3,999
+- [Sheesh Mahal](https://bfi-royal-heritage.vercel.app/design-sheesh-mahal.html): Royal collection, from ₹14,999
+- [Chhatri](https://bfi-royal-heritage.vercel.app/design-chhatri.html): Elegant collection, from ₹3,999
