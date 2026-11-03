@@ -40,6 +40,8 @@ Same content and logo, four different design directions. Compare them in [`desig
 
 Mobile versions: `design/screens/mobile/concept-*.jpg`. Regenerate with `python3 design/build_concepts.py`.
 
+**Single-file versions** (logo and scripts embedded; open anywhere, share by WhatsApp or email): [`design/concepts/standalone/`](design/concepts/standalone).
+
 ## Mockups (Royal Marwari, all pages)
 
 **Homepage** — desktop and mobile
