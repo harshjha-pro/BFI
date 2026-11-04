@@ -938,3 +938,26 @@ body[data-theme=gulmohar-classic] .dv-scroll,body[data-theme=gulabi-bagh] .dv-sc
 .next-steps{margin:18px 0 0;padding-left:20px;display:grid;gap:10px}
 .next-steps b{color:var(--brown)}
 .card-acts{margin-top:auto;padding-top:8px}.card-body .card-meta{margin-top:4px}
+
+/* v11: real work */
+.work-phones{display:flex;justify-content:center;align-items:flex-end;gap:0;padding:10px 0}
+.work-phones img{width:31%;max-width:170px;border-radius:22px;border:6px solid #2A1C17;box-shadow:var(--lift);background:#2A1C17;aspect-ratio:540/1168;object-fit:cover}
+.work-phones img:nth-child(1){transform:rotate(-6deg) translate(18px,10px)}
+.work-phones img:nth-child(2){position:relative;z-index:2;width:36%;max-width:200px}
+.work-phones img:nth-child(3){transform:rotate(6deg) translate(-18px,10px)}
+.work-card{display:grid;gap:22px;align-items:center;background:var(--paper);border:1px solid var(--gold);border-radius:var(--r-lg);padding:20px;box-shadow:var(--shadow)}
+@media(min-width:860px){.work-card{grid-template-columns:1fr 1fr;padding:30px}}
+.work-card h3 a{color:var(--maroon);text-decoration:none}
+.demo-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+@media(min-width:760px){.demo-grid{grid-template-columns:repeat(4,1fr);gap:18px}}
+.demo-tile{position:relative;display:block;border-radius:var(--r-md);overflow:hidden;aspect-ratio:2/3;text-decoration:none;box-shadow:var(--shadow)}
+.demo-tile img{width:100%;height:100%;object-fit:cover;transition:transform .5s}
+.demo-tile:hover img{transform:scale(1.05)}
+.demo-tile span{position:absolute;left:0;right:0;bottom:0;padding:30px 12px 12px;background:linear-gradient(transparent,rgba(30,10,14,.85));color:#F6E6C2;font-size:13px}
+.demo-tile b{display:block;font:600 19px var(--serif);color:#fff}
+.case-gallery{display:flex;gap:16px;overflow-x:auto;padding:24px 4px 12px;scroll-snap-type:x mandatory}
+.case-gallery figure{flex:0 0 min(62vw,240px);margin:0;scroll-snap-align:start}
+.case-gallery img{width:100%;border-radius:24px;border:7px solid #2A1C17;box-shadow:var(--shadow);aspect-ratio:540/1168;object-fit:cover;background:#2A1C17}
+.case-gallery figcaption{font-size:13px;color:var(--muted);margin-top:8px}
+.work-home,.work-card{overflow:hidden}
+.case-gallery img,.work-phones img{height:auto}

@@ -11,7 +11,7 @@ from html import escape
 from pathlib import Path
 
 OUT = Path(__file__).resolve().parent.parent / "site"
-V = "20261104f"  # bump to bust browser caches for css/js
+V = "20261104g"  # bump to bust browser caches for css/js
 BASE = "https://bfi-royal-heritage.vercel.app"
 IMGBASE = "https://oaosapkkzoynaqpnmvrj.supabase.co/storage/v1/object/public/site/"
 BIZ = {
@@ -76,6 +76,22 @@ def invite_text(inv, full=True, names=("Priya", "Rohan"), date="Saturday, 14 Feb
             f'<span class="it-rule"></span><span class="it-date">{date}</span><span class="it-ven">{venue}</span></div>')
 inr = lambda n: "₹" + format(n, ",d").replace(",", ",")  # 11,999 style (fine below 1 lakh)
 
+WORK = [dict(
+    slug="mahi-ayush", title="Mahi & Ayush", kind="Engagement invitation website", place="Chittorgarh, Rajasthan", when="November 2026",
+    live="https://mahi-ayush.vercel.app/",
+    summary="A soft, storybook-style engagement invitation with an illustrated opening, family blessings and a scroll-through celebration.",
+    shots=[("mahi-ayush-1-opening", "Opening screen: an illustrated dove with a sealed scroll, 'Tap anywhere to begin'"),
+           ("mahi-ayush-2-welcome", "Welcome page with the Shri Ganeshaya Namah blessing and an illustrated portrait"),
+           ("mahi-ayush-3-programme", "The programme: date and three functions with timings"),
+           ("mahi-ayush-4-storybook", "An interactive storybook: 'The Story Behind the Yes'"),
+           ("mahi-ayush-5-closing", "Closing page with the couple's monogram and WhatsApp sharing")],
+    features=["Illustrated opening with a dove and sealed scroll; sound on or skip", "Blessings: ॥ श्री गणेशाय नमः ॥ and ॥ राधे कृष्ण ॥",
+              "Scroll-animated illustrated story and handwritten-style headings", "Our story and a memories gallery",
+              "Programme: welcome breakfast, ring ceremony and lunch with timings", "Live countdown to the ceremony",
+              "Venue map with one-tap directions and copy address", "Interactive storybook, 'The Story Behind the Yes'",
+              "Background music with a play / pause control", "Custom monogram, WhatsApp sharing, copy link and a link-preview card"],
+    design="Blush blossoms, ivory paper and fine gold line ornaments, with script names and serif details: calm and romantic rather than heavy and ornate.")]
+
 PACKAGES = [
     ("Basic", 3999, "24 hours", "For simple, elegant invitations shared quickly.",
      ["1 design from the Basic collection", "Couple and both families' names", "Up to 3 events with Google Maps", "English, Hindi or bilingual",
@@ -132,7 +148,7 @@ I = {
 }
 ORN = f'<div class="orn" aria-hidden="true">{icon(I["lotus"])}</div>'
 
-NAV = [("index", "Home"), ("invitations", "Invitations"), ("pricing", "Pricing"), ("how-it-works", "How It Works"),
+NAV = [("invitations", "Invitations"), ("work", "Our Work"), ("pricing", "Pricing"), ("how-it-works", "How It Works"),
        ("free-cards", "Free Cards"), ("contact", "Contact")]
 
 
@@ -163,7 +179,7 @@ ORG_LD = {
 
 def header(active):
     links = "".join(f'<a href="{k}.html"{" aria-current=page" if k == active else ""}>{t}</a>' for k, t in NAV)
-    mlinks = "".join(f'<a href="{k}.html">{t}</a>' for k, t in NAV) + '<a href="about.html">About</a><a href="customize.html">Customize</a><a href="guide.html">Wedding Guide</a><a href="faq.html">FAQ</a>'
+    mlinks = '<a href="index.html">Home</a>' + "".join(f'<a href="{k}.html">{t}</a>' for k, t in NAV) + '<a href="about.html">About</a><a href="customize.html">Customize</a><a href="guide.html">Wedding Guide</a><a href="faq.html">FAQ</a>'
     return f'''<a class="skip" href="#main">Skip to content</a>
 <header class="hdr"><div class="wrap hdr-in">
   <a class="brand" href="index.html"><img src="img/logo-sm.webp" alt="BFI Marwari Invitations, home" width="200" height="174"></a>
@@ -187,7 +203,7 @@ def footer():
   <div class="ftr-grid">
     <div><a class="ftr-plaque" href="index.html"><img src="img/logo.webp" alt="BFI Marwari Invitations" width="431" height="374" loading="lazy"></a><p style="margin-top:10px;max-width:280px">Premium digital wedding invitations for Marwari families, crafted with tradition and shared with love.</p>
       <a class="btn btn-sm btn-gold" style="margin-top:14px" href="bfi-contact.vcf" download>{icon(I["download"])} Save our contact</a></div>
-    <div><h4>Invitations</h4><ul><li><a href="invitations.html">All designs</a></li><li><a href="invitations.html?c=royal">Royal collection</a></li><li><a href="invitations.html?c=traditional">Traditional collection</a></li><li><a href="invitations.html?c=elegant">Elegant collection</a></li><li><a href="invitations.html?c=modern">Modern collection</a></li><li><a href="demo.html">See a live demo</a></li></ul></div>
+    <div><h4>Invitations</h4><ul><li><a href="invitations.html">All designs</a></li><li><a href="invitations.html?c=royal">Royal collection</a></li><li><a href="invitations.html?c=traditional">Traditional collection</a></li><li><a href="invitations.html?c=elegant">Elegant collection</a></li><li><a href="invitations.html?c=modern">Modern collection</a></li><li><a href="demo.html">See a live demo</a></li><li><a href="work.html">Our work</a></li></ul></div>
     <div><h4>Studio</h4><ul><li><a href="pricing.html">Pricing</a></li><li><a href="how-it-works.html">How it works</a></li><li><a href="customize.html">Customize an invitation</a></li><li><a href="guide.html">Marwari wedding guide</a></li><li><a href="faq.html">FAQ</a></li><li><a href="free-cards.html">Free card maker</a></li><li><a href="about.html">About BFI</a></li><li><a href="login.html">My account</a></li></ul></div>
     <div><h4>Contact</h4><ul><li><a data-wa>WhatsApp {BIZ["phone"]}</a></li><li><a href="tel:{BIZ["tel"]}">Call {BIZ["phone"]}</a></li><li><a href="mailto:{BIZ["email"]}">{BIZ["email"]}</a></li><li>{BIZ["city"]}, {BIZ["region"]}, India</li><li>{BIZ["hours"]}</li></ul></div>
   </div>
@@ -330,6 +346,14 @@ HOME = f'''
     <p class="lead" style="margin:12px auto 0">Open any live demo on your phone: that is exactly what your guests will see.</p></div>
   <div class="grid-inv" id="featured">{"".join(card(next(i for i in CATALOG if i["slug"] == s_)) for s_ in FEATURED)}</div>
   <div class="center" style="margin-top:30px"><a class="btn btn-primary" href="invitations.html">See all 8 designs {icon(I["arrow"])}</a></div>
+</div></section>
+
+<section class="sec sec-tint work-home"><div class="wrap split">
+  <div class="work-phones">{"".join(f'<img src="img/work/{n}.webp" alt="{a}" width="540" height="1168" loading="lazy">' for n, a in WORK[0]["shots"][:3])}</div>
+  <div><p class="eyebrow">Recent work · a real BFI project</p><h2 style="margin-top:8px">{WORK[0]["title"]}: {WORK[0]["kind"]}</h2>
+    <p class="muted" style="margin-top:6px">{WORK[0]["place"]} · {WORK[0]["when"]}</p>
+    <p class="lead" style="margin-top:12px">{WORK[0]["summary"]}</p>
+    <div class="row" style="margin-top:20px"><a class="btn btn-primary" href="work-mahi-ayush.html">See the project {icon(I["arrow"])}</a><a class="btn btn-ghost" href="{WORK[0]["live"]}" target="_blank" rel="noopener" data-track="work_live_open">Open the live invitation ↗</a></div></div>
 </div></section>
 
 <section class="why"><div class="why-grid">
@@ -784,7 +808,8 @@ ABOUT = f'''
     <img class="wide-img" style="margin-top:22px" data-img="about-studio-desk.jpg" alt="Designer's desk with invitation sketches, gold pen and colour swatches" loading="lazy" width="1200" height="800"></div>
   <div><p class="eyebrow">Our heritage</p><h2 style="margin-top:8px">Inspired by Rajasthan</h2>
     <p class="lead" style="margin-top:14px">Shekhawati havelis, jharokha windows, royal elephants, peacocks and the colours of Gangaur: our designs carry the same craft, made for the screens your family uses every day.</p>
-    <a class="guide-teaser" href="guide.html" style="margin-top:20px">{icon(I["book"])}<span><b>Read our Marwari Wedding Guide</b><br><small>Rituals in order and invitation wording in Hindi &amp; English.</small></span></a></div>
+    <a class="guide-teaser" href="work-mahi-ayush.html" style="margin-top:20px">{icon(I["image"])}<span><b>See a real project: Mahi &amp; Ayush</b><br><small>An engagement invitation we made for a family in Chittorgarh.</small></span></a>
+    <a class="guide-teaser" href="guide.html" style="margin-top:12px">{icon(I["book"])}<span><b>Read our Marwari Wedding Guide</b><br><small>Rituals in order and invitation wording in Hindi &amp; English.</small></span></a></div>
 </div></section>
 <section class="sec"><div class="wrap">
   <div class="sec-head center"><h2>What We Stand For</h2>{ORN}</div>
@@ -952,6 +977,56 @@ page("faq", "FAQ: Digital Marwari Wedding Invitations, Kankotri, RSVP & Pricing 
      "Answers about digital Marwari wedding invitations: what a kankotri includes, Mayra and Pithi, Hindi wording, RSVP, WhatsApp sharing, maps, delivery time, link validity and payment.",
      FAQ_BODY, None, ld=[faq_ld(FAQ_ALL)])
 
+
+# ---------------- Our work (real projects + labelled design demos) ----------------
+w = WORK[0]
+WORK_BODY = f"""
+<section class="phead"><div class="wrap"><h1>Our Work</h1><p class="lead">Real invitations we've made for families, and live demos of every design in our collection.</p></div></section>
+<section class="sec" style="padding-top:36px"><div class="wrap">
+  <div class="sec-head"><p class="eyebrow">Client projects</p><h2 style="margin-top:6px">Real invitations</h2></div>
+  <article class="work-card">
+    <a class="work-phones" href="work-mahi-ayush.html">{"".join(f'<img src="img/work/{n}.webp" alt="{a}" width="540" height="1168" loading="lazy">' for n, a in w["shots"][:3])}</a>
+    <div><span class="tag">{w["kind"]}</span><h3 style="font-size:30px;margin-top:8px"><a href="work-mahi-ayush.html">{w["title"]}</a></h3>
+      <p class="muted">{w["place"]} · {w["when"]}</p><p style="margin-top:10px">{w["summary"]}</p>
+      <div class="row" style="margin-top:16px"><a class="btn btn-primary btn-sm" href="work-mahi-ayush.html">Read the project</a><a class="btn btn-ghost btn-sm" href="{w["live"]}" target="_blank" rel="noopener" data-track="work_live_open">Open live ↗</a></div></div>
+  </article>
+  <p class="muted" style="margin-top:16px;font-size:14px">More client projects will appear here as families allow us to share them.</p>
+</div></section>
+<section class="sec sec-tint"><div class="wrap">
+  <div class="sec-head"><p class="eyebrow">Design demos</p><h2 style="margin-top:6px">Every design, live</h2><p class="lead" style="margin-top:8px">Sample invitations with fictional couples, so you can try each design on your phone.</p></div>
+  <div class="demo-grid">{"".join(f'<a class="demo-tile" href="demo.html?design={i["slug"]}"><img src="{IMGBASE}{i["image"]}" alt="{i["name"]} demo" loading="lazy" width="360" height="540"><span><b>{i["name"]}</b>Open demo →</span></a>' for i in CATALOG)}</div>
+</div></section>
+<section class="cta-band"><div class="wrap center"><h2>Want an invitation like these?</h2><p>Tell us about your wedding or engagement and we'll suggest a design.</p>
+  <div class="row" style="justify-content:center;margin-top:18px"><a class="btn btn-gold" href="customize.html">Start customizing</a><a class="btn btn-wa" data-wa="Namaste BFI 🙏 I saw your work and would like an invitation like this.">{WA} Chat on WhatsApp</a></div></div></section>"""
+page("work", "Our Work: Real Wedding & Engagement Invitation Websites | BFI",
+     "Real invitation websites made by BFI, including Mahi & Ayush's engagement invitation, plus live demos of every design.",
+     WORK_BODY, "work", ld=[{"@context": "https://schema.org", "@type": "CollectionPage", "name": "BFI work", "url": BASE + "/work.html",
+     "hasPart": [{"@type": "CreativeWork", "name": f"{w['title']}: {w['kind']}", "url": BASE + "/work-mahi-ayush.html"}]}])
+
+CASE = f"""
+<section class="sec" style="padding-top:22px"><div class="wrap">
+  <p class="crumbs"><a href="work.html">Our Work</a> › <span aria-current="page">{w["title"]}</span></p>
+  <div class="case-head">
+    <div><p class="eyebrow">Client project · {w["kind"]}</p><h1 style="margin-top:8px">{w["title"]}</h1>
+      <p class="muted" style="margin-top:6px">{w["place"]} · {w["when"]} · Custom design</p>
+      <p class="lead" style="margin-top:14px">{w["summary"]}</p>
+      <div class="row" style="margin-top:20px"><a class="btn btn-primary" href="{w["live"]}" target="_blank" rel="noopener" data-track="work_live_open">Open the live invitation ↗</a><a class="btn btn-ghost" href="work.html">All work</a></div>
+      <p class="muted" style="font-size:13px;margin-top:10px">Best viewed on a phone.</p></div>
+  </div>
+  <div class="case-gallery">{"".join(f'<figure><img src="img/work/{n}.webp" alt="{a}" width="540" height="1168" loading="lazy"><figcaption>{a}</figcaption></figure>' for n, a in w["shots"])}</div>
+</div></section>
+<section class="sec sec-tint"><div class="wrap split" style="align-items:start">
+  <div><h2>What we built</h2><ul class="checks" style="margin-top:14px">{"".join(f"<li>{icon(I['check'])}{x}</li>" for x in w["features"])}</ul></div>
+  <div><h2>The design</h2><p class="lead" style="margin-top:14px">{w["design"]}</p>
+    <div class="panel panel-gold" style="margin-top:24px"><h3>Want something like this?</h3><p class="muted" style="margin-top:6px">Custom, storybook-style invitations like this are made on our Luxury package or as a bespoke design.</p>
+      <div class="row" style="margin-top:14px"><a class="btn btn-primary" href="customize.html">Start customizing</a><a class="btn btn-wa" data-wa="Namaste BFI 🙏 I saw the Mahi & Ayush invitation and would like something similar.">{WA} Ask on WhatsApp</a></div></div></div>
+</div></section>"""
+page("work-mahi-ayush", "Mahi & Ayush: Engagement Invitation Website, Chittorgarh | BFI Work",
+     "A storybook-style engagement invitation website by BFI for Mahi & Ayush in Chittorgarh: illustrated opening, blessings, programme, countdown, venue directions, music and WhatsApp sharing.",
+     CASE, "work", og_image=BASE + "/img/work/mahi-ayush-2-welcome.webp",
+     ld=[{"@context": "https://schema.org", "@type": "CreativeWork", "name": f"{w['title']}: {w['kind']}", "url": BASE + "/work-mahi-ayush.html",
+          "creator": {"@id": BASE + "/#business"}, "about": "Engagement invitation website", "locationCreated": w["place"], "image": BASE + "/img/work/mahi-ayush-2-welcome.webp"}])
+
 # ---------------- Free digital card maker (any occasion) ----------------
 FREE_FAQ = [
     ("Is the card maker really free?", "Yes. Choose a template, type your details and download the card as an image or share it on WhatsApp. No sign-up and no watermark on your text."),
@@ -1021,7 +1096,7 @@ page("free-cards", "Free Invitation Card Maker: 16 Templates, PNG, JPG & PDF | B
      "provider": {"@id": BASE + "/#business"}}])
 
 # ---------------- robots, sitemap, llms.txt, vCard ----------------
-PUBLIC = ["", "invitations.html", "pricing.html", "how-it-works.html", "demo.html", "guide.html", "free-cards.html", "faq.html", "about.html", "contact.html", "customize.html",
+PUBLIC = ["", "invitations.html", "pricing.html", "how-it-works.html", "demo.html", "work.html", "work-mahi-ayush.html", "guide.html", "free-cards.html", "faq.html", "about.html", "contact.html", "customize.html",
           "privacy.html", "terms.html"] + [f"design-{i['slug']}.html" for i in CATALOG]
 (OUT / "robots.txt").write_text(f"User-agent: *\nAllow: /\nDisallow: /account.html\nDisallow: /login.html\n\nSitemap: {BASE}/sitemap.xml\n")
 (OUT / "sitemap.xml").write_text('<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n' +
@@ -1043,6 +1118,7 @@ PUBLIC = ["", "invitations.html", "pricing.html", "how-it-works.html", "demo.htm
 - [How it works]({BASE}/how-it-works.html): choose, share details, preview and approve, share
 - [Live demo]({BASE}/demo.html): a sample invitation as guests see it
 - [Marwari wedding guide]({BASE}/guide.html): rituals in order, invitation wording in Hindi and English, send-out checklist
+- [Our work]({BASE}/work.html): real client projects, e.g. [Mahi & Ayush engagement invitation, Chittorgarh]({BASE}/work-mahi-ayush.html)
 - [FAQ]({BASE}/faq.html): kankotri, Mayra and Pithi, Hindi wording, RSVP, WhatsApp sharing, delivery, link validity, payment and revisions
 - [Free card maker]({BASE}/free-cards.html): 16 free templates (wedding, save the date, Sagai, anniversary, birthdays, Godh Bharai, Naamkaran, Mundan, Griha Pravesh, puja, Diwali, Holi, Teej/Gangaur, retirement, prayer meet); download PNG, JPG or PDF
 - [About]({BASE}/about.html) · [Contact]({BASE}/contact.html)
