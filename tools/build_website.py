@@ -12,7 +12,7 @@ from html import escape
 from pathlib import Path
 
 OUT = Path(__file__).resolve().parent.parent / "site"
-V = "20261104h"  # bump to bust browser caches for css/js
+V = "20261104i"  # bump to bust browser caches for css/js
 BASE = "https://bfi-royal-heritage.vercel.app"
 IMGBASE = "https://oaosapkkzoynaqpnmvrj.supabase.co/storage/v1/object/public/site/"
 BIZ = {
@@ -232,17 +232,65 @@ ARCH_SVG = ('<svg class="phero-svg" viewBox="0 0 240 260" aria-hidden="true"><g 
             '<path d="M84 200h72M96 212h48" opacity=".7"/></g></svg>')
 
 
+def hero_parts(slug):
+    """Each page gets its own hero design: (variant, extra copy, art html, section style)."""
+    I_ = lambda n: IMGBASE + n
+    if slug == "invitations":
+        art = ('<div class="fan">' + "".join(f'<img class="f{k}" src="{I_(n)}" alt="{a}" width="360" height="540">' for k, (n, a) in enumerate(
+            [("inv-mor-pankh.jpg", "Mor Pankh invitation"), ("inv-rajwada-royale.jpg", "Rajwada Royale invitation"), ("inv-gulabi-bagh.jpg", "Gulabi Bagh invitation")]))
+            + f'<span class="fan-badge"><b>8</b> designs<br>from {inr(3999)}</span></div>')
+        extra = '<div class="row hero-mini"><a class="btn btn-primary" href="#grid">Browse designs</a><a class="btn btn-ghost" href="demo.html">Open a live demo</a></div>'
+        return "fan", extra, art, ""
+    if slug == "pricing":
+        art = ('<ul class="tags">' + "".join(f'<li style="--i:{k}"><span>{n}</span><b>{inr(pr)}</b><small>{d}</small></li>' for k, (n, pr, d, *_r) in enumerate(PACKAGES)) + '</ul>')
+        return "banner", "", art, f' style="--bg:url({I_("hero-pricing.jpg")})"'
+    if slug == "how-it-works":
+        steps = ["Choose", "Share details", "Preview", "Share"]
+        art = (f'<div class="pathstrip"><img src="{I_("hero-how-it-works.jpg")}" alt="A sketch, a phone with the finished invitation and a sealed envelope" width="1100" height="825">'
+               '<svg viewBox="0 0 100 20" preserveAspectRatio="none" aria-hidden="true"><path d="M6 14 C 25 2, 35 18, 50 10 S 75 2, 94 12"/></svg>'
+               + "".join(f'<span class="ps" style="--i:{k};left:{[8, 34, 60, 88][k]}%"><b>{k + 1}</b>{t}</span>' for k, t in enumerate(steps)) + '</div>')
+        return "path", "", art, ""
+    if slug == "customize":
+        art = (f'<div class="circ"><svg class="mandala" viewBox="0 0 200 200" aria-hidden="true">' + "".join(f'<ellipse cx="100" cy="22" rx="7" ry="20" transform="rotate({k * 22.5} 100 100)"/>' for k in range(16)) +
+               '<circle cx="100" cy="100" r="94"/><circle cx="100" cy="100" r="86" stroke-dasharray="2 6"/></svg>'
+               f'<img src="{I_("hero-customize.jpg")}" alt="A hand with mehendi writing on an invitation with a gold pen" width="1100" height="825">'
+               '<div class="mini-inv"><small>॥ शुभ विवाह ॥</small><b class="typer" data-names="Priya weds Rohan|Ananya weds Vikram|Meera weds Arjun|Your names here">Priya weds Rohan</b><span>Live preview as you type</span></div></div>')
+        return "circle", "", art, ""
+    if slug == "faq":
+        chat = [("q", "Can the invitation be in Hindi?"), ("a", "Yes! Hindi, English, Marwari + Hindi or bilingual."), ("q", "Can we add Mayra and Pithi?"), ("a", "Of course: every function, with its own map."), ("q", "When do we pay the rest?"), ("a", "Only after you approve the preview 🙏")]
+        art = (f'<div class="chatwrap"><img src="{I_("hero-faq.jpg")}" alt="A grandmother and granddaughter chatting over chai at a jharokha window" width="1100" height="825">'
+               '<div class="chat">' + "".join(f'<p class="b {w}" style="--i:{k}">{t}</p>' for k, (w, t) in enumerate(chat)) + '</div></div>')
+        return "chat", "", art, ""
+    if slug == "work":
+        art = ('<div class="float-phone"><img src="img/work/mahi-ayush-2-welcome.webp" alt="Mahi & Ayush invitation welcome page" width="540" height="1168"><span>Real client project</span></div>')
+        return "gallery", "", art, f' style="--bg:url({I_("hero-work.jpg")})"'
+    if slug == "guide":
+        return "scroll", "", "", f' style="--bg:url({I_("hero-guide.jpg")})"'
+    if slug == "free-cards":
+        cards = ["birthday-kids", "diwali", "griha-pravesh", "godh-bharai", "holi", "wedding"]
+        art = ('<div class="stack" data-stack>' + "".join(f'<img class="s{k} p{k}" src="{I_("tpl-" + c + ".jpg")}" alt="{c.replace("-", " ").title()} card template" width="360" height="540" loading="{"eager" if k < 3 else "lazy"}">' for k, c in enumerate(cards))
+               + '</div>')
+        extra = '<ul class="hero-chips"><li>16 templates</li><li>PNG · JPG · PDF</li><li>No sign-up</li></ul><div class="row hero-mini"><a class="btn btn-primary" href="#tpl-grid">Start making a card</a></div>'
+        return "stack", extra, art, ""
+    if slug == "contact":
+        art = (f'<div class="postcard"><img src="{I_("contact-studio.jpg")}" alt="The BFI studio: a desk by a jharokha window overlooking Jaipur" width="1100" height="733">'
+               '<span class="stamp"><img src="img/icon-192.png" alt="" width="64" height="64"></span><span class="postmark">JAIPUR<br>RAJASTHAN</span>'
+               '<span class="cchip c1"><i></i>Usually replies within an hour</span><span class="cchip c2">10am – 8pm, all days</span></div>')
+        return "postcard", "", art, ""
+    word = {"privacy": "PRIVACY", "terms": "TERMS", "account": "ACCOUNT"}.get(slug, "BFI")
+    art = (f'<div class="seal"><svg viewBox="0 0 200 200" aria-hidden="true"><defs><path id="ring-{slug}" d="M100 100 m-74 0 a74 74 0 1 1 148 0 a74 74 0 1 1 -148 0"/></defs>'
+           f'<text><textPath href="#ring-{slug}">BFI · MARWARI INVITATIONS · {word} · TRUST · </textPath></text></svg><img src="img/logo-sm.webp" alt="" width="200" height="174"></div>')
+    return "seal", "", art, ""
+
+
 def with_hero(slug, body):
     m = re.search(r'<section class="phead"[^>]*><div class="wrap">(.*?)</div></section>', body, re.S)
     if not m:
         return body
-    if slug in HERO:
-        img, alt = HERO[slug]
-        art = f'<div class="phero-art"><img src="{IMGBASE}{img}" alt="{alt}" width="1100" height="825" fetchpriority="high"></div>'
-    else:
-        art = f'<div class="phero-art phero-art-svg">{ARCH_SVG}</div>'
-    hero = f'<section class="phero"><div class="wrap phero-grid"><div class="phero-copy">{m.group(1)}</div>{art}</div></section>'
+    variant, extra, art, style = hero_parts(slug)
+    hero = f'<section class="phero h-{variant}"{style}><div class="wrap phero-grid"><div class="phero-copy">{m.group(1)}{extra}</div>{art}</div></section>'
     return body[:m.start()] + hero + body[m.end():]
+
 
 def page(slug, title, desc, body, active=None, bar=True, ld=None, index=True, og_image=None, chrome=True, path=None):
     body = with_hero(slug, body)

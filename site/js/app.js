@@ -190,6 +190,20 @@ function initChrome() {
     const sib = [...el.parentElement.children].filter((x) => x.matches(sel.split(" > ").pop()));
     el.classList.add("reveal"); el.style.setProperty("--d", Math.min(sib.indexOf(el), 6) * 0.08 + "s"); });
   const io = "IntersectionObserver" in window && new IntersectionObserver((es) => es.forEach((e) => { if (e.isIntersecting) { e.target.classList.add("in"); io.unobserve(e.target); } }), { rootMargin: "0px 0px -6% 0px" });
+  // hero motion: typing names (Customize) and the shuffling card stack (Free Cards)
+  const still = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const typer = $(".typer");
+  if (typer && !still && !typer.dataset.on) {
+    typer.dataset.on = 1; const names = typer.dataset.names.split("|"); let n = 0, i = names[0].length, del = true;
+    const step = () => { const w = names[n]; if (del) { i--; if (i <= 0) { del = false; n = (n + 1) % names.length; } } else { i++; if (i >= names[n].length) { del = true; typer.textContent = names[n]; return setTimeout(step, 1800); } }
+      typer.textContent = names[n].slice(0, Math.max(i, 0)) || "\u00a0"; setTimeout(step, del ? 45 : 85); };
+    setTimeout(step, 2200);
+  }
+  const stack = $("[data-stack]");
+  if (stack && !still && !stack.dataset.on) {
+    stack.dataset.on = 1; const imgs = [...stack.children]; let off = 0;
+    setInterval(() => { if (document.hidden) return; off = (off + 1) % imgs.length; imgs.forEach((im, k) => { im.className = im.className.replace(/\bp\d\b/, "p" + ((k - off + imgs.length) % imgs.length)); }); }, 2600);
+  }
   $$(".reveal").forEach((el) => (io ? io.observe(el) : el.classList.add("in")));
   renderAuthSlot();
 }
