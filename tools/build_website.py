@@ -12,7 +12,7 @@ from html import escape
 from pathlib import Path
 
 OUT = Path(__file__).resolve().parent.parent / "site"
-V = "20261104i"  # bump to bust browser caches for css/js
+V = "20261105a"  # bump to bust browser caches for css/js
 BASE = "https://bfi-royal-heritage.vercel.app"
 IMGBASE = "https://oaosapkkzoynaqpnmvrj.supabase.co/storage/v1/object/public/site/"
 BIZ = {
@@ -149,7 +149,7 @@ I = {
 }
 ORN = f'<div class="orn" aria-hidden="true">{icon(I["lotus"])}</div>'
 
-NAV = [("invitations", "Invitations"), ("work", "Our Work"), ("pricing", "Pricing"), ("how-it-works", "How It Works"),
+NAV = [("invitations", "Invitations"), ("features", "Features"), ("work", "Our Work"), ("pricing", "Pricing"), ("how-it-works", "How It Works"),
        ("free-cards", "Free Cards"), ("contact", "Contact")]
 
 
@@ -180,7 +180,7 @@ ORG_LD = {
 
 def header(active):
     links = "".join(f'<a href="{k}.html"{" aria-current=page" if k == active else ""}>{t}</a>' for k, t in NAV)
-    mlinks = '<a href="index.html">Home</a>' + "".join(f'<a href="{k}.html">{t}</a>' for k, t in NAV) + '<a href="about.html">About</a><a href="customize.html">Customize</a><a href="guide.html">Wedding Guide</a><a href="faq.html">FAQ</a>'
+    mlinks = '<a href="index.html">Home</a>' + "".join(f'<a href="{k}.html">{t}</a>' for k, t in NAV) + '<a href="about.html">About</a><a href="customize.html">Customize</a><a href="resources.html">Guides &amp; Resources</a><a href="faq.html">FAQ</a><a href="partners.html">Partner with us</a>'
     return f'''<a class="skip" href="#main">Skip to content</a>
 <header class="hdr"><div class="wrap hdr-in">
   <a class="brand" href="index.html"><img src="img/logo-sm.webp" alt="BFI Marwari Invitations, home" width="200" height="174"></a>
@@ -205,7 +205,7 @@ def footer():
     <div><a class="ftr-plaque" href="index.html"><img src="img/logo.webp" alt="BFI Marwari Invitations" width="431" height="374" loading="lazy"></a><p style="margin-top:10px;max-width:280px">Premium digital wedding invitations for Marwari families, crafted with tradition and shared with love.</p>
       <a class="btn btn-sm btn-gold" style="margin-top:14px" href="bfi-contact.vcf" download>{icon(I["download"])} Save our contact</a></div>
     <div><h4>Invitations</h4><ul><li><a href="invitations.html">All designs</a></li><li><a href="invitations.html?c=royal">Royal collection</a></li><li><a href="invitations.html?c=traditional">Traditional collection</a></li><li><a href="invitations.html?c=elegant">Elegant collection</a></li><li><a href="invitations.html?c=modern">Modern collection</a></li><li><a href="demo.html">See a live demo</a></li><li><a href="work.html">Our work</a></li></ul></div>
-    <div><h4>Studio</h4><ul><li><a href="pricing.html">Pricing</a></li><li><a href="how-it-works.html">How it works</a></li><li><a href="customize.html">Customize an invitation</a></li><li><a href="guide.html">Marwari wedding guide</a></li><li><a href="faq.html">FAQ</a></li><li><a href="free-cards.html">Free card maker</a></li><li><a href="about.html">About BFI</a></li><li><a href="login.html">My account</a></li></ul></div>
+    <div><h4>Studio</h4><ul><li><a href="pricing.html">Pricing</a></li><li><a href="how-it-works.html">How it works</a></li><li><a href="customize.html">Customize an invitation</a></li><li><a href="features.html">Features</a></li><li><a href="resources.html">Guides &amp; resources</a></li><li><a href="faq.html">FAQ</a></li><li><a href="partners.html">Partner with us</a></li><li><a href="free-cards.html">Free card maker</a></li><li><a href="about.html">About BFI</a></li><li><a href="login.html">My account</a></li></ul></div>
     <div><h4>Contact</h4><ul><li><a data-wa>WhatsApp {BIZ["phone"]}</a></li><li><a href="tel:{BIZ["tel"]}">Call {BIZ["phone"]}</a></li><li><a href="mailto:{BIZ["email"]}">{BIZ["email"]}</a></li><li>{BIZ["city"]}, {BIZ["region"]}, India</li><li>{BIZ["hours"]}</li></ul></div>
   </div>
   <div class="ftr-bot"><span>© <span data-year></span> BFI · Marwari Invitations · <a href="privacy.html">Privacy</a> · <a href="terms.html">Terms</a></span><span lang="hi" style="font-family:var(--deva);color:var(--gold)">॥ शुभ विवाह ॥</span></div>
@@ -230,6 +230,10 @@ ARCH_SVG = ('<svg class="phero-svg" viewBox="0 0 240 260" aria-hidden="true"><g 
             '<path d="M14 250H226"/><path d="M120 34V16M112 20H128"/><circle cx="120" cy="12" r="3"/>'
             '<path d="M120 150c-14 0-26-6-30-18 9 0 18 3 30 12 12-9 21-12 30-12-4 12-16 18-30 18Z"/><path d="M120 146c-6-6-9-15-9-24 3 0 6 3 9 6 3-3 6-6 9-6 0 9-3 18-9 24Z"/>'
             '<path d="M84 200h72M96 212h48" opacity=".7"/></g></svg>')
+
+
+LANDING_DESIGN = {"marwari-wedding-invitation-website": "sheesh-mahal", "marwari-kankotri-online": "gulmohar-classic", "hindi-wedding-invitation": "gajraj-swagat",
+                  "wedding-invitation-website-rsvp": "neel-mahal", "rajasthani-digital-wedding-invitation": "mor-pankh"}
 
 
 def hero_parts(slug):
@@ -277,6 +281,35 @@ def hero_parts(slug):
                '<span class="stamp"><img src="img/icon-192.png" alt="" width="64" height="64"></span><span class="postmark">JAIPUR<br>RAJASTHAN</span>'
                '<span class="cchip c1"><i></i>Usually replies within an hour</span><span class="cchip c2">10am – 8pm, all days</span></div>')
         return "postcard", "", art, ""
+    if slug == "features":
+        ics = ["pin", "music", "rsvp", "qr", "globe", "image", "clock", "share"]
+        art = ('<div class="orbit"><div class="phone orbit-phone"><div class="phone-screen inv-wrap">' + f'<img src="{I_("inv-rajwada-royale.jpg")}" alt="Invitation on a phone" width="720" height="1080">' + invite_text(CATALOG[0]) + '</div></div>'
+               '<div class="ring">' + "".join(f'<span style="--a:{k * 45}deg">{icon(I[c])}</span>' for k, c in enumerate(ics)) + '</div></div>')
+        return "orbit", "", art, ""
+    if slug == "resources":
+        art = ('<div class="papers">' + "".join(f'<a class="paper p{k}" href="{u}"><small>Guide</small><b>{t}</b><span>Read →</span></a>' for k, (u, t) in enumerate(
+            [("guide.html", "Marwari wedding rituals, in order"), ("hindi-wedding-invitation.html", "Hindi invitation wording & honorifics"), ("digital-vs-printed-kankotri.html", "Digital vs printed kankotri")])) + '</div>')
+        return "papers", "", art, ""
+    if slug == "partners":
+        roles = [("users", "Wedding planners"), ("image", "Photographers"), ("pin", "Venues & hotels"), ("lotus", "Decorators")]
+        art = ('<div class="roles">' + "".join(f'<div class="role" style="--i:{k}">{icon(I[ic])}<b>{t}</b></div>' for k, (ic, t) in enumerate(roles))
+               + f'<div class="role-badge"><b>15–20%</b>referral commission</div></div>')
+        return "roles", "", art, ""
+    if slug in LANDING_DESIGN:
+        inv = next(i for i in CATALOG if i["slug"] == LANDING_DESIGN[slug])
+        art = (f'<div class="land"><div class="phone land-phone"><div class="phone-screen inv-wrap"><img src="{I_(inv["image"])}" alt="{inv["name"]} invitation" width="720" height="1080">{invite_text(inv)}</div></div>'
+               f'<a class="land-tag" href="design-{inv["slug"]}.html">Shown: {inv["name"]} →</a></div>')
+        extra = '<div class="row hero-mini"><a class="btn btn-primary" href="invitations.html">See designs</a><a class="btn btn-ghost" href="demo.html">Open live demo</a></div>'
+        return "landing", extra, art, ""
+    if slug == "digital-vs-printed-kankotri":
+        art = (f'<div class="versus"><figure class="vs-card"><img src="{I_("inv-chhatri.jpg")}" alt="A printed card" width="360" height="540"><figcaption>Printed</figcaption></figure>'
+               '<span class="vs">VS</span>'
+               f'<figure class="vs-phone"><div class="phone"><div class="phone-screen inv-wrap"><img src="{I_("inv-gulmohar-classic.jpg")}" alt="A digital invitation on a phone" width="720" height="1080">' + invite_text(CATALOG[1]) + '</div></div><figcaption>Digital</figcaption></figure></div>')
+        return "versus", "", art, ""
+    if slug == "inviting-guests-mayra-pithi-phere":
+        art = (f'<div class="ritpic"><img src="{I_("ritual-baraat.jpg")}" alt="Miniature-style painting of a baraat procession" width="1000" height="666">'
+               + "".join(f'<span class="rchip" style="--i:{k}">{t}</span>' for k, t in enumerate(["Mayra · family", "Pithi · family", "Phere · everyone"])) + '</div>')
+        return "ritpic", "", art, ""
     word = {"privacy": "PRIVACY", "terms": "TERMS", "account": "ACCOUNT"}.get(slug, "BFI")
     art = (f'<div class="seal"><svg viewBox="0 0 200 200" aria-hidden="true"><defs><path id="ring-{slug}" d="M100 100 m-74 0 a74 74 0 1 1 148 0 a74 74 0 1 1 -148 0"/></defs>'
            f'<text><textPath href="#ring-{slug}">BFI · MARWARI INVITATIONS · {word} · TRUST · </textPath></text></svg><img src="img/logo-sm.webp" alt="" width="200" height="174"></div>')
@@ -1177,8 +1210,218 @@ page("free-cards", "Free Invitation Card Maker: 16 Templates, PNG, JPG & PDF | B
      "url": BASE + "/free-cards.html", "applicationCategory": "DesignApplication", "operatingSystem": "Any", "offers": {"@type": "Offer", "price": 0, "priceCurrency": "INR"},
      "provider": {"@id": BASE + "/#business"}}])
 
+
+# ---------------- Features, resources, partners, landing pages & articles ----------------
+def section_html(sections):
+    out = []
+    for h, body in sections:
+        out.append(f'<h2>{h}</h2>{body}')
+    return "".join(out)
+
+
+def content_page(slug, title, desc, h1, lead, sections, faqs, related, extra_ld=None, cta=None, eyebrow=""):
+    body = f"""
+<section class="phead"><div class="wrap">{f'<p class="eyebrow">{eyebrow}</p>' if eyebrow else ''}<h1>{h1}</h1><p class="lead">{lead}</p></div></section>
+<article class="sec guide"><div class="wrap narrow prose">
+  {section_html(sections)}
+  {cta or f'<div class="panel panel-gold center" style="margin-top:40px"><h2 style="font-size:28px;margin:0">Ready to create yours?</h2><p class="lead" style="margin:10px auto 18px">See a live demo, then tell us your names and functions.</p><div class="row" style="justify-content:center"><a class="btn btn-primary" href="invitations.html">See designs</a><a class="btn btn-ghost" href="demo.html">Open live demo</a><a class="btn btn-wa" data-wa>{WA} WhatsApp</a></div></div>'}
+  {('<h2 id="faq">Questions</h2>' + faq_html(faqs)) if faqs else ''}
+  <div class="related"><p class="eyebrow">Keep reading</p><div class="rel-links">{"".join(f'<a href="{u}">{t} →</a>' for t, u in related)}</div></div>
+</div></article>"""
+    ld = [{"@context": "https://schema.org", "@type": "Article", "headline": h1, "description": desc, "author": {"@id": BASE + "/#business"},
+           "publisher": {"@id": BASE + "/#business"}, "dateModified": TODAY, "inLanguage": "en-IN", "mainEntityOfPage": f"{BASE}/{slug}.html"}]
+    if faqs:
+        ld.append(faq_ld(faqs))
+    page(slug, title, desc, body, None, ld=ld + (extra_ld or []))
+
+
+P_ = lambda *xs: "".join(f"<p>{x}</p>" for x in xs)
+UL = lambda *xs: "<ul>" + "".join(f"<li>{x}</li>" for x in xs) + "</ul>"
+OL = lambda *xs: "<ol>" + "".join(f"<li>{x}</li>" for x in xs) + "</ol>"
+
+# ---- Features (what each feature means for a non-technical family) ----
+FEATURES = [
+    ("link", "Your own invitation website", "One private link that opens like an app on any phone, with no download needed.", "Guests tap the link on WhatsApp and the invitation opens instantly.", "BPL"),
+    ("rsvp", "Every function, in order", "Ganesh Sthapana to Reception: each function gets its own date, time, venue and notes.", "Guests see exactly which functions they're invited to and when.", "BPL"),
+    ("lotus", "Marwari traditions, done right", "Opening blessings, both families, grandparents and elders, listed the way your family wants.", "Elders see their names written correctly and respectfully.", "BPL"),
+    ("globe", "Hindi, English or both", "Write in English, Hindi, Marwari with Hindi, or bilingual.", "Elders read in Hindi; friends and NRI guests read in English.", "BPL"),
+    ("pin", "Maps and directions", "A Google Maps link for every venue.", "One tap opens directions; no more “bhai, location bhejo” calls.", "BPL"),
+    ("qr", "QR code", "A QR code that opens your invitation.", "Print it on physical kankotri cards or show it at the venue.", "BPL"),
+    ("share", "WhatsApp sharing", "A ready-to-forward WhatsApp message with your link.", "Send it to family groups in seconds.", "BPL"),
+    ("refresh", "Update without re-sending", "Change a time or venue and the same link shows the update.", "Guests always see the latest details.", "BPL"),
+    ("music", "Background music or shehnai", "Shehnai, soft instrumental, or a song you choose.", "The invitation opens with music, like a celebration should.", "PL"),
+    ("image", "Photo gallery", "Pre-wedding photos or family pictures in a gallery.", "Relatives get a glimpse of the couple before the big day.", "PL"),
+    ("clock", "Countdown", "A live countdown to the wedding.", "Builds excitement every time guests open the link.", "PL"),
+    ("users", "RSVP and guest count", "Guests confirm attendance and how many are coming.", "You get numbers for catering and rooms without dozens of calls.", "PL"),
+    ("book", "Family story or video page", "A page for your story, family history or a video.", "Guests feel part of your journey, not just your guest list.", "L"),
+    ("sliders", "Custom colours and motifs", "Colours matched to your theme; motifs like your family deity or city.", "An invitation that feels made only for your family.", "L"),
+]
+feat_rows = "".join(
+    f'<div class="feat-card"><span class="fi">{icon(I[ic])}</span><h3>{t}</h3><p>{what}</p><p class="guest"><b>For guests:</b> {guest}</p>'
+    f'<div class="avail">{"".join(f"<span class={chr(34)}on{chr(34) if k in av else chr(34)+chr(34)}>{n}</span>" for k, n in (("B", "Basic"), ("P", "Premium"), ("L", "Luxury")))}</div></div>'
+    for ic, t, what, guest, av in FEATURES)
+FEAT_BODY = f"""
+<section class="phead"><div class="wrap"><p class="eyebrow">What you get</p><h1>Everything Your Invitation Can Do</h1><p class="lead">Every feature explained simply, with the packages it comes in. Open the <a href="demo.html">live demo</a> to try them on your phone.</p></div></section>
+<section class="sec" style="padding-top:36px"><div class="wrap">
+  <div class="avail-key"><span class="on">Basic</span><span class="on">Premium</span><span class="on">Luxury</span> = included in that package</div>
+  <div class="feat-grid">{feat_rows}</div>
+  <div class="panel panel-gold center" style="margin-top:40px"><h2 style="font-size:30px">See it working</h2><p class="lead" style="margin:10px auto 18px">Every feature above is in our live demos. Open one on your phone.</p>
+    <div class="row" style="justify-content:center"><a class="btn btn-primary" href="demo.html">Open the live demo</a><a class="btn btn-ghost" href="pricing.html">Compare packages</a></div></div>
+</div></section>"""
+page("features", "Features: Maps, RSVP, Music, Hindi, QR & WhatsApp | BFI Digital Wedding Invitations",
+     "What a BFI digital wedding invitation can do: every function in order, Hindi or bilingual text, maps, QR code, WhatsApp sharing, music, gallery, countdown, RSVP and family story.",
+     FEAT_BODY, "features", ld=[{"@context": "https://schema.org", "@type": "ItemList", "name": "BFI invitation features", "itemListElement": [{"@type": "ListItem", "position": k + 1, "name": f[1]} for k, f in enumerate(FEATURES)]}])
+
+# ---- Partners ----
+PART_BODY = f"""
+<section class="phead"><div class="wrap"><p class="eyebrow">For wedding professionals</p><h1>Partner With BFI</h1><p class="lead">Wedding planners, photographers, venues and decorators: recommend BFI invitations to your clients and earn a referral commission on every confirmed order.</p></div></section>
+<section class="sec" style="padding-top:36px"><div class="wrap">
+  <div class="next3">
+    <div><span>1</span><h3>Apply below</h3><p>Tell us about your business. We'll call you to say hello.</p></div>
+    <div><span>2</span><h3>Get your referral code</h3><p>Share it with couples and families you work with.</p></div>
+    <div><span>3</span><h3>Earn on confirmed orders</h3><p>15% on Basic and Premium, 20% on Luxury orders that use your code.</p></div>
+  </div>
+  <div class="split" style="margin-top:44px;align-items:start">
+    <div><h2>Why partners recommend us</h2><ul class="checks" style="margin-top:14px">
+      <li>{icon(I["check"])}Invitations made only for Marwari and Rajasthani weddings</li>
+      <li>{icon(I["check"])}Every function, with maps, so guests reach your venue on time</li>
+      <li>{icon(I["check"])}Ready in 24–72 hours, so it never delays your planning</li>
+      <li>{icon(I["check"])}Clients pay 50% after approving, which keeps the experience stress-free</li></ul>
+      <p class="muted" style="margin-top:14px;font-size:14px">Commission is paid after the client completes payment. Full terms are shared when you join.</p></div>
+    <div class="panel panel-gold"><h2 style="font-size:28px;margin-bottom:6px">Apply to partner</h2><p class="muted" style="margin-bottom:16px">We reply on WhatsApp.</p>
+      <div id="p-status"></div>
+      <form class="form" id="partner-form" novalidate>
+        <div class="f2"><div class="field"><label for="pa-name">Your name <span class="req">*</span></label><input id="pa-name" name="name" required autocomplete="name"></div>
+        <div class="field"><label for="pa-biz">Business name <span class="req">*</span></label><input id="pa-biz" name="business" required autocomplete="organization"></div></div>
+        <div class="f2"><div class="field"><label for="pa-type">You are a</label><select id="pa-type" name="type"><option>Wedding planner</option><option>Photographer / videographer</option><option>Venue / hotel</option><option>Decorator</option><option>Other</option></select></div>
+        <div class="field"><label for="pa-city">City</label><input id="pa-city" name="city" autocomplete="address-level2"></div></div>
+        <div class="f2"><div class="field"><label for="pa-phone">WhatsApp number <span class="req">*</span></label><input id="pa-phone" name="phone" type="tel" required inputmode="tel" autocomplete="tel"></div>
+        <div class="field"><label for="pa-email">Email</label><input id="pa-email" name="email" type="email" autocomplete="email"></div></div>
+        <div class="field"><label for="pa-msg">Anything to add?</label><textarea id="pa-msg" name="message" placeholder="Website or Instagram, number of weddings a year…"></textarea></div>
+        <input type="text" name="company" tabindex="-1" autocomplete="off" class="sr" aria-hidden="true">
+        <button class="btn btn-primary btn-block" type="submit">Send application</button></form></div>
+  </div>
+</div></section>"""
+page("partners", "Partner With BFI: Referral Programme for Wedding Planners, Photographers & Venues",
+     "Wedding planners, photographers, venues and decorators can recommend BFI digital wedding invitations and earn 15–20% referral commission on confirmed orders.", PART_BODY, None)
+
+# ---- Landing pages (distinct intent each) ----
+LANDING = {
+    "marwari-wedding-invitation-website": dict(design="sheesh-mahal", eyebrow="Marwari wedding invitation website",
+        title="Marwari Wedding Invitation Website: Every Ritual, One Link | BFI",
+        desc="What a Marwari wedding invitation website includes, how it is different from a card or video, and how to get one made with every function, elder and venue.",
+        h1="A Wedding Invitation Website Made for Marwari Weddings",
+        lead="One private link that holds your whole wedding: blessings, both families, every function from Ganesh Sthapana to Reception, maps, music and RSVP.",
+        sections=[("What is a wedding invitation website?", P_("It is a small, private website made only for your wedding. Guests open it from a WhatsApp link or a QR code, and it works like an app on their phone without installing anything.", "Unlike a picture card, it can hold as many functions as your family celebrates, and it can be updated if a time or venue changes.")),
+                  ("What a Marwari invitation website usually contains", OL("<b>Cover</b> with the opening blessing (॥ श्री गणेशाय नमः ॥) and the couple's names", "<b>Blessings</b> from grandparents and elders", "<b>Both families</b>: the bride's and groom's parents, written the way your family prefers", "<b>Functions</b>: Ganesh Sthapana, Mayra, Pithi, Mehendi, Mahila Sangeet, Baraat, Phere, Reception, each with date, time, venue and dress code", "<b>Venue</b> directions with Google Maps", "<b>RSVP</b> so guests confirm attendance and numbers (Premium and Luxury)", "<b>Gallery, countdown and music</b> (Premium and Luxury)")),
+                  ("Why families choose a website over a PDF or video", UL("A PDF is hard to read on a phone and cannot be updated.", "A video plays once, and guests cannot tap to get directions.", "A website keeps every function, map and RSVP in one place and stays live after the wedding.")),
+                  ("How to get one made", P_('Choose a design from the <a href="invitations.html">collection</a>, share your names and functions through our <a href="customize.html">form</a> or on WhatsApp, review the preview on your phone, then share the link. It takes 24–72 hours depending on the package.'))],
+        faqs=[("Do guests need to install an app?", "No. The invitation opens in the phone's browser from a link or QR code."),
+              ("Can I keep some functions for family only?", "Yes. Tell us which functions are for close family and we will mark them or keep them on a separate page."),
+              ("How much does it cost?", f"From {inr(3999)} (Basic) to {inr(11999)}+ (Luxury). See <a href='pricing.html'>pricing</a>.")]),
+    "marwari-kankotri-online": dict(design="gulmohar-classic", eyebrow="Online kankotri",
+        title="Marwari Kankotri Online: Digital Kankotri with Traditional Wording | BFI",
+        desc="What a Marwari kankotri is, the traditions around sending it, and how to make an online kankotri that keeps the blessings, family order and wording intact.",
+        h1="Marwari Kankotri, Now Online",
+        lead="The kankotri is the first and most respected part of a Marwari wedding. An online kankotri keeps its traditions, and adds maps, RSVP and instant sharing.",
+        sections=[("What is a kankotri?", P_("A kankotri (कंकोत्री) is the traditional Marwari wedding invitation. It traditionally opens with an invocation to Lord Ganesha, carries the names of the couple, both families and elders, and lists each function in order.", "In many families the first kankotri is offered to Ganesh ji or the family deity before any guest receives one.")),
+                  ("Traditions to keep when going digital", UL("Keep the opening blessing: ॥ श्री गणेशाय नमः ॥ or your family's own.", "List elders and both families in the order your family follows.", "Use respectful honorifics, such as Shri, Shrimati, Chi. and Sau. Ka.", "Many families still hand-deliver a printed kankotri to the closest elders, and share the online version with everyone else.")),
+                  ("Printed kankotri and online kankotri together", P_('A popular approach is to print a smaller number of cards with a QR code that opens the online kankotri. Elders receive the card by hand; everyone gets every function and map on their phone. Read more in <a href="digital-vs-printed-kankotri.html">digital vs printed kankotri</a>.')),
+                  ("Sample kankotri wording", '<p lang="hi" class="hi-block">॥ श्री गणेशाय नमः ॥<br>सादर आमंत्रण<br>श्रीमती सुनीता एवं श्री महेश अग्रवाल की सुपुत्री<br><b>सौ. कां. प्रिया</b><br>संग<br><b>चि. रोहन</b><br>के शुभ विवाह पर आप सपरिवार सादर आमंत्रित हैं।</p><p>More wording in our <a href="guide.html#wording">wording guide</a>.</p>')],
+        faqs=[("Is an online kankotri respectful enough for elders?", "Many families do both: a printed card for elders, and the online kankotri for everyone. The online version carries the same blessings and wording."),
+              ("Can the kankotri be fully in Hindi?", "Yes. The whole invitation can be in Hindi, or bilingual."),
+              ("Can it include Mayra and Pithi?", "Yes, each as its own function with date, time and venue.")]),
+    "hindi-wedding-invitation": dict(design="gajraj-swagat", eyebrow="Hindi wedding invitation",
+        title="Hindi Wedding Invitation Online: Wording, Honorifics & Bilingual Options | BFI",
+        desc="How to write a Hindi wedding invitation: common lines, honorifics like Chi. and Sau. Ka., bilingual options and a ready sample, made as a digital invitation.",
+        h1="Hindi Wedding Invitations, Written Properly",
+        lead="Hindi wording carries the warmth and respect that elders expect. Here's how families usually write it, and how we set it beautifully on a digital invitation.",
+        sections=[("Common lines in a Hindi invitation", UL("<b>॥ श्री गणेशाय नमः ॥</b>: the opening invocation", "<b>सादर आमंत्रण</b>: “a respectful invitation”", "<b>शुभ विवाह</b>: the auspicious wedding", "<b>स्वागतोत्सुक</b>: family members eager to welcome you, often listed at the end", "<b>दर्शनाभिलाषी</b>: those who look forward to your presence, often children of the family")),
+                  ("Honorifics", UL("<b>चि.</b> (Chiranjeevi) before the groom's name", "<b>सौ. कां.</b> (Saubhagyakankshini) before the bride's name", "<b>श्रीमती / श्री</b> for parents and elders; <b>स्व.</b> for late family members")),
+                  ("Hindi, English or bilingual?", P_("Many families choose bilingual: Hindi for the blessing, elders and families, and English for function details so younger and NRI guests can read easily. We set Devanagari in a proper Hindi typeface so it looks as good as the English.")),
+                  ("Sample", '<p lang="hi" class="hi-block">॥ श्री गणेशाय नमः ॥<br>श्रीमती रेखा एवं श्री अनिल माहेश्वरी के सुपुत्र<br><b>चि. रोहन</b><br>संग<br><b>सौ. कां. प्रिया</b><br>(सुपुत्री श्रीमती सुनीता एवं श्री महेश अग्रवाल)<br>के शुभ विवाह के पावन अवसर पर आप सादर आमंत्रित हैं।</p>')],
+        faqs=[("Can you write the Hindi wording for us?", "Yes. Share names and functions, and we prepare the wording for you to check."),
+              ("Can I mix Hindi and English?", "Yes. Bilingual invitations are one of our most requested options."),
+              ("Will Hindi display correctly on all phones?", "Yes. We use a web font for Devanagari so it displays the same on Android and iPhone.")]),
+    "wedding-invitation-website-rsvp": dict(design="neel-mahal", eyebrow="Wedding website with RSVP",
+        title="Wedding Invitation Website with RSVP: Guest Count Without the Phone Calls | BFI",
+        desc="How RSVP works on a wedding invitation website: what guests are asked, how you see responses, and how it helps with catering, rooms and transport.",
+        h1="A Wedding Invitation Website with RSVP",
+        lead="Know who's coming, and how many, without calling every relative. RSVP is built into our Premium and Luxury invitations.",
+        sections=[("How RSVP works", OL("Guests open your invitation and tap <b>RSVP</b>.", "They enter their name, whether they're attending and the number of guests.", "Optionally, they choose a meal preference.", "You receive the responses and can share totals with your caterer, hotel and transport team.")),
+                  ("Why it helps Indian weddings", UL("Large guest lists across many functions are hard to track by phone.", "Caterers and hotels need numbers days in advance.", "Outstation and NRI guests can reply in one tap from anywhere.")),
+                  ("Set a deadline", P_("Most families ask for RSVPs one to two weeks before the wedding. Send a reminder on WhatsApp with the same link a few days before the deadline."))],
+        faqs=[("Which packages include RSVP?", "Premium and Luxury. Basic invitations include a contact number instead."),
+              ("Can guests change their RSVP?", "Yes, they can send it again with updated details."),
+              ("Is guest information private?", "Yes. Responses are only for you and the BFI team; we never share them.")]),
+    "rajasthani-digital-wedding-invitation": dict(design="mor-pankh", eyebrow="Rajasthani digital invitation",
+        title="Rajasthani Digital Wedding Invitation: Royal Designs from Jaipur to Jodhpur | BFI",
+        desc="Rajasthani design elements for a digital wedding invitation: jharokhas, havelis, elephants, peacocks and leheriya, and how they suit weddings across Rajasthan.",
+        h1="Rajasthani Digital Wedding Invitations",
+        lead="Jharokhas, haveli arches, royal elephants, peacocks and leheriya colours: the art of Rajasthan, made for the phones your guests carry.",
+        sections=[("Rajasthani motifs and what they mean", UL("<b>Jharokha</b>: the carved window, a frame for the couple's names", "<b>Gaj (elephant)</b>: auspicious, a symbol of welcome and prosperity", "<b>Mor (peacock)</b>: grace and love", "<b>Leheriya and bandhej</b>: the colours of Teej, Gangaur and celebration", "<b>Haveli and fort skylines</b>: the grandeur of Rajput and Marwari heritage")),
+                  ("Designs in our collection", P_('<a href="design-rajwada-royale.html">Rajwada Royale</a> and <a href="design-sheesh-mahal.html">Sheesh Mahal</a> bring palace grandeur; <a href="design-gajraj-swagat.html">Gajraj Swagat</a> welcomes guests with elephants; <a href="design-mor-pankh.html">Mor Pankh</a> uses the peacock; <a href="design-chhatri.html">Chhatri</a> is a minimal take on the Rajasthani pavilion.')),
+                  ("Matching your city", P_("Jaipur weddings often lean pink and gold; Jodhpur's blue city suits navy and indigo, as in <a href='design-neel-mahal.html'>Neel Mahal</a>; Udaipur's lakes suit soft pastels; Shekhawati families often love fresco-inspired detail. We can tune colours on Premium and Luxury."))],
+        faqs=[("Can you include our family deity or kuldevi?", "Yes, on Luxury we can add custom motifs such as your family deity or temple."),
+              ("Do you only work with families in Rajasthan?", "No. We work on WhatsApp with Marwari and Rajasthani families across India and abroad."),
+              ("Can I see the designs live?", "Yes, every design has a <a href='demo.html'>live demo</a>.")]),
+}
+for slug, L in LANDING.items():
+    content_page(slug, L["title"], L["desc"], L["h1"], L["lead"], L["sections"], L["faqs"],
+                 [("All invitation designs", "invitations.html"), ("Pricing", "pricing.html"), ("Marwari wedding guide", "guide.html"), ("Frequently asked questions", "faq.html")], eyebrow=L["eyebrow"])
+
+# ---- Articles ----
+content_page("digital-vs-printed-kankotri", "Digital vs Printed Kankotri: Which Should Marwari Families Choose? | BFI",
+    "An honest comparison of digital and printed Marwari kankotri: cost, time, elders, NRI guests, updates and the hybrid approach most families now use.",
+    "Digital vs Printed Kankotri", "Most families no longer choose one or the other. Here's an honest look at both, and how to combine them.",
+    [("At a glance", '<div class="tbl-wrap"><table class="tbl"><thead><tr><th scope="col"></th><th scope="col">Printed kankotri</th><th scope="col" class="hl">Digital kankotri</th></tr></thead><tbody>'
+      '<tr><th scope="row">Feels traditional</th><td>✓ Strongest</td><td class="hl">✓ With blessings and Hindi wording</td></tr>'
+      '<tr><th scope="row">Reaching outstation &amp; NRI guests</th><td>Courier, slow</td><td class="hl">Instant on WhatsApp</td></tr>'
+      '<tr><th scope="row">Changing a time or venue</th><td>Reprint</td><td class="hl">Update; same link</td></tr>'
+      '<tr><th scope="row">Directions</th><td>Address only</td><td class="hl">One-tap Google Maps</td></tr>'
+      '<tr><th scope="row">Guest count</th><td>Phone calls</td><td class="hl">RSVP (Premium &amp; Luxury)</td></tr>'
+      '<tr><th scope="row">Lead time</th><td>Design, printing and delivery</td><td class="hl">24–72 hours</td></tr></tbody></table></div>'),
+     ("When printed still matters", P_("For grandparents, the family guru and the closest elders, a hand-delivered card carries respect that a message cannot. Many families also keep a printed kankotri as a keepsake.")),
+     ("The hybrid approach", OL("Print a small number of cards for elders and close family.", "Add the BFI QR code on the printed card so every function and map is one scan away.", "Share the digital invitation with everyone else on WhatsApp.", "Send a reminder with the same link a week before the wedding.")),
+     ("What to put on each", P_("Keep the printed card short: blessing, names, families and the main wedding date. Put the full list of functions, timings, venues, dress codes and RSVP on the digital invitation, where it can be updated."))],
+    [("Is a digital kankotri cheaper than printing?", "For large guest lists and outstation guests it usually is, because there is no printing or courier. Many families still print a few cards for elders."),
+     ("Can I add a QR code to my printed card?", "Yes, every BFI package includes a QR code you can print on your cards.")],
+    [("Online Marwari kankotri", "marwari-kankotri-online.html"), ("Inviting guests to Mayra, Pithi and Phere", "inviting-guests-mayra-pithi-phere.html"), ("Marwari wedding guide", "guide.html")], eyebrow="Article")
+
+content_page("inviting-guests-mayra-pithi-phere", "How to Invite Guests to Mayra, Pithi and Phere | BFI Marwari Wedding Guide",
+    "Who is usually invited to Mayra, Pithi, Mahila Sangeet and Phere, how to show family-only functions on the invitation, and wording that keeps everyone comfortable.",
+    "How to Invite Guests to Mayra, Pithi and Phere", "Not every guest is invited to every function. Here's how Marwari families usually decide, and how to show it clearly on one invitation.",
+    [("Who usually attends which function", '<div class="tbl-wrap"><table class="tbl"><thead><tr><th scope="col">Function</th><th scope="col">Usually for</th></tr></thead><tbody>'
+      '<tr><th scope="row">Ganesh Sthapana</th><td>Close family</td></tr><tr><th scope="row">Mayra (Bhaat)</th><td>Family, and the maternal side who bring the mayra</td></tr>'
+      '<tr><th scope="row">Pithi / Haldi</th><td>Family and close relatives, often women of the family</td></tr><tr><th scope="row">Mehendi &amp; Mahila Sangeet</th><td>Women of the family and friends; many families now invite everyone</td></tr>'
+      '<tr><th scope="row">Baraat &amp; Phere</th><td>All invited guests</td></tr><tr><th scope="row">Reception</th><td>All invited guests, colleagues and friends</td></tr></tbody></table></div>'
+      '<p class="muted">Customs differ by family and region; always follow your elders.</p>'),
+     ("Showing family-only functions on one invitation", UL("Mark close-family functions with a small note such as “Family only”.", "Or create a separate family page, shared only with relatives.", "Keep the public invitation to the functions everyone attends.")),
+     ("Wording that works", P_("For family functions: <i>“With the blessings of our elders, we invite our family to the Mayra ceremony.”</i>", "For everyone: <i>“Your presence at the Phere and Reception will make our joy complete.”</i>")),
+     ("Timing", P_("Share the invitation 4–8 weeks before the wedding. Send the family page when the Mayra and Pithi dates are fixed, and a reminder to everyone a week before."))],
+    [("Can one invitation have different functions for different guests?", "Yes. We can mark family-only functions or make a separate family page."),
+     ("Should the Mayra be on the invitation?", "Many families list it, especially for relatives who travel. Some keep it for the family page only.")],
+    [("Marwari wedding rituals in order", "guide.html#rituals"), ("Digital vs printed kankotri", "digital-vs-printed-kankotri.html"), ("Hindi wedding invitation wording", "hindi-wedding-invitation.html")], eyebrow="Article")
+
+# ---- Resources hub ----
+RES = [("guide.html", "Marwari Wedding Guide", "Rituals in order, Hindi and English wording, and a send-out checklist."),
+       ("digital-vs-printed-kankotri.html", "Digital vs Printed Kankotri", "An honest comparison, and the hybrid approach most families use."),
+       ("inviting-guests-mayra-pithi-phere.html", "Inviting Guests to Mayra, Pithi & Phere", "Who attends which function, and how to show it."),
+       ("hindi-wedding-invitation.html", "Hindi Wedding Invitations", "Common lines, honorifics and a ready sample."),
+       ("marwari-kankotri-online.html", "Marwari Kankotri Online", "Traditions to keep when your kankotri goes digital."),
+       ("marwari-wedding-invitation-website.html", "Marwari Invitation Websites", "What one contains, and why families choose it."),
+       ("wedding-invitation-website-rsvp.html", "Invitations with RSVP", "How RSVP works and why it saves phone calls."),
+       ("rajasthani-digital-wedding-invitation.html", "Rajasthani Designs", "Jharokhas, elephants, peacocks and city colours."),
+       ("faq.html", "Frequently Asked Questions", "Delivery, payment, revisions and features."),
+       ("free-cards.html", "Free Card Maker", "16 free templates for every family occasion.")]
+RES_BODY = f"""
+<section class="phead"><div class="wrap"><p class="eyebrow">Learn</p><h1>Wedding Invitation Resources</h1><p class="lead">Free guides for Marwari and Rajasthani families: rituals, wording, etiquette and everything about digital invitations.</p></div></section>
+<section class="sec" style="padding-top:36px"><div class="wrap"><div class="res-grid">{"".join(f'<a class="res-card" href="{u}"><span class="res-n">{k + 1:02d}</span><h3>{t}</h3><p>{d}</p><span class="res-go">Read →</span></a>' for k, (u, t, d) in enumerate(RES))}</div></div></section>"""
+page("resources", "Marwari Wedding Invitation Guides & Resources | BFI", "Free guides on Marwari wedding rituals, kankotri wording in Hindi and English, digital vs printed invitations, RSVP and Rajasthani design.", RES_BODY, None,
+     ld=[{"@context": "https://schema.org", "@type": "CollectionPage", "name": "BFI resources", "url": BASE + "/resources.html", "hasPart": [{"@type": "Article", "name": t, "url": f"{BASE}/{u}"} for u, t, d in RES]}])
+
 # ---------------- robots, sitemap, llms.txt, vCard ----------------
-PUBLIC = ["", "invitations.html", "pricing.html", "how-it-works.html", "demo.html", "work.html", "work-mahi-ayush.html", "guide.html", "free-cards.html", "faq.html", "about.html", "contact.html", "customize.html",
+PUBLIC = ["", "invitations.html", "pricing.html", "how-it-works.html", "demo.html", "features.html", "work.html", "work-mahi-ayush.html", "guide.html", "resources.html", "digital-vs-printed-kankotri.html", "inviting-guests-mayra-pithi-phere.html", "marwari-wedding-invitation-website.html", "marwari-kankotri-online.html", "hindi-wedding-invitation.html", "wedding-invitation-website-rsvp.html", "rajasthani-digital-wedding-invitation.html", "partners.html", "free-cards.html", "faq.html", "about.html", "contact.html", "customize.html",
           "privacy.html", "terms.html"] + [f"design-{i['slug']}.html" for i in CATALOG]
 (OUT / "robots.txt").write_text(f"User-agent: *\nAllow: /\nDisallow: /account.html\nDisallow: /login.html\n\nSitemap: {BASE}/sitemap.xml\n")
 (OUT / "sitemap.xml").write_text('<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n' +
@@ -1200,6 +1443,9 @@ PUBLIC = ["", "invitations.html", "pricing.html", "how-it-works.html", "demo.htm
 - [How it works]({BASE}/how-it-works.html): choose, share details, preview and approve, share
 - [Live demo]({BASE}/demo.html): a sample invitation as guests see it
 - [Marwari wedding guide]({BASE}/guide.html): rituals in order, invitation wording in Hindi and English, send-out checklist
+- [Features]({BASE}/features.html): every feature in plain language, with the packages it comes in
+- [Guides & resources]({BASE}/resources.html): kankotri wording, Hindi honorifics, digital vs printed kankotri, inviting guests to Mayra/Pithi/Phere, RSVP
+- [Partner programme]({BASE}/partners.html): planners, photographers and venues earn 15% (Basic/Premium) or 20% (Luxury) on confirmed referred orders
 - [Our work]({BASE}/work.html): real client projects, e.g. [Mahi & Ayush engagement invitation, Chittorgarh]({BASE}/work-mahi-ayush.html)
 - [FAQ]({BASE}/faq.html): kankotri, Mayra and Pithi, Hindi wording, RSVP, WhatsApp sharing, delivery, link validity, payment and revisions
 - [Free card maker]({BASE}/free-cards.html): 16 free templates (wedding, save the date, Sagai, anniversary, birthdays, Godh Bharai, Naamkaran, Mundan, Griha Pravesh, puja, Diwali, Holi, Teej/Gangaur, retirement, prayer meet); download PNG, JPG or PDF

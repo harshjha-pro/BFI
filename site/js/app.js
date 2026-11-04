@@ -529,6 +529,22 @@ pages.contact = async () => {
   });
 };
 
+/* ---------- partners (planners, photographers, venues) ---------- */
+pages.partners = async () => {
+  const form = $("#partner-form");
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault(); if (!validate(form)) return;
+    const d = formData(form); if (d.company) return;
+    const btn = $("button[type=submit]", form); setBusy(btn, true, "Sending…");
+    try {
+      await sendEnquiry({ name: d.name, phone: d.phone, email: d.email || null, city: d.city || null, source: "partner",
+        message: `PARTNER APPLICATION · ${d.type} · ${d.business}${d.city ? " · " + d.city : ""}. ${d.message || ""}`.slice(0, 2000) });
+      track("partner_apply", { type: d.type });
+      form.outerHTML = `<div class="notice ok" style="font-size:16px"><b>Thank you, ${esc(d.name)}!</b> We've received ${esc(d.business)}'s application and will message you on WhatsApp.</div>`;
+    } catch { setBusy(btn, false); $("#p-status").innerHTML = `<div class="notice bad">Couldn't send. Please try again or message us on WhatsApp.</div>`; }
+  });
+};
+
 /* ---------- login ---------- */
 pages.login = async () => {
   const nx = params.get("next") || "";
