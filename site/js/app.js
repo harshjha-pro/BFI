@@ -167,7 +167,13 @@ function initChrome() {
   $$("[data-menu-open]").forEach((b) => b.addEventListener("click", () => { sheet.classList.add("open"); $("a", sheet)?.focus(); }));
   sheet?.addEventListener("click", (e) => { if (e.target.closest("[data-menu-close]") || e.target.classList.contains("sheet-bg")) sheet.classList.remove("open"); });
   document.addEventListener("keydown", (e) => e.key === "Escape" && sheet?.classList.remove("open"));
-  const io = "IntersectionObserver" in window && new IntersectionObserver((es) => es.forEach((e) => { if (e.isIntersecting) { e.target.classList.add("in"); io.unobserve(e.target); } }), { rootMargin: "0px 0px -8% 0px" });
+  const groups = [".sec-head", ".grid-inv > .card", ".pkgs > .pkg", ".steps > .step", ".hrow", ".values > .value", ".timeline > .tl", ".next3 > div",
+    ".occasions > div", ".policy > div", ".reviews > .review", ".ritual-list > li", ".why-list > div", ".trust-row > div", ".wording > .word-card",
+    ".cinfo > *", ".strip-item", ".tiles > .tile", "details.acc", ".tbl-wrap", ".about-hero > *", ".split > *", ".panel", ".phead .wrap > *"];
+  for (const sel of groups) $$(sel).forEach((el) => { if (el.closest(".hero, .dv, .modal, .sheet") || el.classList.contains("reveal")) return;
+    const sib = [...el.parentElement.children].filter((x) => x.matches(sel.split(" > ").pop()));
+    el.classList.add("reveal"); el.style.setProperty("--d", Math.min(sib.indexOf(el), 6) * 0.08 + "s"); });
+  const io = "IntersectionObserver" in window && new IntersectionObserver((es) => es.forEach((e) => { if (e.isIntersecting) { e.target.classList.add("in"); io.unobserve(e.target); } }), { rootMargin: "0px 0px -6% 0px" });
   $$(".reveal").forEach((el) => (io ? io.observe(el) : el.classList.add("in")));
   renderAuthSlot();
 }
@@ -195,6 +201,13 @@ function bindFavs(root) {
 const pages = {};
 
 pages.index = async () => {
+  const box = $("#hero-petals");
+  if (box && !matchMedia("(prefers-reduced-motion: reduce)").matches) {
+    const drop = () => { if (document.hidden) return; const p = document.createElement("i"); p.style.left = Math.random() * 100 + "%"; p.style.setProperty("--dx", (Math.random() * 120 - 60) + "px");
+      p.style.animationDuration = 9 + Math.random() * 6 + "s"; box.append(p); setTimeout(() => p.remove(), 16000); };
+    for (let k = 0; k < 6; k++) setTimeout(drop, k * 700);
+    setInterval(drop, 1600);
+  }
   // Real, studio-approved reviews only; the section stays hidden until there are some.
   if (!sb) return;
   const { data } = await sb.from("reviews").select("name,city,rating,body,design_slug").eq("approved", true).order("created_at", { ascending: false }).limit(6);
@@ -652,82 +665,147 @@ pages.demo = async () => {
 
 /* ---------- free card maker ---------- */
 const TEMPLATES = [
-  { id: "birthday-kids", name: "Kids' Birthday", note: "Balloons & elephant", dark: false, color: "#3A3F8F", inset: [16, 14, 34, 14],
-    d: { top: "You're invited to", title: "Aarav's 5th Birthday", sub: "Join us for cake, games and lots of fun!", venue: "Our home, Malviya Nagar, Jaipur", host: "RSVP: Neha (98xxx xxxxx)" } },
-  { id: "birthday-gold", name: "Birthday (Elegant)", note: "Black & gold", dark: true, color: "#F3DFA8", inset: [22, 14, 26, 14],
-    d: { top: "Please join us to celebrate", title: "Neha turns 30", sub: "An evening of music, dinner and memories", venue: "The Terrace, C-Scheme, Jaipur", host: "Hosted by Rahul" } },
-  { id: "anniversary", name: "Anniversary", note: "Roses & rings", dark: false, color: "#7A1F2B", inset: [18, 16, 20, 16],
-    d: { top: "With love and gratitude", title: "Sunita & Mahesh", sub: "invite you to celebrate their 25th wedding anniversary", venue: "Agarwal Bhawan, Jaipur", host: "With best compliments: Agarwal family" } },
-  { id: "griha-pravesh", name: "Griha Pravesh", note: "Kalash & toran", dark: false, color: "#7A2E0E", inset: [14, 16, 38, 16],
-    d: { top: "॥ श्री गणेशाय नमः ॥", title: "Griha Pravesh", sub: "Please bless our new home with your presence at the puja and lunch", venue: "B-12, Vaishali Nagar, Jaipur", host: "Maheshwari family" } },
-  { id: "godh-bharai", name: "Godh Bharai", note: "Jhoola & florals", dark: false, color: "#8A3252", inset: [16, 16, 38, 16],
-    d: { top: "A little one is on the way", title: "Godh Bharai", sub: "for Priya. Join us for blessings, songs and sweets", venue: "Agarwal Niwas, Jaipur", host: "RSVP: Sunita (98xxx xxxxx)" } },
-  { id: "sagai", name: "Sagai / Engagement", note: "Teal & gold arch", dark: true, color: "#F3DFA8", inset: [22, 20, 30, 20],
+  { id: "wedding", cat: "wedding", name: "Wedding", note: "Red & gold mandap", dark: true, color: "#FFE3A3", inset: [17, 14, 46, 14],
+    d: { top: "॥ श्री गणेशाय नमः ॥", title: "Priya weds Rohan", sub: "Together with their families, request the honour of your presence", venue: "Royal Palace Gardens, Jaipur", host: "Agarwal & Maheshwari families" } },
+  { id: "save-the-date", cat: "wedding", name: "Save the Date", note: "Blush & varmala", dark: false, color: "#8A2E3B", inset: [16, 16, 38, 16],
+    d: { top: "Save the date", title: "Priya & Rohan", sub: "are getting married! Formal invitation to follow", venue: "Jaipur, Rajasthan", host: "#PriyaWedsRohan" } },
+  { id: "sagai", cat: "wedding", name: "Sagai / Engagement", note: "Teal & gold arch", dark: true, color: "#F3DFA8", inset: [22, 20, 30, 20],
     d: { top: "Together with their families", title: "Priya & Rohan", sub: "request your presence at their Sagai ceremony", venue: "Hotel Royal Orchid, Jaipur", host: "Agarwal & Maheshwari families" } },
-  { id: "puja", name: "Puja / Bhajan Sandhya", note: "Diya & bells", dark: true, color: "#FFE7A8", inset: [20, 18, 36, 18],
+  { id: "anniversary", cat: "wedding", name: "Anniversary", note: "Roses & rings", dark: false, color: "#7A1F2B", inset: [18, 16, 20, 16],
+    d: { top: "With love and gratitude", title: "Sunita & Mahesh", sub: "invite you to celebrate their 25th wedding anniversary", venue: "Agarwal Bhawan, Jaipur", host: "With best compliments: Agarwal family" } },
+  { id: "birthday-kids", cat: "birthday", name: "Kids' Birthday", note: "Balloons & elephant", dark: false, color: "#3A3F8F", inset: [16, 14, 34, 14],
+    d: { top: "You're invited to", title: "Aarav's 5th Birthday", sub: "Join us for cake, games and lots of fun!", venue: "Our home, Malviya Nagar, Jaipur", host: "RSVP: Neha (98xxx xxxxx)" } },
+  { id: "birthday-gold", cat: "birthday", name: "Birthday (Elegant)", note: "Black & gold", dark: true, color: "#F3DFA8", inset: [22, 14, 26, 14],
+    d: { top: "Please join us to celebrate", title: "Neha turns 30", sub: "An evening of music, dinner and memories", venue: "The Terrace, C-Scheme, Jaipur", host: "Hosted by Rahul" } },
+  { id: "godh-bharai", cat: "baby", name: "Godh Bharai", note: "Jhoola & florals", dark: false, color: "#8A3252", inset: [16, 16, 38, 16],
+    d: { top: "A little one is on the way", title: "Godh Bharai", sub: "for Priya. Join us for blessings, songs and sweets", venue: "Agarwal Niwas, Jaipur", host: "RSVP: Sunita (98xxx xxxxx)" } },
+  { id: "naamkaran", cat: "baby", name: "Naamkaran", note: "Cradle & stars", dark: false, color: "#2F4F7A", inset: [14, 16, 46, 16],
+    d: { top: "With joy we invite you to the", title: "Naamkaran", sub: "of our little princess. Join us for the naming ceremony and blessings", venue: "Agarwal Niwas, Jaipur", host: "Neha & Rahul Agarwal" } },
+  { id: "mundan", cat: "baby", name: "Mundan", note: "Puja thali & toran", dark: false, color: "#7A2E0E", inset: [20, 16, 28, 16],
+    d: { top: "॥ श्री गणेशाय नमः ॥", title: "Mundan Sanskar", sub: "of our son Vivaan. Please bless him with your presence", venue: "Balaji Mandir, Jaipur", host: "Sharma family" } },
+  { id: "griha-pravesh", cat: "festival", name: "Griha Pravesh", note: "Kalash & toran", dark: false, color: "#7A2E0E", inset: [14, 16, 38, 16],
+    d: { top: "॥ श्री गणेशाय नमः ॥", title: "Griha Pravesh", sub: "Please bless our new home with your presence at the puja and lunch", venue: "B-12, Vaishali Nagar, Jaipur", host: "Maheshwari family" } },
+  { id: "puja", cat: "festival", name: "Puja / Bhajan Sandhya", note: "Diya & bells", dark: true, color: "#FFE7A8", inset: [20, 18, 36, 18],
     d: { top: "॥ जय श्री कृष्ण ॥", title: "Bhajan Sandhya", sub: "Join us for an evening of bhajans, aarti and prasad", venue: "Shiv Mandir Hall, Jaipur", host: "Agarwal family" } },
-  { id: "diwali", name: "Diwali Party", note: "Diyas & lanterns", dark: true, color: "#FFD98A", inset: [24, 14, 32, 14],
+  { id: "diwali", cat: "festival", name: "Diwali Party", note: "Diyas & lanterns", dark: true, color: "#FFD98A", inset: [24, 14, 32, 14],
     d: { top: "Shubh Deepavali", title: "Diwali Get-Together", sub: "Lights, laughter, sweets and card games", venue: "Our home, Raja Park, Jaipur", host: "The Agarwals" } },
+  { id: "holi", cat: "festival", name: "Holi Milan", note: "Gulal splash", dark: false, color: "#B0204E", inset: [24, 16, 24, 16],
+    d: { top: "Bura na mano, Holi hai!", title: "Holi Milan", sub: "Colours, thandai, gujiya and music", venue: "Community Park, Raja Park, Jaipur", host: "RSVP: Sharma family" } },
+  { id: "gangaur-teej", cat: "festival", name: "Teej & Gangaur", note: "Leheriya & swing", dark: true, color: "#FFE9B0", inset: [30, 20, 26, 20],
+    d: { top: "Ladies, you're invited", title: "Teej Utsav", sub: "Swings, mehendi, ghevar and folk songs", venue: "Mahila Mandal Hall, Jaipur", host: "Hosted by Mahila Mandal" } },
+  { id: "retirement", cat: "other", name: "Retirement", note: "Navy & gold", dark: true, color: "#F3DFA8", inset: [8, 12, 40, 12],
+    d: { top: "Please join us to honour", title: "Shri R. K. Agarwal", sub: "on his retirement after 35 years of dedicated service", venue: "Hotel Clarks, Jaipur", host: "Family & colleagues" } },
+  { id: "prayer-meet", cat: "other", name: "Prayer Meet", note: "Lotus & diya", dark: false, color: "#5A4A42", inset: [14, 14, 26, 14],
+    d: { top: "॥ ॐ शान्ति ॥", title: "Prayer Meet", sub: "in loving memory of Late Shri Ramniwas Agarwal", venue: "Agarwal Bhawan, Jaipur", host: "Agarwal family" } },
 ];
+const SIZES = { card: { w: 1080, h: 1620, pt: [432, 648] }, status: { w: 1080, h: 1920, pt: [405, 720] }, square: { w: 1080, h: 1080, pt: [540, 540] } };
+
+// Minimal one-page PDF that embeds a JPEG (no library needed)
+function jpegToPdf(jpg, wPx, hPx, [wPt, hPt]) {
+  const enc = new TextEncoder(), parts = [], offs = [];
+  let len = 0; const push = (x) => { const b = typeof x === "string" ? enc.encode(x) : x; parts.push(b); len += b.length; };
+  const obj = (n, body) => { offs[n] = len; push(`${n} 0 obj\n${body}\nendobj\n`); };
+  push("%PDF-1.4\n%\xE2\xE3\xCF\xD3\n");
+  obj(1, "<< /Type /Catalog /Pages 2 0 R >>");
+  obj(2, "<< /Type /Pages /Kids [3 0 R] /Count 1 >>");
+  obj(3, `<< /Type /Page /Parent 2 0 R /MediaBox [0 0 ${wPt} ${hPt}] /Resources << /XObject << /Im0 4 0 R >> >> /Contents 5 0 R >>`);
+  offs[4] = len; push(`4 0 obj\n<< /Type /XObject /Subtype /Image /Width ${wPx} /Height ${hPx} /ColorSpace /DeviceRGB /BitsPerComponent 8 /Filter /DCTDecode /Length ${jpg.length} >>\nstream\n`); push(jpg); push("\nendstream\nendobj\n");
+  const content = `q ${wPt} 0 0 ${hPt} 0 0 cm /Im0 Do Q`;
+  obj(5, `<< /Length ${content.length} >>\nstream\n${content}\nendstream`);
+  const xref = len;
+  push(`xref\n0 6\n0000000000 65535 f \n${[1, 2, 3, 4, 5].map((n) => String(offs[n]).padStart(10, "0") + " 00000 n \n").join("")}trailer\n<< /Size 6 /Root 1 0 R >>\nstartxref\n${xref}\n%%EOF`);
+  return new Blob(parts, { type: "application/pdf" });
+}
+
 pages["free-cards"] = () => {
   const grid = $("#tpl-grid"), form = $("#mk-form"), card = $("#mk-card");
   let t = TEMPLATES.find((x) => x.id === params.get("t")) || TEMPLATES[0];
+  let size = "card", cat = "all";
   const nextSat = () => { const d = new Date(); d.setDate(d.getDate() + ((6 - d.getDay() + 7) % 7 || 7) + 14); return d.toISOString().slice(0, 10); };
-  grid.innerHTML = TEMPLATES.map((x) => `<button type="button" class="tpl" data-t="${x.id}" aria-pressed="${x.id === t.id}"><img src="${IMG("tpl-" + x.id + ".jpg")}" alt="" loading="lazy" crossorigin="anonymous"><span>${x.name}<small>${x.note}</small></span></button>`).join("");
+  grid.innerHTML = TEMPLATES.map((x) => `<button type="button" class="tpl" data-t="${x.id}" data-cat="${x.cat}" aria-pressed="${x.id === t.id}"><img src="${IMG("tpl-" + x.id + ".jpg")}" alt="" loading="lazy" crossorigin="anonymous"><span>${x.name}<small>${x.note}</small></span></button>`).join("");
+  $("#tpl-cats").addEventListener("click", (e) => { const b = e.target.closest("[data-cat]"); if (!b) return; cat = b.dataset.cat;
+    $$("#tpl-cats .chip").forEach((c) => c.setAttribute("aria-pressed", c === b)); $$(".tpl").forEach((x) => x.classList.toggle("hide", cat !== "all" && x.dataset.cat !== cat)); });
   const fill = () => { for (const k of ["top", "title", "sub", "venue", "host"]) form[k].value = t.d[k]; form.date.value = form.date.value || nextSat(); form.time.value = form.time.value || "18:00"; };
   const val = () => { const v = formData(form); const d = v.date ? new Date(v.date + "T00:00") : null;
     v.when = [d && !isNaN(d) ? d.toLocaleDateString("en-IN", { weekday: "long", day: "numeric", month: "long", year: "numeric" }) : "", v.time ? new Date("2000-01-01T" + v.time).toLocaleTimeString("en-IN", { hour: "numeric", minute: "2-digit" }) : ""].filter(Boolean).join(" · "); return v; };
+  const blank = () => $("#mk-blank").checked;
   const draw = () => {
     const v = val(), [T, R, B, L] = t.inset;
-    card.innerHTML = `<img src="${IMG("tpl-" + t.id + ".jpg")}" alt="${esc(t.name)} card" crossorigin="anonymous">
+    card.innerHTML = `<img src="${IMG("tpl-" + t.id + ".jpg")}" alt="${esc(t.name)} card" crossorigin="anonymous">` + (blank() ? "" : `
       <div class="inv-text" style="inset:${T}% ${R}% ${B}% ${L}%;color:${t.color};${t.dark ? "text-shadow:0 1px 6px rgba(0,0,0,.4)" : ""}">
       ${v.top ? `<span class="${/[ऀ-ॿ]/.test(v.top) ? "it-deva" : "it-caps"}">${esc(v.top)}</span>` : ""}<span class="it-script" style="font-size:12cqw">${esc(v.title)}</span>
       ${v.sub ? `<span class="it-ven" style="font-size:3.8cqw">${esc(v.sub)}</span>` : ""}<span class="it-rule"></span>
-      ${v.when ? `<span class="it-date">${esc(v.when)}</span>` : ""}${v.venue ? `<span class="it-ven">${esc(v.venue)}</span>` : ""}${v.host ? `<span class="it-caps" style="font-size:2.8cqw;margin-top:1cqw">${esc(v.host)}</span>` : ""}</div>`;
+      ${v.when ? `<span class="it-date">${esc(v.when)}</span>` : ""}${v.venue ? `<span class="it-ven">${esc(v.venue)}</span>` : ""}${v.host ? `<span class="it-caps" style="font-size:2.8cqw;margin-top:1cqw">${esc(v.host)}</span>` : ""}</div>`);
   };
   grid.addEventListener("click", (e) => { const b = e.target.closest("[data-t]"); if (!b) return; t = TEMPLATES.find((x) => x.id === b.dataset.t); $$(".tpl").forEach((x) => x.setAttribute("aria-pressed", x === b)); fill(); draw(); history.replaceState(null, "", "?t=" + t.id); $("#maker").scrollIntoView({ behavior: "smooth", block: "start" }); });
   form.addEventListener("input", draw);
+  $("#mk-blank").addEventListener("change", draw);
+  $("#mk-size").addEventListener("click", (e) => { const b = e.target.closest("[data-size]"); if (!b) return; size = b.dataset.size; $$("#mk-size button").forEach((x) => x.setAttribute("aria-pressed", x === b)); });
   fill(); draw();
 
-  // Render the card to a 1080x1620 PNG with the same layout
-  async function render() {
+  const loadImg = (src) => new Promise((res, rej) => { const i = new Image(); i.crossOrigin = "anonymous"; i.onload = () => res(i); i.onerror = rej; i.src = src; });
+  // 1) the card itself at 1080x1620
+  async function renderCard() {
     await document.fonts.ready;
-    await Promise.all(["400 40px 'Great Vibes'", "600 40px 'Cormorant Garamond'", "500 40px 'DM Sans'", "400 40px 'Tiro Devanagari Hindi'"].map((f) => document.fonts.load(f).catch(() => {})));
+    await Promise.all(["400 40px 'Great Vibes'", "600 40px 'Cormorant Garamond'", "500 40px 'DM Sans'", "600 40px 'DM Sans'", "400 40px 'Tiro Devanagari Hindi'"].map((f) => document.fonts.load(f).catch(() => {})));
     const W = 1080, H = 1620, c = document.createElement("canvas"); c.width = W; c.height = H; const g = c.getContext("2d");
-    const img = await new Promise((res, rej) => { const i = new Image(); i.crossOrigin = "anonymous"; i.onload = () => res(i); i.onerror = rej; i.src = IMG("tpl-" + t.id + ".jpg"); });
-    g.drawImage(img, 0, 0, W, H);
+    g.drawImage(await loadImg(IMG("tpl-" + t.id + ".jpg")), 0, 0, W, H);
+    if (blank()) return c;
     const v = val(), [T, R, B, L] = t.inset; const x0 = W * L / 100, x1 = W * (1 - R / 100), boxW = x1 - x0, cx = (x0 + x1) / 2;
     const lines = [];
-    const wrap = (text, font, size, gap) => { g.font = `${font.replace("SIZE", size + "px")}`; const words = String(text).split(" "); let line = ""; const out = [];
+    const wrap = (text, font, size, gap) => { g.font = font.replace("SIZE", size + "px"); const words = String(text).split(" "); let line = ""; const out = [];
       for (const w of words) { const test = line ? line + " " + w : w; if (g.measureText(test).width > boxW && line) { out.push(line); line = w; } else line = test; } if (line) out.push(line);
       out.forEach((l) => lines.push({ l, font: font.replace("SIZE", size + "px"), size, gap })); };
-    if (v.top) wrap(/[ऀ-ॿ]/.test(v.top) ? v.top : v.top.toUpperCase(), /[ऀ-ॿ]/.test(v.top) ? "400 SIZE 'Tiro Devanagari Hindi'" : "600 SIZE 'DM Sans'", 30, 14);
-    wrap(v.title, "400 SIZE 'Great Vibes'", 120, 18);
+    const deva = /[ऀ-ॿ]/;
+    if (v.top) wrap(deva.test(v.top) ? v.top : v.top.toUpperCase(), deva.test(v.top) ? "400 SIZE 'Tiro Devanagari Hindi'" : "600 SIZE 'DM Sans'", 30, 14);
+    wrap(v.title, deva.test(v.title) ? "400 SIZE 'Tiro Devanagari Hindi'" : "400 SIZE 'Great Vibes'", deva.test(v.title) ? 90 : 120, 18);
     if (v.sub) wrap(v.sub, "500 SIZE 'DM Sans'", 38, 10);
     lines.push({ rule: true, size: 30, gap: 10 });
     if (v.when) wrap(v.when, "600 SIZE 'Cormorant Garamond'", 46, 8);
     if (v.venue) wrap(v.venue, "500 SIZE 'DM Sans'", 34, 8);
-    if (v.host) wrap(v.host.toUpperCase(), "600 SIZE 'DM Sans'", 27, 8);
+    if (v.host) wrap(deva.test(v.host) ? v.host : v.host.toUpperCase(), "600 SIZE 'DM Sans'", 27, 8);
     const total = lines.reduce((a, l) => a + l.size * 1.15 + l.gap, 0);
     const top = H * T / 100, bottom = H * (1 - B / 100); let y = top + Math.max(0, (bottom - top - total) / 2);
-    g.textAlign = "center"; g.textBaseline = "top"; g.fillStyle = t.color; g.strokeStyle = t.color;
+    g.textAlign = "center"; g.textBaseline = "top"; g.fillStyle = t.color;
     if (t.dark) { g.shadowColor = "rgba(0,0,0,.45)"; g.shadowBlur = 8; }
     for (const ln of lines) {
       if (ln.rule) { g.globalAlpha = .6; g.fillRect(cx - 150, y + ln.size / 2, 300, 2); g.save(); g.translate(cx, y + ln.size / 2 + 1); g.rotate(Math.PI / 4); g.fillRect(-9, -9, 18, 18); g.restore(); g.globalAlpha = 1; y += ln.size + ln.gap; continue; }
       g.font = ln.font; g.fillText(ln.l, cx, y); y += ln.size * 1.15 + ln.gap;
     }
     g.shadowBlur = 0; g.globalAlpha = .7; g.font = "500 22px 'DM Sans'"; g.fillStyle = t.dark ? "#fff" : "#392820"; g.fillText("Made free with BFI · bfi-royal-heritage.vercel.app", W / 2, H - 40); g.globalAlpha = 1;
-    return new Promise((res) => c.toBlob(res, "image/png"));
+    return c;
   }
-  const fname = () => `bfi-${t.id}-card.png`;
-  $("#mk-download").onclick = async (e) => { const btn = e.currentTarget; setBusy(btn, true, "Preparing…");
-    try { const blob = await render(); const a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = fname(); a.click(); toast("Card downloaded"); }
-    catch { toast("Couldn't create the image. Please try again."); } finally { setBusy(btn, false); } };
+  // 2) place it on the chosen canvas size (status/square get a soft blurred backdrop)
+  async function render() {
+    const cardC = await renderCard(), S = SIZES[size];
+    if (size === "card") return cardC;
+    const c = document.createElement("canvas"); c.width = S.w; c.height = S.h; const g = c.getContext("2d");
+    const sc = Math.max(S.w / cardC.width, S.h / cardC.height);
+    g.filter = "blur(28px) brightness(.8)"; g.drawImage(cardC, (S.w - cardC.width * sc) / 2 - 40, (S.h - cardC.height * sc) / 2 - 40, cardC.width * sc + 80, cardC.height * sc + 80); g.filter = "none";
+    g.fillStyle = "rgba(0,0,0,.18)"; g.fillRect(0, 0, S.w, S.h);
+    const fit = Math.min((S.w * .86) / cardC.width, (S.h * .86) / cardC.height), w = cardC.width * fit, h = cardC.height * fit;
+    g.shadowColor = "rgba(0,0,0,.45)"; g.shadowBlur = 40; g.shadowOffsetY = 16;
+    g.drawImage(cardC, (S.w - w) / 2, (S.h - h) / 2, w, h); g.shadowBlur = 0;
+    return c;
+  }
+  const blobOf = (c, type, q) => new Promise((res) => c.toBlob(res, type, q));
+  const fname = (ext) => `bfi-${t.id}-${size}${blank() ? "-blank" : ""}.${ext}`;
+  const save = (blob, name) => { const a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = name; document.body.append(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(a.href), 4000); };
+  $$("[data-fmt]").forEach((btn) => (btn.onclick = async () => {
+    const fmt = btn.dataset.fmt; setBusy(btn, true, "…");
+    try {
+      const c = await render();
+      if (fmt === "png") save(await blobOf(c, "image/png"), fname("png"));
+      else if (fmt === "jpg") save(await blobOf(c, "image/jpeg", .92), fname("jpg"));
+      else { const jpg = new Uint8Array(await (await blobOf(c, "image/jpeg", .92)).arrayBuffer()); save(jpegToPdf(jpg, c.width, c.height, SIZES[size].pt), fname("pdf")); }
+      toast(`${fmt.toUpperCase()} downloaded`);
+    } catch { toast("Couldn't create the file. Please try again."); } finally { setBusy(btn, false); }
+  }));
   $("#mk-share").onclick = async (e) => { const btn = e.currentTarget; setBusy(btn, true, "Preparing…");
-    try { const blob = await render(); const file = new File([blob], fname(), { type: "image/png" });
+    try { const blob = await blobOf(await render(), "image/png"); const file = new File([blob], fname("png"), { type: "image/png" });
       if (navigator.canShare?.({ files: [file] })) await navigator.share({ files: [file], text: `${val().title} – you're invited!` });
-      else { const a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = fname(); a.click(); window.open(`https://wa.me/?text=${encodeURIComponent(`${val().title} – you're invited! (card image attached)`)}`, "_blank", "noopener"); toast("Card downloaded: attach it in WhatsApp"); }
-    } catch (err) { if (err?.name !== "AbortError") toast("Couldn't share. Try Download instead."); } finally { setBusy(btn, false); } };
+      else { save(blob, fname("png")); window.open(`https://wa.me/?text=${encodeURIComponent(`${val().title} – you're invited! (card image attached)`)}`, "_blank", "noopener"); toast("Card downloaded: attach it in WhatsApp"); }
+    } catch (err) { if (err?.name !== "AbortError") toast("Couldn't share. Try a download instead."); } finally { setBusy(btn, false); } };
 };
 
 /* ---------- guide: copy wording ---------- */

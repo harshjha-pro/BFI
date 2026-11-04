@@ -11,7 +11,7 @@ from html import escape
 from pathlib import Path
 
 OUT = Path(__file__).resolve().parent.parent / "site"
-V = "20261103d"  # bump to bust browser caches for css/js
+V = "20261104a"  # bump to bust browser caches for css/js
 BASE = "https://bfi-royal-heritage.vercel.app"
 IMGBASE = "https://oaosapkkzoynaqpnmvrj.supabase.co/storage/v1/object/public/site/"
 BIZ = {
@@ -285,7 +285,7 @@ HOME_FAQ = [
 HOME = f'''
 <section class="hero">
   <div class="hero-art" data-img="hero.jpg" role="img" aria-label="Rajasthani palace arch with royal elephants and palace skyline"></div>
-  <div class="hero-glow"></div>
+  <div class="hero-glow"></div><div class="petals" id="hero-petals" aria-hidden="true"></div>
   <div class="hero-in"><div class="hero-content">
     <p class="deva" lang="hi">॥ श्री गणेशाय नमः ॥</p>
     <img class="hero-logo" src="img/logo.webp" alt="BFI Marwari Invitations" width="431" height="374" fetchpriority="high">
@@ -302,6 +302,7 @@ HOME = f'''
   {strip_item("zap", "Quick Delivery", "From 24 hours")}
 </div></section>
 
+<div class="marquee" aria-label="Free card templates"><div class="marquee-track"><a href="free-cards.html?t=wedding">Free Wedding card</a><a href="free-cards.html?t=save-the-date">Free Save the Date card</a><a href="free-cards.html?t=sagai">Free Sagai card</a><a href="free-cards.html?t=birthday-kids">Free Kids' Birthday card</a><a href="free-cards.html?t=birthday-gold">Free Birthday card</a><a href="free-cards.html?t=anniversary">Free Anniversary card</a><a href="free-cards.html?t=griha-pravesh">Free Griha Pravesh card</a><a href="free-cards.html?t=godh-bharai">Free Godh Bharai card</a><a href="free-cards.html?t=naamkaran">Free Naamkaran card</a><a href="free-cards.html?t=mundan">Free Mundan card</a><a href="free-cards.html?t=puja">Free Bhajan Sandhya card</a><a href="free-cards.html?t=diwali">Free Diwali card</a><a href="free-cards.html?t=holi">Free Holi Milan card</a><a href="free-cards.html?t=gangaur-teej">Free Teej & Gangaur card</a><a href="free-cards.html?t=retirement">Free Retirement card</a><a href="free-cards.html?t=prayer-meet">Free Prayer Meet card</a><a href="free-cards.html?t=wedding">Free Wedding card</a><a href="free-cards.html?t=save-the-date">Free Save the Date card</a><a href="free-cards.html?t=sagai">Free Sagai card</a><a href="free-cards.html?t=birthday-kids">Free Kids' Birthday card</a><a href="free-cards.html?t=birthday-gold">Free Birthday card</a><a href="free-cards.html?t=anniversary">Free Anniversary card</a><a href="free-cards.html?t=griha-pravesh">Free Griha Pravesh card</a><a href="free-cards.html?t=godh-bharai">Free Godh Bharai card</a><a href="free-cards.html?t=naamkaran">Free Naamkaran card</a><a href="free-cards.html?t=mundan">Free Mundan card</a><a href="free-cards.html?t=puja">Free Bhajan Sandhya card</a><a href="free-cards.html?t=diwali">Free Diwali card</a><a href="free-cards.html?t=holi">Free Holi Milan card</a><a href="free-cards.html?t=gangaur-teej">Free Teej & Gangaur card</a><a href="free-cards.html?t=retirement">Free Retirement card</a><a href="free-cards.html?t=prayer-meet">Free Prayer Meet card</a></div></div>
 <section class="sec"><div class="wrap">
   <div class="sec-head center reveal"><h2>Explore Our Invitation Collections</h2>{ORN}</div>
   <div class="tiles reveal">
@@ -855,15 +856,20 @@ page("404", "Page not found · BFI Marwari Invitations", "Page not found.", NF, 
 # ---------------- Free digital card maker (any occasion) ----------------
 FREE_FAQ = [
     ("Is the card maker really free?", "Yes. Choose a template, type your details and download the card as an image or share it on WhatsApp. No sign-up and no watermark on your text."),
-    ("Which occasions are included?", "Kids' and adult birthdays, wedding anniversary, Griha Pravesh (housewarming), Godh Bharai (baby shower), Sagai (engagement), puja or bhajan sandhya, and Diwali get-togethers."),
+    ("Which occasions are included?", "16 templates: wedding, save the date, Sagai, anniversary, kids' and adult birthdays, Godh Bharai, Naamkaran, Mundan, Griha Pravesh, puja or bhajan sandhya, Diwali, Holi, Teej and Gangaur, retirement and prayer meet."),
+    ("Can I download a PDF to print?", "Yes. Download as PNG, JPG or a print-ready PDF. Choose Card size for printing, Status size for WhatsApp or Instagram stories, or Square for posts. You can also download any template blank, without text."),
     ("Can I write in Hindi?", "Yes. Type in Hindi or English; Devanagari is supported in every text box."),
     ("Can BFI make a full invitation website for my event?", "Yes. For weddings and big family functions we make a full invitation website with every event, maps, music and RSVP. See <a href='pricing.html'>pricing</a>."),
 ]
 FREE_PAGE = f'''
 <section class="phead"><div class="wrap"><p class="eyebrow">Free tool</p><h1 style="margin-top:8px">Free Digital Invitation Card Maker</h1>
-  <p class="lead">Birthday, anniversary, Griha Pravesh, Godh Bharai, Sagai, puja or Diwali: pick a template, add your details and share on WhatsApp in a minute. Free, no sign-up.</p></div></section>
+  <p class="lead">16 free templates for weddings, birthdays, Griha Pravesh, Godh Bharai, Naamkaran, Mundan, puja, Diwali, Holi and more. Add your details and download as PNG, JPG or PDF, or share on WhatsApp. Free, no sign-up.</p></div></section>
 <section class="sec" style="padding-top:32px"><div class="wrap">
-  <h2 style="font-size:26px;margin-bottom:14px">1. Choose a template</h2>
+  <h2 style="font-size:26px;margin-bottom:14px">1. Choose a template <small class="muted" style="font:500 15px var(--sans)">(16 free designs)</small></h2>
+  <div class="chips tpl-cats" id="tpl-cats" role="group" aria-label="Filter templates">
+    <button class="chip" data-cat="all" aria-pressed="true">All</button><button class="chip" data-cat="wedding" aria-pressed="false">Wedding &amp; Sagai</button>
+    <button class="chip" data-cat="birthday" aria-pressed="false">Birthday</button><button class="chip" data-cat="baby" aria-pressed="false">Baby</button>
+    <button class="chip" data-cat="festival" aria-pressed="false">Puja &amp; Festivals</button><button class="chip" data-cat="other" aria-pressed="false">Other</button></div>
   <div class="tpl-grid" id="tpl-grid"></div>
   <div class="maker" id="maker">
     <div class="panel"><h2 style="font-size:26px;margin-bottom:14px">2. Add your details</h2>
@@ -877,7 +883,14 @@ FREE_PAGE = f'''
       </form></div>
     <aside class="maker-preview"><p class="eyebrow center" style="margin-bottom:12px">3. Preview, download &amp; share</p>
       <div class="mk-card inv-wrap" id="mk-card"></div>
-      <div class="mk-actions"><button class="btn btn-primary" id="mk-download" type="button">{icon(I["download"])} Download card (PNG)</button>
+      <div class="mk-actions">
+        <div class="dl-panel">
+          <p class="label">Size</p>
+          <div class="seg" id="mk-size" role="group" aria-label="Size"><button type="button" data-size="card" aria-pressed="true">Card<small>2:3 print</small></button><button type="button" data-size="status" aria-pressed="false">Status<small>WhatsApp / Insta</small></button><button type="button" data-size="square" aria-pressed="false">Square<small>Post</small></button></div>
+          <label class="check"><input type="checkbox" id="mk-blank"> Blank template (no text, write by hand or in any app)</label>
+          <p class="label">Download as</p>
+          <div class="fmt"><button class="btn btn-primary" type="button" data-fmt="png">PNG</button><button class="btn btn-outline" type="button" data-fmt="jpg">JPG</button><button class="btn btn-outline" type="button" data-fmt="pdf">PDF</button></div>
+        </div>
         <button class="btn btn-wa" id="mk-share" type="button">{WA} Share on WhatsApp</button>
         <p class="center muted" style="font-size:13px">Planning a wedding? <a href="demo.html">See a full invitation website</a>.</p></div></aside>
   </div>
@@ -891,6 +904,10 @@ FREE_PAGE = f'''
     <div><h3>Godh Bharai &amp; baby shower</h3><p>Soft jhoola and floral designs to welcome the little one.</p></div>
     <div><h3>Sagai &amp; ring ceremony</h3><p>Rich teal and gold for the engagement; upgrade to a full wedding website later.</p></div>
     <div><h3>Puja, jagran &amp; Diwali</h3><p>Diyas, bells and rangoli for satsang, bhajan sandhya and festival get-togethers.</p></div>
+    <div><h3>Naamkaran &amp; Mundan</h3><p>Cradle and puja-thali designs for your little one's naming and first-haircut ceremonies.</p></div>
+    <div><h3>Holi, Teej &amp; Gangaur</h3><p>Colourful gulal and leheriya designs for festival parties and kitty get-togethers.</p></div>
+    <div><h3>Save the date &amp; wedding</h3><p>Announce the date early, then upgrade to a full BFI invitation website.</p></div>
+    <div><h3>Retirement &amp; prayer meet</h3><p>Dignified designs to honour a career, or to remember a loved one.</p></div>
   </div>
 </div></section>
 <section class="sec"><div class="wrap split" style="align-items:start">
@@ -898,8 +915,8 @@ FREE_PAGE = f'''
     <div class="row" style="margin-top:18px"><a class="btn btn-primary" href="invitations.html">Wedding invitations</a><a class="btn btn-wa" data-wa>{WA} Ask on WhatsApp</a></div></div>
   <div>{faq_html(FREE_FAQ)}</div>
 </div></section>'''
-page("free-cards", "Free Digital Invitation Card Maker: Birthday, Anniversary, Griha Pravesh | BFI",
-     "Make a free digital invitation card for a birthday, anniversary, Griha Pravesh, Godh Bharai, Sagai, puja or Diwali. Add your details, download and share on WhatsApp.",
+page("free-cards", "Free Invitation Card Maker: 16 Templates, PNG, JPG & PDF | BFI",
+     "Free digital invitation cards for weddings, birthdays, Griha Pravesh, Godh Bharai, Naamkaran, Mundan, puja, Diwali, Holi and more. Download PNG, JPG or PDF, or share on WhatsApp.",
      FREE_PAGE, "free-cards", ld=[faq_ld(FREE_FAQ), {"@context": "https://schema.org", "@type": "WebApplication", "name": "BFI Free Digital Invitation Card Maker",
      "url": BASE + "/free-cards.html", "applicationCategory": "DesignApplication", "operatingSystem": "Any", "offers": {"@type": "Offer", "price": 0, "priceCurrency": "INR"},
      "provider": {"@id": BASE + "/#business"}}])
@@ -927,7 +944,7 @@ PUBLIC = ["", "invitations.html", "pricing.html", "how-it-works.html", "demo.htm
 - [How it works]({BASE}/how-it-works.html): choose, share details, preview and approve, share
 - [Live demo]({BASE}/demo.html): a sample invitation as guests see it
 - [Marwari wedding guide]({BASE}/guide.html): rituals in order, invitation wording in Hindi and English, send-out checklist
-- [Free card maker]({BASE}/free-cards.html): free digital cards for birthdays, anniversaries, Griha Pravesh, Godh Bharai, Sagai, puja and Diwali
+- [Free card maker]({BASE}/free-cards.html): 16 free templates (wedding, save the date, Sagai, anniversary, birthdays, Godh Bharai, Naamkaran, Mundan, Griha Pravesh, puja, Diwali, Holi, Teej/Gangaur, retirement, prayer meet); download PNG, JPG or PDF
 - [About]({BASE}/about.html) · [Contact]({BASE}/contact.html)
 """ + "".join(f"- [{i['name']}]({BASE}/design-{i['slug']}.html): {COLL[i['collection']]} collection, from ₹{i['price']:,}\n" for i in CATALOG))
 (OUT / "bfi-contact.vcf").write_text(f"""BEGIN:VCARD\r\nVERSION:3.0\r\nFN:BFI Marwari Invitations\r\nORG:BFI · Marwari Invitations\r\nTITLE:Digital wedding invitations\r\nTEL;TYPE=CELL,VOICE:{BIZ['tel']}\r\nEMAIL;TYPE=INTERNET:{BIZ['email']}\r\nURL:{BASE}/\r\nADR;TYPE=WORK:;;;{BIZ['city']};{BIZ['region']};;India\r\nNOTE:WhatsApp us for wedding invitations. {BIZ['hours']}.\r\nEND:VCARD\r\n""")
