@@ -11,7 +11,7 @@ from html import escape
 from pathlib import Path
 
 OUT = Path(__file__).resolve().parent.parent / "site"
-V = "20261104a"  # bump to bust browser caches for css/js
+V = "20261104b"  # bump to bust browser caches for css/js
 BASE = "https://bfi-royal-heritage.vercel.app"
 IMGBASE = "https://oaosapkkzoynaqpnmvrj.supabase.co/storage/v1/object/public/site/"
 BIZ = {
@@ -177,7 +177,7 @@ def header(active):
 def footer():
     return f'''<footer class="ftr"><div class="wrap">
   <div class="ftr-grid">
-    <div><img class="ftr-logo" src="img/logo-gold.webp" alt="BFI Marwari Invitations" width="431" height="374" loading="lazy"><p style="margin-top:10px;max-width:280px">Premium digital wedding invitations for Marwari families, crafted with tradition and shared with love.</p>
+    <div><a class="ftr-plaque" href="index.html"><img src="img/logo.webp" alt="BFI Marwari Invitations" width="431" height="374" loading="lazy"></a><p style="margin-top:10px;max-width:280px">Premium digital wedding invitations for Marwari families, crafted with tradition and shared with love.</p>
       <a class="btn btn-sm btn-gold" style="margin-top:14px" href="bfi-contact.vcf" download>{icon(I["download"])} Save our contact</a></div>
     <div><h4>Invitations</h4><ul><li><a href="invitations.html">All designs</a></li><li><a href="invitations.html?c=royal">Royal collection</a></li><li><a href="invitations.html?c=traditional">Traditional collection</a></li><li><a href="invitations.html?c=elegant">Elegant collection</a></li><li><a href="invitations.html?c=modern">Modern collection</a></li><li><a href="demo.html">See a live demo</a></li></ul></div>
     <div><h4>Studio</h4><ul><li><a href="pricing.html">Pricing</a></li><li><a href="how-it-works.html">How it works</a></li><li><a href="customize.html">Customize an invitation</a></li><li><a href="guide.html">Marwari wedding guide</a></li><li><a href="free-cards.html">Free card maker</a></li><li><a href="about.html">About BFI</a></li><li><a href="login.html">My account</a></li></ul></div>
@@ -360,7 +360,7 @@ HOME = f'''
 </div></section>
 
 <section class="cta-band"><div class="wrap center">
-  <img src="img/logo-gold.webp" alt="" width="431" height="374" loading="lazy" style="width:150px;height:auto;margin:0 auto 8px">
+  <p class="deva" lang="hi" style="color:var(--gold)">॥ शुभ विवाह ॥</p>
   <h2>Let's Create Your Invitation</h2>
   <p>Tell us your names and wedding date. We'll suggest designs within the hour.</p>
   <div class="row" style="justify-content:center;margin-top:20px"><a class="btn btn-gold" href="customize.html">Start Customizing</a><a class="btn btn-wa" data-wa>{WA} Chat on WhatsApp</a></div>
@@ -635,8 +635,14 @@ DEMO = f'''
       <div class="wish"><b>Ankit &amp; Shruti</b><p>Can't wait to dance at the sangeet! Love you both.</p></div></div></section>
   <section class="dv-sec reveal-dv"><h2>Share the invitation</h2><div class="row" style="justify-content:center"><button class="btn btn-wa" id="dv-share">{WA} Share on WhatsApp</button><button class="btn btn-ghost" id="dv-copy">{icon(I["link"])} Copy link</button></div></section>
   <section class="dv-sec dv-switch"><p class="eyebrow">See this demo in another design</p><div class="dv-designs" id="dv-designs"></div></section>
-  <footer class="dv-foot"><img src="img/logo-gold.webp" alt="BFI Marwari Invitations" width="431" height="374" loading="lazy"><p>This is a sample. Your invitation will carry your names, your functions and your design.</p>
-    <div class="row" style="justify-content:center;margin-top:14px"><a class="btn btn-gold" id="demo-cta2" href="customize.html">Create my invitation</a><a class="btn btn-wa" data-wa="Namaste BFI 🙏 I saw the live demo and would like an invitation like this.">{WA} WhatsApp us</a></div></footer>
+  <footer class="dv-cta">
+    <p class="eyebrow">Liked this invitation?</p>
+    <h2>Make one for your family</h2>
+    <p class="muted">Your names, every function and your favourite design, ready in 24–72 hours.</p>
+    <ul class="dv-pills"><li>From ₹3,999</li><li>Hindi &amp; English</li><li>Pay 50% after approval</li></ul>
+    <div class="dv-cta-btns"><a class="btn btn-primary" id="demo-cta2" href="customize.html">Create my invitation {icon(I["arrow"])}</a><a class="btn btn-wa" data-wa="Namaste BFI 🙏 I saw the live demo and would like an invitation like this.">{WA} WhatsApp us</a></div>
+    <a class="dv-brand" href="index.html" aria-label="BFI Marwari Invitations home"><img src="img/logo-sm.webp" alt="BFI Marwari Invitations" width="200" height="174" loading="lazy"><span>Made with love by BFI · Marwari Invitations</span></a>
+  </footer>
 </main>
 <button class="music-btn" id="music" aria-pressed="false" aria-label="Play music">{icon(I["music"])}</button>'''
 page("demo", "Live Demo: Digital Marwari Wedding Invitation | BFI",

@@ -680,3 +680,16 @@ main{animation:pageIn .5s ease-out both}
 .tpl{animation:fadeUp .4s ease-out both}
 
 @media(prefers-reduced-motion:reduce){main,.hero-art,.hero-content>*,.hero-logo,.wa-float,.marquee-track,.tpl{animation:none!important}}
+
+/* v6: real logo everywhere (no recoloured gold logo) */
+.ftr-plaque{display:inline-block;background:var(--ivory);padding:16px 20px 12px;border-radius:120px 120px 16px 16px;border:2px solid var(--gold);box-shadow:0 0 0 5px rgba(198,161,91,.18)}
+.ftr-plaque img{width:150px;height:auto;display:block}
+.dv-cta{margin:34px 0 0;padding:34px 22px 24px;text-align:center;background:var(--paper);border:1px solid var(--gold);border-radius:22px;box-shadow:var(--shadow);position:relative}
+.dv-cta::before{content:"";position:absolute;inset:8px;border:1px solid rgba(198,161,91,.35);border-radius:16px;pointer-events:none}
+.dv-cta h2{font-size:32px;margin:6px 0 8px}
+.dv-pills{list-style:none;padding:0;margin:16px 0 20px;display:flex;flex-wrap:wrap;justify-content:center;gap:8px}
+.dv-pills li{background:var(--tint);border:1px solid var(--beige);border-radius:var(--r-pill);padding:6px 12px;font-size:13.5px;font-weight:600;color:var(--brown)}
+.dv-cta-btns{display:grid;gap:10px;max-width:340px;margin:0 auto;position:relative}
+.dv-brand{display:flex;flex-direction:column;align-items:center;gap:6px;margin-top:24px;padding-top:18px;border-top:1px solid var(--beige);text-decoration:none;color:var(--muted);font-size:13px;position:relative}
+.dv-brand img{width:84px;height:auto}
+.dv{padding-bottom:90px}
