@@ -11,7 +11,7 @@ from html import escape
 from pathlib import Path
 
 OUT = Path(__file__).resolve().parent.parent / "site"
-V = "20261104e"  # bump to bust browser caches for css/js
+V = "20261104f"  # bump to bust browser caches for css/js
 BASE = "https://bfi-royal-heritage.vercel.app"
 IMGBASE = "https://oaosapkkzoynaqpnmvrj.supabase.co/storage/v1/object/public/site/"
 BIZ = {
@@ -52,6 +52,14 @@ CATALOG = [
 CATALOG = [dict(slug=s, name=n, collection=c, tier=t, price=p, tagline=tg, desc=d, features=f, image=f"inv-{s}.jpg")
            for s, n, c, t, p, tg, d, f in CATALOG]
 COLL = {"royal": "Royal", "traditional": "Traditional", "elegant": "Elegant", "modern": "Modern"}
+TAGS = {"rajwada-royale": "royal luxury rajasthani", "gulmohar-classic": "traditional floral rajasthani", "gulabi-bagh": "elegant floral",
+        "mor-pankh": "modern rajasthani", "neel-mahal": "royal luxury modern", "gajraj-swagat": "traditional rajasthani",
+        "sheesh-mahal": "royal luxury rajasthani", "chhatri": "elegant minimal modern"}
+BEST = {"rajwada-royale": "Grand traditional weddings", "gulmohar-classic": "Classic family weddings", "gulabi-bagh": "Romantic day weddings",
+        "mor-pankh": "Modern couples & destination weekends", "neel-mahal": "Evening receptions & sangeet nights", "gajraj-swagat": "Big Marwari family weddings",
+        "sheesh-mahal": "Palace & destination weddings", "chhatri": "Intimate, minimal weddings"}
+FILTERS = [("all", "All"), ("royal", "Royal"), ("traditional", "Traditional"), ("elegant", "Elegant"), ("modern", "Modern"),
+           ("floral", "Floral"), ("minimal", "Minimal"), ("luxury", "Luxury"), ("rajasthani", "Rajasthani")]
 DARK = {"rajwada-royale", "mor-pankh", "neel-mahal", "sheesh-mahal"}
 INSET = {"rajwada-royale": "24% 20% 37% 20%", "gulmohar-classic": "15% 17% 15% 17%", "gulabi-bagh": "17% 19% 17% 19%",
          "mor-pankh": "14% 24% 30% 16%", "neel-mahal": "13% 16% 40% 16%", "gajraj-swagat": "12% 15% 43% 15%",
@@ -155,7 +163,7 @@ ORG_LD = {
 
 def header(active):
     links = "".join(f'<a href="{k}.html"{" aria-current=page" if k == active else ""}>{t}</a>' for k, t in NAV)
-    mlinks = "".join(f'<a href="{k}.html">{t}</a>' for k, t in NAV) + '<a href="about.html">About</a><a href="customize.html">Customize</a><a href="guide.html">Wedding Guide</a>'
+    mlinks = "".join(f'<a href="{k}.html">{t}</a>' for k, t in NAV) + '<a href="about.html">About</a><a href="customize.html">Customize</a><a href="guide.html">Wedding Guide</a><a href="faq.html">FAQ</a>'
     return f'''<a class="skip" href="#main">Skip to content</a>
 <header class="hdr"><div class="wrap hdr-in">
   <a class="brand" href="index.html"><img src="img/logo-sm.webp" alt="BFI Marwari Invitations, home" width="200" height="174"></a>
@@ -180,7 +188,7 @@ def footer():
     <div><a class="ftr-plaque" href="index.html"><img src="img/logo.webp" alt="BFI Marwari Invitations" width="431" height="374" loading="lazy"></a><p style="margin-top:10px;max-width:280px">Premium digital wedding invitations for Marwari families, crafted with tradition and shared with love.</p>
       <a class="btn btn-sm btn-gold" style="margin-top:14px" href="bfi-contact.vcf" download>{icon(I["download"])} Save our contact</a></div>
     <div><h4>Invitations</h4><ul><li><a href="invitations.html">All designs</a></li><li><a href="invitations.html?c=royal">Royal collection</a></li><li><a href="invitations.html?c=traditional">Traditional collection</a></li><li><a href="invitations.html?c=elegant">Elegant collection</a></li><li><a href="invitations.html?c=modern">Modern collection</a></li><li><a href="demo.html">See a live demo</a></li></ul></div>
-    <div><h4>Studio</h4><ul><li><a href="pricing.html">Pricing</a></li><li><a href="how-it-works.html">How it works</a></li><li><a href="customize.html">Customize an invitation</a></li><li><a href="guide.html">Marwari wedding guide</a></li><li><a href="free-cards.html">Free card maker</a></li><li><a href="about.html">About BFI</a></li><li><a href="login.html">My account</a></li></ul></div>
+    <div><h4>Studio</h4><ul><li><a href="pricing.html">Pricing</a></li><li><a href="how-it-works.html">How it works</a></li><li><a href="customize.html">Customize an invitation</a></li><li><a href="guide.html">Marwari wedding guide</a></li><li><a href="faq.html">FAQ</a></li><li><a href="free-cards.html">Free card maker</a></li><li><a href="about.html">About BFI</a></li><li><a href="login.html">My account</a></li></ul></div>
     <div><h4>Contact</h4><ul><li><a data-wa>WhatsApp {BIZ["phone"]}</a></li><li><a href="tel:{BIZ["tel"]}">Call {BIZ["phone"]}</a></li><li><a href="mailto:{BIZ["email"]}">{BIZ["email"]}</a></li><li>{BIZ["city"]}, {BIZ["region"]}, India</li><li>{BIZ["hours"]}</li></ul></div>
   </div>
   <div class="ftr-bot"><span>© <span data-year></span> BFI · Marwari Invitations · <a href="privacy.html">Privacy</a> · <a href="terms.html">Terms</a></span><span lang="hi" style="font-family:var(--deva);color:var(--gold)">॥ शुभ विवाह ॥</span></div>
@@ -219,7 +227,7 @@ def page(slug, title, desc, body, active=None, bar=True, ld=None, index=True, og
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500;1,600&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&family=Tiro+Devanagari+Hindi&family=Great+Vibes&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/site.css?v={V}">{lds}
 </head>'''
-    scripts = f'''<script src="js/vendor/supabase.js?v=2.45.4"></script>
+    scripts = (f'<script src="js/vendor/qrcode.js?v=1.4.4"></script>\n' if slug == "demo" else "") + f'''<script src="js/vendor/supabase.js?v=2.45.4"></script>
 <script src="js/config.js?v={V}"></script>
 <script src="js/app.js?v={V}"></script>'''
     if chrome:
@@ -253,11 +261,13 @@ def strip_item(ic, t, s):
 
 def card(inv):
     tone = "pv-dark" if inv["slug"] in DARK else "pv-light"
-    return f'''<article class="card">
+    return f'''<article class="card" data-tags="{TAGS[inv["slug"]]}">
     <button class="fav" data-fav="{inv["slug"]}" aria-pressed="false" aria-label="Save {inv["name"]} to favourites">{icon(I["heart"])}</button>
     <a class="card-img" href="design-{inv["slug"]}.html"><img src="{IMGBASE}{inv["image"]}" alt="{inv["name"]} invitation: {inv["tagline"]}" loading="lazy" width="360" height="540">{invite_text(inv, full=False)}</a>
     <div class="card-body"><span class="tag">{COLL[inv["collection"]]}</span><h3><a href="design-{inv["slug"]}.html">{inv["name"]}</a></h3>
-      <div class="card-meta"><span>{inv["tier"]}</span><span>from <b>{inr(inv["price"])}</b></span></div></div></article>'''
+      <p class="card-desc">{inv["tagline"]}</p><p class="card-best">Best for: {BEST[inv["slug"]]}</p>
+      <div class="card-meta"><span>{inv["tier"]}</span><span>from <b>{inr(inv["price"])}</b></span></div>
+      <div class="card-acts"><a class="btn btn-sm btn-ghost" href="demo.html?design={inv["slug"]}">{icon(I["eye"])} Live demo</a><a class="btn btn-sm btn-primary" href="customize.html?design={inv["slug"]}">Customize</a></div></div></article>'''
 
 
 def package_cards(compact=False):
@@ -273,78 +283,104 @@ def package_cards(compact=False):
 
 
 HOME_FAQ = [
-    ("What is a digital wedding invitation?", "It is a beautiful mobile invitation website for your wedding: your names, both families, every function with date, time and Google Maps, plus music, photos and RSVP. Guests open it from a WhatsApp link or a QR code on a printed card."),
-    ("How much does a digital Marwari wedding invitation cost at BFI?", f"Packages start at {inr(3999)} (Basic), {inr(6999)} (Premium) and {inr(11999)} (Luxury). You pay 50% to begin and 50% after you approve the final invitation. See the <a href='pricing.html'>pricing page</a>."),
-    ("How fast will my invitation be ready?", "Basic in 24 hours, Premium in 48 hours and Luxury in 72 hours after we receive your complete details."),
-    ("Can you write the invitation in Hindi or Marwari?", "Yes. Choose English, Hindi, Marwari with Hindi, or bilingual. We add traditional lines such as ॥ श्री गणेशाय नमः ॥ on request."),
-    ("Can I change details after sharing the link?", "Yes. The link stays the same, so guests always see the latest version. One round of changes is free and spelling fixes are always free."),
-    ("Do you serve families outside Rajasthan and NRIs?", "Yes. Everything happens on WhatsApp, so we work with Marwari families anywhere in India and abroad."),
+    ("What is a digital Marwari wedding invitation?", "A mobile invitation website for your wedding: couple and family names, every function with date, time and Google Maps, plus music, photos and RSVP on higher packages. Guests open it from a WhatsApp link or a QR code."),
+    ("How much does it cost?", f"Basic from {inr(3999)}, Premium from {inr(6999)} and Luxury from {inr(11999)}. You pay 50% to start and 50% after you approve. See <a href='pricing.html'>pricing</a>."),
+    ("How fast will it be ready?", "Basic in 24 hours, Premium in 48 hours and Luxury in 72 hours, counted from when we have all your details and the advance."),
+    ("Can it include Mayra, Pithi and other rituals?", "Yes. Add any function: Ganesh Sthapana, Mayra, Pithi, Mehendi, Mahila Sangeet, Baraat, Phere, Reception or your own family rituals."),
+    ("Can the invitation be in Hindi or Marwari?", "Yes: English, Hindi, Marwari with Hindi, or bilingual, with traditional lines like ॥ श्री गणेशाय नमः ॥."),
+    ("Can I see it before paying the balance?", "Yes. You review a private preview on your phone, get one round of changes, and pay the remaining 50% only after you approve."),
 ]
 
 # ---------------- Home ----------------
+RITUAL_STRIP = [("Ganesh Sthapana", "The first invitation goes to Ganpati ji"), ("Mayra", "The mama's family arrives with gifts"),
+                ("Pithi", "Turmeric, songs and family blessings"), ("Mehendi", "Henna and the groom's hidden initials"),
+                ("Mahila Sangeet", "An evening led by the women of the family"), ("Baraat & Nikasi", "The groom rides out with music"),
+                ("Toran & Varmala", "At the bride's door, garlands exchanged"), ("Phere", "Seven vows around the sacred fire")]
+FEATURED = ["rajwada-royale", "gulmohar-classic", "neel-mahal", "chhatri"]
 HOME = f'''
-<section class="hero">
+<section class="hero hero-v2">
   <div class="hero-art" data-img="hero.jpg" role="img" aria-label="Rajasthani palace arch with royal elephants and palace skyline"></div>
-  <div class="hero-glow"></div><div class="petals" id="hero-petals" aria-hidden="true"></div>
-  <div class="hero-in"><div class="hero-content">
-    <p class="deva" lang="hi">॥ श्री गणेशाय नमः ॥</p>
-    <img class="hero-logo" src="img/logo.webp" alt="BFI Marwari Invitations" width="431" height="374" fetchpriority="high">
-    <h1 class="hero-title">Premium Digital Wedding Invitations for <em>Marwari Families</em></h1>
-    <p class="hero-sub">Every ritual, every elder's name, every venue: one royal invitation your guests open on WhatsApp.</p>
-    <div class="row"><a class="btn btn-primary" href="invitations.html">Explore Invitations {icon(I["arrow"])}</a><a class="btn btn-outline" href="demo.html">See a Live Demo</a></div>
-    <p class="trust">From {inr(3999)} · Ready in 24–72 hours · Hindi &amp; English</p>
-  </div></div>
+  <div class="hero-veil"></div><div class="petals" id="hero-petals" aria-hidden="true"></div>
+  <div class="wrap hero-grid">
+    <div class="hero-content hero-copy">
+      <p class="eyebrow">Digital Marwari Wedding Invitations</p>
+      <h1 class="hero-title">Your Royal Wedding Begins With a <em>Beautiful Invitation</em></h1>
+      <p class="hero-sub">Personalised digital kankotri and wedding invitation websites for Marwari families: every ritual, every elder's name, every venue, shared on WhatsApp.</p>
+      <div class="row hero-ctas"><a class="btn btn-primary" href="invitations.html" data-track="hero_explore">Explore Invitations {icon(I["arrow"])}</a><a class="btn btn-outline" href="demo.html" data-track="hero_demo">{icon(I["eye"])} View Live Demo</a></div>
+      <ul class="hero-facts"><li><b>From {inr(3999)}</b>Basic package</li><li><b>24–72 hrs</b>after your details</li><li><b>Pay 50%</b>after approval</li></ul>
+    </div>
+    <div class="hero-content hero-device">
+      <div class="phone hero-phone"><div class="phone-screen inv-wrap"><img data-img="inv-rajwada-royale.jpg" alt="Rajwada Royale invitation on a phone" width="720" height="1080" fetchpriority="high">{invite_text(CATALOG[0])}</div></div>
+      <span class="float-chip c1">{icon(I["pin"])} Maps for every function</span>
+      <span class="float-chip c2">{icon(I["rsvp"])} RSVP &amp; guest count</span>
+      <span class="float-chip c3">{icon(I["music"])} Shehnai music</span>
+    </div>
+  </div>
 </section>
 <section class="strip"><div class="wrap strip-grid">
-  {strip_item("diamond", "Premium Designs", "Royal &amp; elegant")}
+  {strip_item("diamond", "8 Premium Designs", "Each with a live demo")}
   {strip_item("phone", "Digital &amp; Shareable", "WhatsApp, link &amp; QR code")}
-  {strip_item("sliders", "Fully Customizable", "Names, events, language")}
-  {strip_item("zap", "Quick Delivery", "From 24 hours")}
+  {strip_item("sliders", "Fully Customizable", "Names, rituals, language")}
+  {strip_item("shield", "Pay After Approval", "50% advance, 50% on approval")}
 </div></section>
+<div class="marquee" aria-label="Free card templates"><div class="marquee-track">MARQUEE_LINKS</div></div>
 
-<div class="marquee" aria-label="Free card templates"><div class="marquee-track"><a href="free-cards.html?t=wedding">Free Wedding card</a><a href="free-cards.html?t=save-the-date">Free Save the Date card</a><a href="free-cards.html?t=sagai">Free Sagai card</a><a href="free-cards.html?t=birthday-kids">Free Kids' Birthday card</a><a href="free-cards.html?t=birthday-gold">Free Birthday card</a><a href="free-cards.html?t=anniversary">Free Anniversary card</a><a href="free-cards.html?t=griha-pravesh">Free Griha Pravesh card</a><a href="free-cards.html?t=godh-bharai">Free Godh Bharai card</a><a href="free-cards.html?t=naamkaran">Free Naamkaran card</a><a href="free-cards.html?t=mundan">Free Mundan card</a><a href="free-cards.html?t=puja">Free Bhajan Sandhya card</a><a href="free-cards.html?t=diwali">Free Diwali card</a><a href="free-cards.html?t=holi">Free Holi Milan card</a><a href="free-cards.html?t=gangaur-teej">Free Teej & Gangaur card</a><a href="free-cards.html?t=retirement">Free Retirement card</a><a href="free-cards.html?t=prayer-meet">Free Prayer Meet card</a><a href="free-cards.html?t=wedding">Free Wedding card</a><a href="free-cards.html?t=save-the-date">Free Save the Date card</a><a href="free-cards.html?t=sagai">Free Sagai card</a><a href="free-cards.html?t=birthday-kids">Free Kids' Birthday card</a><a href="free-cards.html?t=birthday-gold">Free Birthday card</a><a href="free-cards.html?t=anniversary">Free Anniversary card</a><a href="free-cards.html?t=griha-pravesh">Free Griha Pravesh card</a><a href="free-cards.html?t=godh-bharai">Free Godh Bharai card</a><a href="free-cards.html?t=naamkaran">Free Naamkaran card</a><a href="free-cards.html?t=mundan">Free Mundan card</a><a href="free-cards.html?t=puja">Free Bhajan Sandhya card</a><a href="free-cards.html?t=diwali">Free Diwali card</a><a href="free-cards.html?t=holi">Free Holi Milan card</a><a href="free-cards.html?t=gangaur-teej">Free Teej & Gangaur card</a><a href="free-cards.html?t=retirement">Free Retirement card</a><a href="free-cards.html?t=prayer-meet">Free Prayer Meet card</a></div></div>
 <section class="sec"><div class="wrap">
-  <div class="sec-head center reveal"><h2>Explore Our Invitation Collections</h2>{ORN}</div>
-  <div class="tiles reveal">
-    <a class="tile dark" href="invitations.html?c=royal"><img data-img="inv-rajwada-royale.jpg" alt="Royal collection invitation" loading="lazy" width="360" height="540"><span>Royal<small>Collection</small></span></a>
-    <a class="tile light" href="invitations.html?c=traditional"><img data-img="inv-gulmohar-classic.jpg" alt="Traditional collection invitation" loading="lazy" width="360" height="540"><span>Traditional<small>Collection</small></span></a>
-    <a class="tile light" href="invitations.html?c=elegant"><img data-img="inv-gulabi-bagh.jpg" alt="Elegant collection invitation" loading="lazy" width="360" height="540"><span>Elegant<small>Collection</small></span></a>
-    <a class="tile dark" href="invitations.html?c=modern"><img data-img="inv-mor-pankh.jpg" alt="Modern collection invitation" loading="lazy" width="360" height="540"><span>Modern<small>Collection</small></span></a>
-  </div>
-  <div class="center" style="margin-top:30px"><a class="btn btn-primary" href="invitations.html">View All Designs {icon(I["arrow"])}</a></div>
+  <div class="sec-head center"><p class="eyebrow">The collection</p><h2 style="margin-top:8px">Featured Invitation Designs</h2>{ORN}
+    <p class="lead" style="margin:12px auto 0">Open any live demo on your phone: that is exactly what your guests will see.</p></div>
+  <div class="grid-inv" id="featured">{"".join(card(next(i for i in CATALOG if i["slug"] == s_)) for s_ in FEATURED)}</div>
+  <div class="center" style="margin-top:30px"><a class="btn btn-primary" href="invitations.html">See all 8 designs {icon(I["arrow"])}</a></div>
 </div></section>
 
 <section class="why"><div class="why-grid">
   <div class="why-img" data-img="palace.jpg" role="img" aria-label="Rajasthani palace with bougainvillea"></div>
   <div class="why-body"><h2>Why Families Choose BFI</h2>
     <div class="why-list">
-      <div>{icon(I["crown"])}Made for Marwari rituals<small>Ganesh puja, Mayra, Pithi, Baraat, Phere</small></div>
+      <div>{icon(I["crown"])}Made for Marwari rituals<small>Ganesh Sthapana, Mayra, Pithi, Baraat, Phere</small></div>
       <div>{icon(I["users"])}Every name checked by hand<small>Elders and both families, in the right order</small></div>
       <div>{icon(I["clock"])}Ready in 24–72 hours<small>Clear timelines for every package</small></div>
       <div>{icon(I["shield"])}Pay half after approval<small>50% to start, 50% when you love it</small></div>
     </div></div>
 </div></section>
 
-<section class="sec"><div class="wrap split">
-  <div class="reveal"><div class="phone"><div class="phone-screen" data-img="couple.jpg" role="img" aria-label="Wedding invitation on a phone showing the couple under a floral arch"><div class="pv-text pv-light" style="inset:7% 12% 64%"><span class="pv-names" style="font-size:22px">Wedding<br>Invitation</span></div></div></div></div>
-  <div class="reveal">
+<section class="sec"><div class="wrap">
+  <div class="sec-head center"><p class="eyebrow">Simple process</p><h2 style="margin-top:8px">How It Works</h2>{ORN}</div>
+  <ol class="mini-steps">
+    <li><span>1</span><b>Choose a design</b><p>Browse the collection and open the live demo.</p></li>
+    <li><span>2</span><b>Share your details</b><p>Names, functions and venues: online or on WhatsApp.</p></li>
+    <li><span>3</span><b>Review your preview</b><p>Check it on your phone; one round of changes included.</p></li>
+    <li><span>4</span><b>Share with everyone</b><p>Your link, QR code and WhatsApp message.</p></li>
+  </ol>
+  <p class="center" style="margin-top:20px"><a href="how-it-works.html">See the full process, timeline and payment terms →</a></p>
+</div></section>
+
+<section class="sec sec-tint"><div class="wrap split">
+  <div><div class="phone"><div class="phone-screen" data-img="couple.jpg" role="img" aria-label="Wedding invitation on a phone showing the couple under a floral arch"></div></div></div>
+  <div>
     <p class="eyebrow">What your guests receive</p>
-    <h2 style="margin-top:10px">An invitation website, not just a picture</h2>
-    <p class="lead" style="margin-top:14px">Open the live demo on your phone: it is exactly what your relatives will see.</p>
-    <ul class="checks">
+    <h2 style="margin-top:10px">An Invitation Website, Not Just a Picture</h2>
+    <ul class="checks" style="margin-top:16px">
       <li>{icon(I["check"])}Couple, parents, grandparents and blessings, in Hindi or English</li>
       <li>{icon(I["check"])}Every function with date, time and one-tap Google Maps</li>
-      <li>{icon(I["check"])}Countdown, photo gallery and shehnai music</li>
-      <li>{icon(I["check"])}RSVP with guest count, plus a QR code for printed cards</li>
+      <li>{icon(I["check"])}Countdown, photo gallery and shehnai music (Premium &amp; Luxury)</li>
+      <li>{icon(I["check"])}RSVP with guest count (Premium &amp; Luxury)</li>
+      <li>{icon(I["check"])}A private link, a QR code for printed cards, and a ready WhatsApp message</li>
     </ul>
-    <div class="row"><a class="btn btn-primary" href="demo.html">Open the Live Demo {icon(I["arrow"])}</a><a class="btn btn-ghost" href="how-it-works.html">How it works</a></div>
+    <div class="row"><a class="btn btn-primary" href="demo.html">Open the Live Demo {icon(I["arrow"])}</a><a class="btn btn-ghost" href="pricing.html">Compare packages</a></div>
   </div>
 </div></section>
 
+<section class="sec"><div class="wrap">
+  <div class="sec-head center"><p class="eyebrow">Made for Marwari weddings</p><h2 style="margin-top:8px">Every Ritual Has Its Place</h2>{ORN}
+    <p class="lead" style="margin:12px auto 0">Your invitation lists the functions your family actually celebrates, in the right order and with the right names.</p></div>
+  <div class="rituals">{"".join(f'<div><b>{t}</b><span>{d}</span></div>' for t, d in RITUAL_STRIP)}</div>
+  <p class="center" style="margin-top:20px"><a href="guide.html">Read our Marwari wedding guide: rituals and invitation wording →</a></p>
+</div></section>
+
 <section class="sec sec-tint"><div class="wrap">
-  <div class="sec-head center reveal"><p class="eyebrow">Simple, honest pricing</p><h2 style="margin-top:8px">Choose Your Package</h2>{ORN}</div>
+  <div class="sec-head center"><p class="eyebrow">Simple, honest pricing</p><h2 style="margin-top:8px">Choose Your Package</h2>{ORN}</div>
   {package_cards(compact=True)}
-  <p class="center" style="margin-top:22px"><a href="pricing.html">Compare all features →</a></p>
+  <p class="center" style="margin-top:22px"><a href="pricing.html">Compare every feature, add-ons and payment terms →</a></p>
 </div></section>
 
 <section class="sec" id="reviews-sec" hidden><div class="wrap">
@@ -353,20 +389,25 @@ HOME = f'''
 </div></section>
 
 <section class="sec"><div class="wrap split" style="align-items:start">
-  <div><p class="eyebrow">Questions</p><h2 style="margin-top:8px">Frequently Asked</h2><p class="lead" style="margin-top:12px">Still unsure? Message us on WhatsApp and a designer will answer within an hour.</p>
-    <div class="row" style="margin-top:20px"><a class="btn btn-wa" data-wa>{WA} Ask on WhatsApp</a></div>
-    <a class="guide-teaser" href="guide.html">{icon(I["book"])}<span><b>Free: Marwari Wedding Guide</b><br><small>Rituals in order, invitation wording in Hindi &amp; English, and a send-out checklist.</small></span></a></div>
+  <div><p class="eyebrow">Questions</p><h2 style="margin-top:8px">Frequently Asked</h2><p class="lead" style="margin-top:12px">Still unsure? Message us on WhatsApp and a designer will answer.</p>
+    <div class="row" style="margin-top:20px"><a class="btn btn-wa" data-wa>{WA} Ask on WhatsApp</a><a class="btn btn-ghost" href="faq.html">All questions</a></div>
+    <a class="guide-teaser" href="free-cards.html">{icon(I["image"])}<span><b>Free card maker</b><br><small>16 free templates for birthdays, Griha Pravesh, Godh Bharai, Diwali and more.</small></span></a></div>
   <div>{faq_html(HOME_FAQ)}</div>
 </div></section>
 
 <section class="cta-band"><div class="wrap center">
   <p class="deva" lang="hi" style="color:var(--gold)">॥ शुभ विवाह ॥</p>
   <h2>Let's Create Your Invitation</h2>
-  <p>Tell us your names and wedding date. We'll suggest designs within the hour.</p>
+  <p>Tell us your names and wedding date. We'll suggest designs and confirm the price before you pay anything.</p>
   <div class="row" style="justify-content:center;margin-top:20px"><a class="btn btn-gold" href="customize.html">Start Customizing</a><a class="btn btn-wa" data-wa>{WA} Chat on WhatsApp</a></div>
 </div></section>
 <div class="skyline" data-img="skyline.jpg" aria-hidden="true"></div>
 '''
+OCC = [("wedding", "Wedding"), ("save-the-date", "Save the Date"), ("sagai", "Sagai"), ("birthday-kids", "Kids' Birthday"),
+       ("birthday-gold", "Birthday"), ("anniversary", "Anniversary"), ("griha-pravesh", "Griha Pravesh"), ("godh-bharai", "Godh Bharai"),
+       ("naamkaran", "Naamkaran"), ("mundan", "Mundan"), ("puja", "Bhajan Sandhya"), ("diwali", "Diwali"), ("holi", "Holi Milan"),
+       ("gangaur-teej", "Teej & Gangaur"), ("retirement", "Retirement"), ("prayer-meet", "Prayer Meet")]
+HOME = HOME.replace("MARQUEE_LINKS", "".join(f'<a href="free-cards.html?t={k}">Free {v} card</a>' for k, v in OCC) * 2)
 page("index", "Digital Wedding Invitations for Marwari Families | BFI Marwari Invitations",
      "Premium digital wedding invitations for Marwari families: royal Rajasthani designs, every ritual and family name, maps, RSVP and QR code. From ₹3,999, ready in 24–72 hours.",
      HOME, "index", ld=[ORG_LD, {"@context": "https://schema.org", "@type": "WebSite", "name": "BFI Marwari Invitations", "url": BASE + "/", "inLanguage": "en-IN"}, faq_ld(HOME_FAQ)])
@@ -375,11 +416,11 @@ page("index", "Digital Wedding Invitations for Marwari Families | BFI Marwari In
 INV = f'''
 <section class="phead"><div class="wrap">
   <h1>Digital Wedding Invitation Designs</h1>
-  <p class="lead">Royal, Traditional, Elegant and Modern invitations inspired by Marwari heritage. Tap any design for a large preview and price.</p>
+  <p class="lead">Eight invitation designs inspired by Marwari heritage. Every design has a live demo you can open on your phone, and a clear starting price.</p>
 </div></section>
 <section class="sec" style="padding-top:28px"><div class="wrap">
   <div class="chips" role="group" aria-label="Filter by collection">
-    <button class="chip" data-c="all" aria-pressed="true">All</button><button class="chip" data-c="royal" aria-pressed="false">Royal</button><button class="chip" data-c="traditional" aria-pressed="false">Traditional</button><button class="chip" data-c="elegant" aria-pressed="false">Elegant</button><button class="chip" data-c="modern" aria-pressed="false">Modern</button>
+    {"".join(f'<button class="chip" data-c="{k}" aria-pressed="{str(k == "all").lower()}">{v}</button>' for k, v in FILTERS)}
   </div>
   <div class="toolbar"><span class="muted" id="count" aria-live="polite">Showing {len(CATALOG)} invitations</span>
     <div class="row" style="gap:8px"><label class="sr" for="tier">Package</label><select id="tier"><option value="">All packages</option><option>Basic</option><option>Premium</option><option>Luxury</option></select>
@@ -425,7 +466,10 @@ for inv in CATALOG:
         <a class="btn btn-primary" href="customize.html?design={inv["slug"]}">Customize This Design {icon(I["arrow"])}</a>
         <a class="btn btn-outline wa-outline" data-wa="Namaste BFI 🙏 I'd like to know more about the {inv["name"]} invitation.">{WA} Enquire on WhatsApp</a>
       </div>
-      <p style="margin-top:14px" class="row"><a class="linkbtn" href="demo.html?design={inv["slug"]}">{icon(I["eye"])} Open the live demo in this design</a><button class="linkbtn" id="ask">Ask a question</button></p>
+      <a class="btn btn-ghost btn-block demo-btn" href="demo.html?design={inv["slug"]}" data-track="detail_demo">{icon(I["eye"])} View the live demo of {inv["name"]}</a>
+      <p style="margin-top:10px" class="muted">Best for: {BEST[inv["slug"]]} · <button class="linkbtn" id="ask">Ask a question</button></p>
+      <div class="incl"><b>Included with {inv["tier"]}</b><ul>{"".join(f"<li>{x}</li>" for x in next(p_[4] for p_ in PACKAGES if p_[0] == inv["tier"]))}</ul>
+        <p class="muted" style="font-size:13.5px;margin-top:8px">Pay 50% to start, 50% after you approve the preview. <a href="pricing.html">Compare packages</a></p></div>
       <div style="margin-top:22px">
         <details class="acc"><summary>What's included</summary><p>A mobile invitation website with your names, families, every function with date, time and Google Maps, a private share link, a QR code for printed cards, and a ready-to-send WhatsApp message.</p></details>
         <details class="acc"><summary>Customization</summary><p>Change names, dates, venues, the number of events, language (English, Hindi, Marwari + Hindi or bilingual), opening blessing and music. Colours can be adjusted on Premium and Luxury.</p></details>
@@ -466,7 +510,9 @@ ROWS = [("Designs available", "Basic collection", "Basic + Premium", "All + besp
         ("Family names &amp; blessings", "✓", "✓", "✓"), ("Google Maps for venues", "✓", "✓", "✓"), ("Share link + QR code", "✓", "✓", "✓"),
         ("Hindi / English / bilingual", "✓", "✓", "✓"), ("Music or shehnai", "–", "✓", "✓"), ("Photo gallery &amp; countdown", "–", "✓", "✓"),
         ("RSVP with guest count", "–", "✓", "✓"), ("Custom colours &amp; motifs", "–", "–", "✓"), ("Family story / video page", "–", "–", "✓"),
-        ("Priority WhatsApp support", "–", "–", "✓"), ("Delivery", "24 hours", "48 hours", "72 hours"), ("Free change rounds", "1", "1", "1")]
+        ("Priority WhatsApp support", "–", "–", "✓"), ("Pages", "One scrolling page", "One page with gallery &amp; RSVP sections", "Multiple pages (story, video)"),
+        ("Delivery", "24 hours", "48 hours", "72 hours"), ("Free change rounds", "1", "1", "1"), ("Link stays live", "Wedding + 6 months", "Wedding + 6 months", "Wedding + 6 months"),
+        ("Payment", "50% / 50%", "50% / 50%", "50% / 50%")]
 PRICING = f'''
 <section class="phead"><div class="wrap"><h1>Digital Wedding Invitation Pricing</h1><p class="lead">Three clear packages. Pay 50% to start and 50% only after you approve your invitation.</p></div></section>
 <section class="sec" style="padding-top:36px"><div class="wrap">
@@ -484,7 +530,19 @@ PRICING = f'''
   <tbody>{"".join(f"<tr><th scope='row'>{a}</th><td>{b}</td><td class='hl'>{c}</td><td>{d}</td></tr>" for a, b, c, d in ROWS)}</tbody></table></div>
   <p class="center muted" style="margin-top:14px;font-size:14px">Luxury designs such as Sheesh Mahal start at {inr(14999)}. Every design page shows its starting price.</p>
 </div></section>
-<section class="sec"><div class="wrap split" style="align-items:start">
+<section class="sec"><div class="wrap">
+  <div class="split" style="align-items:start">
+    <div class="panel"><h3>What "one round of changes" means</h3>
+      <p class="muted" style="margin-top:8px">After your first preview, send all your changes together in one message (text, names, timings, order of functions, music choice). We apply them and send the updated preview. Spelling and name corrections are always free, even later.</p>
+      <h3 style="margin-top:18px">Not included</h3>
+      <ul class="checks" style="margin-bottom:0"><li>{icon(I["x"])}Printed cards, photography or video shooting</li><li>{icon(I["x"])}Changing to a different design after the preview is approved</li><li>{icon(I["x"])}Writing a family story or translation from scratch on Basic</li></ul></div>
+    <div class="panel"><h3>Add-ons, quoted before any work</h3>
+      <p class="muted" style="margin:8px 0 12px">Tell us on WhatsApp and we'll quote first. Nothing is added to your bill unless you agree.</p>
+      <ul class="addons"><li>Extra change round</li><li>Urgent delivery</li><li>Extra function pages beyond your package</li><li>An additional language</li><li>Custom illustration of your venue or family deity</li><li>Wedding video on the invitation</li><li>Keeping the link live for longer</li><li>Printed QR inserts for physical cards</li></ul>
+      <a class="btn btn-wa" style="margin-top:14px" data-wa="Namaste BFI 🙏 Please share a quote for these add-ons:">{WA} Ask for a quote</a></div>
+  </div>
+</div></section>
+<section class="sec sec-tint"><div class="wrap split" style="align-items:start">
   <div><h2>Pricing Questions</h2><p class="lead" style="margin-top:12px">Need a custom quote for several functions or family weddings? We'll reply within an hour.</p><div class="row" style="margin-top:18px"><a class="btn btn-wa" data-wa="Namaste BFI 🙏 Please share a quote for our wedding invitation.">{WA} Get a quote</a><a class="btn btn-ghost" href="contact.html">Send an enquiry</a></div></div>
   <div>{faq_html(PRICE_FAQ)}</div>
 </div></section>'''
@@ -594,7 +652,7 @@ page("customize", "Customize Your Wedding Invitation | BFI Marwari Invitations",
 DEMO = f'''
 <div id="intro"></div>
 <div class="petals" id="petals" aria-hidden="true"></div>
-<div class="demo-ribbon"><span>Sample invitation by <b>BFI</b></span><a class="btn btn-sm btn-gold" id="demo-cta" href="customize.html">Create yours</a></div>
+<div class="demo-ribbon"><span><b>Sample invitation</b> · names, venues and photos are fictional</span><a class="btn btn-sm btn-gold" id="demo-cta" href="customize.html">Create yours</a></div>
 <header class="dv-cover"><div class="inv-wrap" id="dv-card"></div><a class="dv-scroll" href="#dv-blessing">Scroll to see the celebrations ↓</a></header>
 <main id="main" class="dv">
   <section class="dv-sec reveal-dv" id="dv-blessing">
@@ -613,7 +671,7 @@ DEMO = f'''
     <div class="count" id="count"><div><b data-u="d">0</b><span>Days</span></div><div><b data-u="h">0</b><span>Hours</span></div><div><b data-u="m">0</b><span>Minutes</span></div><div><b data-u="s">0</b><span>Seconds</span></div></div></section>
   <section class="dv-sec reveal-dv"><h2 data-h="events">Wedding celebrations</h2><p class="muted" style="margin-bottom:14px">Tap “Add to calendar” so you never miss a function.</p><div class="dv-events" id="dv-events"></div></section>
   <section class="dv-sec reveal-dv"><h2 data-h="venue">Wedding venue</h2><p id="dv-venue"><b>Royal Palace Gardens</b><br>Amer Road, Jaipur, Rajasthan</p>
-    <div class="dv-map"><iframe id="dv-map-frame" title="Map of the wedding venue" loading="lazy" referrerpolicy="no-referrer-when-downgrade" src="https://www.google.com/maps?q=Amer+Road,+Jaipur&amp;output=embed"></iframe></div>
+    <div class="dv-map"><iframe id="dv-map-frame" title="Map of the wedding venue" loading="lazy" referrerpolicy="no-referrer-when-downgrade" src="https://maps.google.com/maps?q=Amer+Road,+Jaipur,+Rajasthan,+India&amp;z=14&amp;hl=en&amp;output=embed"></iframe></div>
     <p class="muted" id="dv-stay" style="margin-top:12px;font-size:14px">Stay: rooms are booked for outstation guests. Message the family for details.</p></section>
   <section class="dv-sec reveal-dv" id="rsvp"><h2 data-h="rsvp">Will you join us?</h2><p class="muted" id="dv-rsvp-note">Please let us know by one week before the wedding.</p>
     <form class="form dv-rsvp" id="dv-rsvp" novalidate>
@@ -628,7 +686,8 @@ DEMO = f'''
     <div class="wishes" id="wishes">
       <div class="wish"><b>Nani</b><p>Sada sukhi raho, mere bachchon. Bahut saara aashirwad.</p></div>
       <div class="wish"><b>Ankit &amp; Shruti</b><p>Can't wait to dance at the sangeet! Love you both.</p></div></div></section>
-  <section class="dv-sec reveal-dv"><h2>Share the invitation</h2><div class="row" style="justify-content:center"><button class="btn btn-wa" id="dv-share">{WA} Share on WhatsApp</button><button class="btn btn-ghost" id="dv-copy">{icon(I["link"])} Copy link</button></div></section>
+  <section class="dv-sec reveal-dv"><h2>Share the invitation</h2><p class="muted" style="margin-bottom:14px">Every invitation comes with a QR code for printed cards. Scan this one to open the demo.</p>
+    <div class="qr-box" id="dv-qr" aria-label="QR code for this invitation"></div><div class="row" style="justify-content:center;margin-top:16px"><button class="btn btn-wa" id="dv-share">{WA} Share on WhatsApp</button><button class="btn btn-ghost" id="dv-copy">{icon(I["link"])} Copy link</button></div></section>
   <section class="dv-sec dv-switch"><p class="eyebrow">See this demo in another design</p><div class="dv-designs" id="dv-designs"></div></section>
   <footer class="dv-cta">
     <p class="eyebrow">Liked this invitation?</p>
@@ -840,7 +899,8 @@ TERMS = f'''<section class="phead"><div class="wrap"><h1>Terms of Service</h1><p
 <article class="sec guide"><div class="wrap narrow legal">
 <h2>Orders and payment</h2><p>Package prices are shown on the <a href="pricing.html">pricing page</a> and each design page. Work starts after a 50% advance; the balance is due after you approve the final invitation and before the final link is shared.</p>
 <h2>Delivery</h2><p>Delivery times (24, 48 or 72 hours) start once we have your complete details. We tell you in advance if a date is not possible.</p>
-<h2>Changes</h2><p>One round of changes is included in every package; spelling corrections are always free. Further changes or extra pages are quoted before we make them.</p>
+<h2>Changes</h2><p>One round of changes is included in every package: after the first preview, send all your changes together in one message and we apply them. Spelling and name corrections are always free. Further rounds, a different design after approval, or extra pages are quoted before we make them.</p>
+<h2>Your responsibilities</h2><p>Please check every name, date, time and venue in the preview before approving. After approval, we are not responsible for details you supplied incorrectly, though we will still correct spellings for free.</p>
 <h2>Cancellations and refunds</h2><p>If you cancel before we share the first preview, we refund the advance minus any work already done. After the first preview, the advance is not refundable.</p>
 <h2>Your content</h2><p>You confirm you have the right to use the names, photos and music you send. We may show a design in our portfolio only with your permission and never with your personal details.</p>
 <h2>Link availability</h2><p>Invitation links stay live through the wedding and for at least 6 months after.</p>
@@ -853,6 +913,44 @@ NF = f'''<section class="sec center"><div class="wrap"><p class="deva" lang="hi"
 '''
 page("404", "Page not found · BFI Marwari Invitations", "Page not found.", NF, None, index=False)
 
+
+
+FAQ_GROUPS = [
+    ("Marwari invitations", [
+        ("What is a Marwari kankotri?", "A kankotri is the traditional Marwari wedding invitation. It opens with a blessing to Lord Ganesha, names the couple with both families and elders, and lists each function, from Ganesh Sthapana and Mayra to Phere. A digital kankotri carries the same content as a mobile invitation website."),
+        ("What should a Marwari wedding invitation include?", "An opening blessing, the couple's names, both sets of parents (often grandparents too), each function with date, time and venue, an RSVP contact and a line of welcome. See our <a href='guide.html#wording'>wording guide</a>."),
+        ("How can I create a digital Marwari wedding invitation?", "Choose a design, share names, functions and venues through our <a href='customize.html'>online form</a> or on WhatsApp, review the preview on your phone, then share the final link and QR code."),
+        ("Can a digital invitation include Mayra and Pithi?", "Yes. Add any function your family celebrates, including Mayra (Bhaat), Pithi, Mahila Sangeet, Nikasi and Toran, each with its own date, time, venue and notes."),
+        ("Can wedding invitations be written in Hindi?", "Yes. Choose English, Hindi, Marwari with Hindi, or bilingual. Many families use Hindi for the blessing and elders' names and English for friends and NRI guests."),
+        ("What is the difference between a video invitation and an invitation website?", "A video plays once and cannot be updated. An invitation website stays open on the guest's phone, has a separate entry for every function with maps, can collect RSVPs and can be updated without re-sending."),
+    ]),
+    ("Features", [
+        ("Can I include multiple wedding events?", "Yes. Basic includes up to 3 functions, Premium up to 8, and Luxury has no limit."),
+        ("How does RSVP work on a wedding invitation website?", "On Premium and Luxury, guests tap RSVP on the invitation, choose whether they are attending and how many people are coming. You receive the responses, so you can share numbers with your caterer and hotel."),
+        ("Can I share the invitation through WhatsApp?", "Yes. You receive a private link and a ready-to-forward WhatsApp message. The link opens directly in the phone's browser, with no app to install."),
+        ("Can I add Google Maps directions?", "Yes. Every function can have its own Google Maps link, so guests get directions in one tap."),
+        ("Do you provide a QR code?", "Yes, every package includes a QR code you can print on physical cards or show at the venue."),
+    ]),
+    ("Ordering, delivery and payment", [
+        ("How long does it take to create a wedding invitation website?", "Basic 24 hours, Premium 48 hours and Luxury 72 hours, counted from when we have all your details and the advance."),
+        ("How long does the invitation link remain active?", "Through your wedding and for at least 6 months after it."),
+        ("How do I pay?", "50% advance by UPI or bank transfer to start, and the remaining 50% after you approve the preview, before the final link is delivered."),
+        ("What does one free revision mean?", "After your first preview, send all your changes together in one message and we apply them. Spelling and name corrections are always free."),
+        ("Can I cancel?", "If you cancel before the first preview, we refund the advance minus any work already done. After the first preview the advance is not refundable. See <a href='terms.html'>terms</a>."),
+    ]),
+]
+FAQ_ALL = [q for _, g in FAQ_GROUPS for q in g]
+FAQ_BODY = f'''
+<section class="phead"><div class="wrap"><h1>Frequently Asked Questions</h1><p class="lead">Clear answers about digital Marwari wedding invitations, features, delivery and payment.</p>
+  <div class="stepchips">{"".join(f'<a href="#g{n}">{t}</a>' for n, (t, _) in enumerate(FAQ_GROUPS))}</div></div></section>
+<section class="sec"><div class="wrap narrow">
+  {"".join(f'<h2 id="g{n}" style="font-size:30px;margin:{0 if n == 0 else 40}px 0 10px">{t}</h2>' + "".join(f'<details class="acc" {"open" if k == 0 else ""}><summary>{q}</summary><p>{a}</p></details>' for k, (q, a) in enumerate(g)) for n, (t, g) in enumerate(FAQ_GROUPS))}
+  <div class="panel panel-gold center" style="margin-top:40px"><h2 style="font-size:28px">Still have a question?</h2><p class="lead" style="margin:10px auto 18px">Message us and a designer will answer.</p>
+    <div class="row" style="justify-content:center"><a class="btn btn-wa" data-wa>{WA} Ask on WhatsApp</a><a class="btn btn-ghost" href="contact.html">Contact page</a></div></div>
+</div></section>'''
+page("faq", "FAQ: Digital Marwari Wedding Invitations, Kankotri, RSVP & Pricing | BFI",
+     "Answers about digital Marwari wedding invitations: what a kankotri includes, Mayra and Pithi, Hindi wording, RSVP, WhatsApp sharing, maps, delivery time, link validity and payment.",
+     FAQ_BODY, None, ld=[faq_ld(FAQ_ALL)])
 
 # ---------------- Free digital card maker (any occasion) ----------------
 FREE_FAQ = [
@@ -923,7 +1021,7 @@ page("free-cards", "Free Invitation Card Maker: 16 Templates, PNG, JPG & PDF | B
      "provider": {"@id": BASE + "/#business"}}])
 
 # ---------------- robots, sitemap, llms.txt, vCard ----------------
-PUBLIC = ["", "invitations.html", "pricing.html", "how-it-works.html", "demo.html", "guide.html", "free-cards.html", "about.html", "contact.html", "customize.html",
+PUBLIC = ["", "invitations.html", "pricing.html", "how-it-works.html", "demo.html", "guide.html", "free-cards.html", "faq.html", "about.html", "contact.html", "customize.html",
           "privacy.html", "terms.html"] + [f"design-{i['slug']}.html" for i in CATALOG]
 (OUT / "robots.txt").write_text(f"User-agent: *\nAllow: /\nDisallow: /account.html\nDisallow: /login.html\n\nSitemap: {BASE}/sitemap.xml\n")
 (OUT / "sitemap.xml").write_text('<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n' +
@@ -945,6 +1043,7 @@ PUBLIC = ["", "invitations.html", "pricing.html", "how-it-works.html", "demo.htm
 - [How it works]({BASE}/how-it-works.html): choose, share details, preview and approve, share
 - [Live demo]({BASE}/demo.html): a sample invitation as guests see it
 - [Marwari wedding guide]({BASE}/guide.html): rituals in order, invitation wording in Hindi and English, send-out checklist
+- [FAQ]({BASE}/faq.html): kankotri, Mayra and Pithi, Hindi wording, RSVP, WhatsApp sharing, delivery, link validity, payment and revisions
 - [Free card maker]({BASE}/free-cards.html): 16 free templates (wedding, save the date, Sagai, anniversary, birthdays, Godh Bharai, Naamkaran, Mundan, Griha Pravesh, puja, Diwali, Holi, Teej/Gangaur, retirement, prayer meet); download PNG, JPG or PDF
 - [About]({BASE}/about.html) · [Contact]({BASE}/contact.html)
 """ + "".join(f"- [{i['name']}]({BASE}/design-{i['slug']}.html): {COLL[i['collection']]} collection, from ₹{i['price']:,}\n" for i in CATALOG))

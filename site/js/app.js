@@ -27,6 +27,8 @@ const P = {
   eye: '<path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12Z"/><circle cx="12" cy="12" r="3"/>',
   plus: '<path d="M12 5v14M5 12h14"/>',
   arrow: '<path d="M5 12h14M13 6l6 6-6 6"/>',
+  sliders: '<path d="M4 6h10M18 6h2M4 12h4M12 12h8M4 18h12"/><circle cx="16" cy="6" r="2"/><circle cx="10" cy="12" r="2"/><circle cx="18" cy="18" r="2"/>',
+  book: '<path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20V3H6.5A2.5 2.5 0 0 0 4 5.5z"/><path d="M8 7h8M8 11h6"/>',
 };
 const ic = (n, cls = "") => `<svg class="${cls}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${P[n] || ""}</svg>`;
 const FEATURE_ICON = (f) => /music|audio|shehnai/i.test(f) ? "music" : /rsvp/i.test(f) ? "rsvp" : /link|qr/i.test(f) ? "link" : /map/i.test(f) ? "map" : /hindi|english|bilingual/i.test(f) ? "globe" : /photo/i.test(f) ? "image" : /countdown/i.test(f) ? "clock" : "edit";
@@ -83,6 +85,14 @@ const sb = window.supabase?.createClient(CFG.supabaseUrl, CFG.supabaseKey, {
   auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: true, flowType: "pkce" },
 });
 let session = null;
+let SID = "";
+try { SID = sessionStorage.getItem("bfi.sid") || Math.random().toString(36).slice(2, 12); sessionStorage.setItem("bfi.sid", SID); } catch {}
+function track(name, meta = {}) {
+  try {
+    if (!sb || navigator.webdriver || /localhost|127\.0\.0\.1/.test(location.hostname)) return;
+    sb.from("analytics_events").insert({ name: String(name).slice(0, 40), page: location.pathname.slice(0, 120), meta, sid: SID }).then(() => {}, () => {});
+  } catch {}
+}
 const user = () => session?.user || null;
 const displayName = () => user()?.user_metadata?.full_name || user()?.user_metadata?.name || user()?.email?.split("@")[0] || "";
 
@@ -98,6 +108,12 @@ const FALLBACK = [
   ["chhatri","Chhatri","elegant","Basic",3999,"A single gold chhatri, lots of calm"],
 ].map(([slug, name, collection, tier, price_from, tagline], i) => ({ slug, name, collection, tier, price_from, tagline, description: tagline + ".", features: ["Customizable names, dates and text", "Shareable link and QR code", "RSVP (optional)"], image: `inv-${slug}.jpg`, sort: i + 1 }));
 const DARK = new Set(["rajwada-royale", "mor-pankh", "neel-mahal", "sheesh-mahal"]);
+const TAGS = { "rajwada-royale": "royal luxury rajasthani", "gulmohar-classic": "traditional floral rajasthani", "gulabi-bagh": "elegant floral",
+  "mor-pankh": "modern rajasthani", "neel-mahal": "royal luxury modern", "gajraj-swagat": "traditional rajasthani", "sheesh-mahal": "royal luxury rajasthani", "chhatri": "elegant minimal modern" };
+const BEST = { "rajwada-royale": "Grand traditional weddings", "gulmohar-classic": "Classic family weddings", "gulabi-bagh": "Romantic day weddings",
+  "mor-pankh": "Modern couples & destination weekends", "neel-mahal": "Evening receptions & sangeet nights", "gajraj-swagat": "Big Marwari family weddings",
+  "sheesh-mahal": "Palace & destination weddings", "chhatri": "Intimate, minimal weddings" };
+const tagsOf = (inv) => `${inv.collection} ${TAGS[inv.slug] || ""}`;
 const COLLECTIONS = { royal: "Royal", traditional: "Traditional", elegant: "Elegant", modern: "Modern" };
 const INSET = { "rajwada-royale": "24% 20% 37% 20%", "gulmohar-classic": "15% 17% 15% 17%", "gulabi-bagh": "17% 19% 17% 19%",
   "mor-pankh": "14% 24% 30% 16%", "neel-mahal": "13% 16% 40% 16%", "gajraj-swagat": "12% 15% 43% 15%",
@@ -181,13 +197,15 @@ function initChrome() {
 /* ---------- invitation card ---------- */
 function card(inv) {
   const on = favs.has(inv.slug);
-  return `<article class="card">
+  return `<article class="card" data-tags="${esc(tagsOf(inv))}">
     <button class="fav" data-fav="${esc(inv.slug)}" aria-pressed="${on}" aria-label="Save ${esc(inv.name)} to favourites">${ic("heart")}</button>
     <a class="card-img" href="design-${encodeURIComponent(inv.slug)}.html"><img src="${IMG(inv.image)}" alt="${esc(inv.name)} invitation: ${esc(inv.tagline)}" loading="lazy" width="360" height="540">${inviteText(inv.slug, { mini: true })}</a>
     <div class="card-body">
       <span class="tag">${COLLECTIONS[inv.collection]}</span>
       <h3><a href="design-${encodeURIComponent(inv.slug)}.html">${esc(inv.name)}</a></h3>
+      <p class="card-desc">${esc(inv.tagline)}</p>${BEST[inv.slug] ? `<p class="card-best">Best for: ${esc(BEST[inv.slug])}</p>` : ""}
       <div class="card-meta"><span>${esc(inv.tier)}</span><span>from <b>${inr(inv.price_from)}</b></span></div>
+      <div class="card-acts"><a class="btn btn-sm btn-ghost" href="demo.html?design=${encodeURIComponent(inv.slug)}">${ic("eye")} Live demo</a><a class="btn btn-sm btn-primary" href="customize.html?design=${encodeURIComponent(inv.slug)}">Customize</a></div>
     </div></article>`;
 }
 function bindFavs(root) {
@@ -218,11 +236,12 @@ pages.index = async () => {
 
 pages.invitations = async () => {
   const grid = $("#grid"), count = $("#count");
-  let col = COLLECTIONS[params.get("c")] ? params.get("c") : "all";
+  const FILT = ["all", "royal", "traditional", "elegant", "modern", "floral", "minimal", "luxury", "rajasthani"];
+  let col = FILT.includes(params.get("c")) ? params.get("c") : "all";
   const all = await invitations();
   const tierSel = $("#tier"), sortSel = $("#sort");
   function draw() {
-    let list = all.filter((i) => (col === "all" || i.collection === col) && (!tierSel.value || i.tier === tierSel.value));
+    let list = all.filter((i) => (col === "all" || tagsOf(i).split(" ").includes(col)) && (!tierSel.value || i.tier === tierSel.value));
     if (sortSel.value === "low") list = [...list].sort((a, b) => a.price_from - b.price_from);
     if (sortSel.value === "high") list = [...list].sort((a, b) => b.price_from - a.price_from);
     grid.innerHTML = list.length ? list.map(card).join("") : `<div class="empty">No invitations match these filters. <button class="linkbtn" id="reset">Show all</button></div>`;
@@ -283,71 +302,119 @@ function enquiryModal(inv) {
 }
 
 /* ---------- customize ---------- */
-const EVENT_TYPES = ["Ganesh Puja", "Mayra", "Haldi", "Mehendi", "Mahila Sangeet", "Baraat", "Phera (Wedding)", "Reception", "Other"];
+const EVENT_TYPES = ["Ganesh Sthapana", "Mayra", "Pithi", "Haldi", "Mehendi", "Mahila Sangeet", "Sangeet", "Baraat", "Phere", "Reception", "Other"];
 const CZ_KEY = "bfi.customize.v1";
 pages.customize = async () => {
   const all = await invitations();
+  const PKG = { Basic: { price: 3999, days: 24, events: 3, music: false, gallery: false, rsvp: false, colours: false, story: false },
+    Premium: { price: 6999, days: 48, events: 8, music: true, gallery: true, rsvp: true, colours: false, story: false },
+    Luxury: { price: 11999, days: 72, events: 99, music: true, gallery: true, rsvp: true, colours: true, story: true } };
+  const TIERS = ["Basic", "Premium", "Luxury"];
   let st;
   try { st = JSON.parse(localStorage.getItem(CZ_KEY) || "null"); } catch { st = null; }
   st = st || {};
-  st.data = st.data || { events: [{ type: "Phera (Wedding)", date: "", time: "", venue: "", map: "" }], language: "English", blessing: "॥ श्री गणेशाय नमः ॥", music: "Shehnai", rsvp: true, guests: true, meal: false, order: "bride" };
+  st.data = st.data || { events: [{ type: "Phere", name: "", date: "", time: "", venue: "", map: "", notes: "" }], language: "English", blessing: "॥ श्री गणेशाय नमः ॥", music: "Shehnai", rsvp: true, guests: true, meal: false, gallery: false, order: "bride" };
   if (params.get("design")) st.data.design = params.get("design");
   if (!st.data.design || !all.find((i) => i.slug === st.data.design)) st.data.design = all[0].slug;
-  st.step = st.step || 0;
+  st.step = Math.min(st.step || 0, 4);
   if (params.get("id") && user()) {
     const { data } = await sb.from("customizations").select("*").eq("id", params.get("id")).maybeSingle();
-    if (data) { st = { id: data.id, step: 0, data: { ...data.data, design: data.design_slug || data.data.design } }; }
+    if (data) st = { id: data.id, step: 0, data: { ...data.data, design: data.design_slug || data.data.design } };
   }
   const D = st.data;
-  const steps = ["Design", "Couple", "Events & venues", "Language & music", "RSVP & contact", "Review"];
+  D.events = (D.events || []).map((e) => ({ name: "", notes: "", ...e, type: /phera/i.test(e.type) ? "Phere" : e.type }));
+  const steps = ["Design & package", "Couple & family", "Wedding events", "Personalise", "Review & confirm", "Confirmed"];
   const form = $("#cz-form");
   const save = () => { try { localStorage.setItem(CZ_KEY, JSON.stringify(st)); } catch {} };
   const inv = () => all.find((i) => i.slug === D.design);
+  const minTier = () => inv().tier;
+  const fixPkg = () => { if (!TIERS.includes(D.package) || TIERS.indexOf(D.package) < TIERS.indexOf(minTier())) D.package = minTier(); };
+  fixPkg();
+  const P = () => PKG[D.package];
+  const price = () => Math.max(P().price, inv().price_from);
   const fmtDate = (s) => { if (!s) return ""; const d = new Date(s + "T00:00"); return isNaN(d) ? s : d.toLocaleDateString("en-IN", { weekday: "long", day: "numeric", month: "long", year: "numeric" }); };
+  const evName = (e) => (e.type === "Other" ? e.name || "Other function" : e.type);
+  const mainEv = () => D.events.find((e) => /pher/i.test(e.type)) || D.events[0] || {};
 
   function preview() {
-    const i = inv();
-    const main = D.events.find((e) => /phera/i.test(e.type)) || D.events[0] || {};
+    const i = inv(), main = mainEv();
     const [a, b] = D.order === "groom" ? [D.groom, D.bride] : [D.bride, D.groom];
     const pv = $("#pv"); pv.classList.add("inv-wrap"); pv.style.backgroundImage = "";
-    pv.innerHTML = `<img src="${IMG(i.image)}" alt="">` + inviteText(i.slug, { a: a || "Bride", b: b || "Groom", blessing: D.blessing, date: fmtDate(main.date) || "Wedding date", venue: main.venue || "Venue" });
-    $("#pv-name").textContent = i.name;
-    $("#pv-events").textContent = `${D.events.length} event${D.events.length === 1 ? "" : "s"} · ${D.language}${D.music && D.music !== "None" ? " · " + D.music : ""}${D.rsvp ? " · RSVP on" : ""}`;
+    pv.innerHTML = `<img src="${IMG(i.image)}" alt="">` + inviteText(i.slug, { a: a || "Bride", b: b || "Groom", blessing: D.blessing, date: fmtDate(main.date || D.wedding_date) || "Wedding date", venue: main.venue || "Venue" });
+    $("#pv-name").textContent = `${i.name} · ${D.package}`;
+    $("#pv-events").textContent = `${D.events.length} event${D.events.length === 1 ? "" : "s"} · ${D.language} · est. ${inr(price())}`;
   }
   const f = (name, label, attrs = "", val = D[name]) => `<div class="field"><label for="f-${name}">${label}</label><input id="f-${name}" name="${name}" value="${esc(val || "")}" ${attrs}></div>`;
-  const tog = (name, label) => `<label class="check"><input type="checkbox" name="${name}" ${D[name] ? "checked" : ""}> ${label}</label>`;
-  // opts: strings, or [value, label] pairs
+  const tog = (name, label, ok = true, lockMsg = "") => ok ? `<label class="check"><input type="checkbox" name="${name}" ${D[name] ? "checked" : ""}> ${label}</label>`
+    : `<p class="locked">${ic("plus")} ${label} <span>${lockMsg}</span></p>`;
   const sel = (name, label, opts) => `<div class="field"><label for="f-${name}">${label}</label><select id="f-${name}" name="${name}">${opts.map((o) => { const [v, t] = Array.isArray(o) ? o : [o, o]; return `<option value="${esc(v)}" ${v === (D[name] ?? "") ? "selected" : ""}>${esc(t)}</option>`; }).join("")}</select></div>`;
+  const upsell = (tier) => `<button type="button" class="linkbtn" data-upgrade="${tier}">Upgrade to ${tier}</button>`;
 
   function body(n) {
-    if (n === 0) return `<div class="opt-grid">${all.map((i) => `<label class="opt"><input type="radio" name="design" value="${i.slug}" ${i.slug === D.design ? "checked" : ""}><img src="${IMG(i.image)}" alt="" loading="lazy"><span>${esc(i.name)}</span></label>`).join("")}</div>`;
+    if (n === 0) return `<p class="muted" style="margin-bottom:12px">1. Pick a design</p>
+      <div class="opt-grid">${all.map((i) => `<label class="opt"><input type="radio" name="design" value="${i.slug}" ${i.slug === D.design ? "checked" : ""}><img src="${IMG(i.image)}" alt="" loading="lazy"><span>${esc(i.name)}<small style="display:block;font-weight:400;color:var(--muted)">${i.tier} · from ${inr(i.price_from)}</small></span></label>`).join("")}</div>
+      <p class="muted" style="margin:22px 0 12px">2. Choose a package</p>
+      <div class="pkg-pick">${TIERS.map((t) => { const p = PKG[t], off = TIERS.indexOf(t) < TIERS.indexOf(minTier());
+        return `<label class="pp${off ? " off" : ""}"><input type="radio" name="package" value="${t}" ${D.package === t ? "checked" : ""} ${off ? "disabled" : ""}>
+        <b>${t}</b><span class="pp-price">${inr(Math.max(p.price, t === minTier() ? inv().price_from : 0))}</span>
+        <span>${p.events === 99 ? "Unlimited" : "Up to " + p.events} events · ${p.days} hrs</span><span>${[p.music && "Music", p.gallery && "Gallery", p.rsvp && "RSVP", p.colours && "Custom colours", p.story && "Family story"].filter(Boolean).join(" · ") || "Names, events, maps, QR"}</span>
+        ${off ? `<em>${esc(inv().name)} starts in ${minTier()}</em>` : ""}</label>`; }).join("")}</div>
+      <p class="muted" style="font-size:13.5px;margin-top:10px">Not sure? Pick the closest; we'll confirm with you on WhatsApp before you pay anything. <a href="pricing.html" target="_blank">Compare packages</a></p>`;
     if (n === 1) return `<div class="form"><div class="f2">${f("bride", "Bride's name <span class='req'>*</span>", 'required autocomplete="off" placeholder="e.g. Priya"')}${f("groom", "Groom's name <span class='req'>*</span>", 'required autocomplete="off" placeholder="e.g. Rohan"')}</div>
-      ${sel("order", "Name order", [["bride", "Bride's name first"], ["groom", "Groom's name first"]])}
-      <div class="f2">${f("bride_family", "Bride's parents", 'placeholder="e.g. Smt. & Shri Ramesh Agarwal"')}${f("groom_family", "Groom's parents", 'placeholder="e.g. Smt. & Shri Suresh Maheshwari"')}</div>
-      ${f("blessings", "Blessings from (grandparents, elders)", 'placeholder="Optional"')}</div>`;
-    if (n === 2) return `<div class="form" id="events">${D.events.map((e, k) => `<div class="event" data-k="${k}">
-        ${D.events.length > 1 ? `<button type="button" class="icon-btn rm" data-rm="${k}" aria-label="Remove event">${ic("trash")}</button>` : ""}
-        <div class="field"><label>Event</label><select data-ev="type">${EVENT_TYPES.map((t) => `<option ${t === e.type ? "selected" : ""}>${t}</option>`).join("")}</select></div>
-        <div class="f2"><div class="field"><label>Date <span class="req">*</span></label><input type="date" data-ev="date" value="${esc(e.date)}" ${k === 0 ? "required" : ""}></div><div class="field"><label>Time</label><input type="time" data-ev="time" value="${esc(e.time)}"></div></div>
-        <div class="field"><label>Venue</label><input data-ev="venue" value="${esc(e.venue)}" placeholder="e.g. Rambagh Palace, Jaipur"></div>
-        <div class="field"><label>Google Maps link</label><input type="url" data-ev="map" value="${esc(e.map)}" placeholder="https://maps.app.goo.gl/…" inputmode="url"></div></div>`).join("")}
-        <button type="button" class="btn btn-ghost" id="add-ev">${ic("plus")} Add another event</button></div>`;
-    if (n === 3) return `<div class="form">${sel("language", "Language", ["English", "Hindi", "Marwari + Hindi", "Bilingual (Hindi + English)"])}
-      ${sel("blessing", "Opening blessing", ["॥ श्री गणेशाय नमः ॥", "॥ शुभ विवाह ॥", ["", "No blessing line"]])}
-      ${sel("music", "Music", ["Shehnai", "Soft instrumental", "Our own song (we'll send it)", "None"])}
-      <div class="field"><label for="f-notes">Anything else?</label><textarea id="f-notes" name="notes" placeholder="Special rituals, dress codes, a family story…">${esc(D.notes || "")}</textarea></div></div>`;
-    if (n === 4) return `<div class="form"><div class="toggles">${tog("rsvp", "Collect RSVPs")}${tog("guests", "Ask for guest count")}${tog("meal", "Ask for meal preference")}</div>
-      ${f("rsvp_by", "RSVP deadline", 'type="date"')}
-      <div class="f2">${f("contact_name", "Your name <span class='req'>*</span>", 'required autocomplete="name"', D.contact_name || displayName())}${f("phone", "WhatsApp number <span class='req'>*</span>", 'type="tel" required inputmode="tel" autocomplete="tel"')}</div>
-      ${f("email", "Email", 'type="email" autocomplete="email"', D.email || user()?.email)}
-      ${sel("package", "Package", ["Not sure", "Basic", "Premium", "Luxury"])}</div>`;
-    const i = inv();
-    const rows = [["Design", i.name], ["Couple", [D.bride, D.groom].filter(Boolean).join(" & ") || "—"], ["Families", [D.bride_family, D.groom_family].filter(Boolean).join(" · ") || "—"], ["Events", D.events.map((e) => `${e.type}${e.date ? " – " + fmtDate(e.date) : ""}${e.venue ? ", " + e.venue : ""}`).join("<br>")], ["Language", D.language], ["Music", D.music], ["RSVP", D.rsvp ? `On${D.rsvp_by ? " until " + fmtDate(D.rsvp_by) : ""}` : "Off"], ["Contact", [D.contact_name, D.phone, D.email].filter(Boolean).join(" · ") || "—"], ["Package", D.package || "Not sure"]];
-    return `<dl style="display:grid;grid-template-columns:110px 1fr;gap:10px 14px;margin:0">${rows.map(([k, v]) => `<dt class="muted">${k}</dt><dd style="margin:0">${k === "Events" ? v : esc(v)}</dd>`).join("")}</dl>
-      <p class="d-price" style="font-size:26px;margin-top:20px">Estimate: from ${inr(i.price_from)}</p>
-      <div class="d-actions" style="margin-top:16px"><button type="button" class="btn btn-primary" id="submit-cz">Send for design ${ic("arrow")}</button>
-      <a class="btn btn-wa" id="wa-cz">${WA_SVG} Continue on WhatsApp</a></div>
-      <p style="margin-top:12px"><button type="button" class="linkbtn" id="save-cz">${user() ? "Save draft to my account" : "Login to save this draft"}</button></p>`;
+      <div class="f2">${sel("order", "Name order", [["bride", "Bride's name first"], ["groom", "Groom's name first"]])}${f("wedding_date", "Wedding date <span class='req'>*</span>", 'type="date" required')}</div>
+      <div class="f2">${f("bride_family", "Bride's parents", 'placeholder="e.g. Smt. Sunita & Shri Mahesh Agarwal"')}${f("groom_family", "Groom's parents", 'placeholder="e.g. Smt. Rekha & Shri Anil Maheshwari"')}</div>
+      ${f("blessings", "Grandparents / blessings from", 'placeholder="e.g. Smt. Kamla Devi & Late Shri Ramniwas Agarwal"')}
+      ${sel("language", "Invitation language", ["English", "Hindi", "Marwari + Hindi", "Bilingual (Hindi + English)"])}
+      <p class="help muted" style="font-size:13.5px">Write names exactly as they should appear. We check every name again before your preview.</p></div>`;
+    if (n === 2) {
+      const lim = P().events, over = D.events.length >= lim;
+      return `<p class="muted" style="margin-bottom:12px">${D.package}: ${lim === 99 ? "unlimited events" : `up to ${lim} events`}. Use ↑ ↓ to set the order guests will see.</p>
+      <div class="form" id="events">${D.events.map((e, k) => `<div class="event" data-k="${k}">
+        <div class="ev-tools"><b>${k + 1}</b>
+          <button type="button" class="icon-btn" data-mv="${k}:-1" aria-label="Move event up" ${k === 0 ? "disabled" : ""}>↑</button>
+          <button type="button" class="icon-btn" data-mv="${k}:1" aria-label="Move event down" ${k === D.events.length - 1 ? "disabled" : ""}>↓</button>
+          ${D.events.length > 1 ? `<button type="button" class="icon-btn" data-rm="${k}" aria-label="Remove event">${ic("trash")}</button>` : ""}</div>
+        <div class="f2"><div class="field"><label>Function</label><select data-ev="type">${EVENT_TYPES.map((t) => `<option ${t === e.type ? "selected" : ""}>${t}</option>`).join("")}</select></div>
+          ${e.type === "Other" ? `<div class="field"><label>Function name</label><input data-ev="name" value="${esc(e.name)}" placeholder="e.g. Tilak, Bhaat"></div>` : "<span></span>"}</div>
+        <div class="f2"><div class="field"><label>Date <span class="req">*</span></label><input type="date" data-ev="date" value="${esc(e.date)}" required></div><div class="field"><label>Time</label><input type="time" data-ev="time" value="${esc(e.time)}"></div></div>
+        <div class="field"><label>Venue</label><input data-ev="venue" value="${esc(e.venue)}" placeholder="e.g. Agarwal Niwas, C-Scheme, Jaipur"></div>
+        <div class="field"><label>Google Maps link</label><input type="url" data-ev="map" value="${esc(e.map)}" placeholder="https://maps.app.goo.gl/…" inputmode="url"><div class="help">Open the venue in Google Maps → Share → Copy link.</div></div>
+        <div class="field"><label>Notes (dress code, family only…)</label><input data-ev="notes" value="${esc(e.notes)}" maxlength="120"></div></div>`).join("")}
+        ${over ? `<p class="notice info">You've reached the ${D.package} limit of ${lim} events. ${D.package !== "Luxury" ? upsell(D.package === "Basic" ? "Premium" : "Luxury") + " to add more." : ""}</p>`
+          : `<button type="button" class="btn btn-ghost" id="add-ev">${ic("plus")} Add a function</button>`}</div>`;
+    }
+    if (n === 3) {
+      const p = P(), nx = D.package === "Basic" ? "Premium" : "Luxury";
+      return `<div class="form">${sel("blessing", "Opening blessing", ["॥ श्री गणेशाय नमः ॥", "॥ शुभ विवाह ॥", "॥ श्री गणेशाय नमः ॥ ॥ शुभ विवाह ॥", ["", "No blessing line"]])}
+      ${p.music ? sel("music", "Music", ["Shehnai", "Soft instrumental", "Our own song (we'll send it)", "None"]) : `<p class="locked">${ic("music")} Background music or shehnai <span>Premium & Luxury · ${upsell("Premium")}</span></p>`}
+      <div class="toggles">
+        ${tog("gallery", "Photo gallery (send photos on WhatsApp later)", p.gallery, `Premium & Luxury · ${upsell("Premium")}`)}
+        ${tog("rsvp", "Collect RSVPs", p.rsvp, `Premium & Luxury · ${upsell("Premium")}`)}
+        ${p.rsvp ? tog("guests", "Ask for guest count") : ""}
+        ${p.rsvp ? tog("meal", "Ask for meal preference") : ""}</div>
+      ${p.rsvp ? f("rsvp_by", "RSVP deadline", 'type="date"') : ""}
+      ${p.colours ? f("colours", "Colour preferences", 'placeholder="e.g. maroon and gold, or match the lehenga"') : `<p class="locked">${ic("sliders")} Custom colours & motifs <span>Luxury · ${upsell("Luxury")}</span></p>`}
+      ${p.story ? `<div class="field"><label for="f-story">Family story / video page</label><textarea id="f-story" name="story" placeholder="How you met, family history, or a video link">${esc(D.story || "")}</textarea></div>` : `<p class="locked">${ic("book")} Family story or video page <span>Luxury · ${upsell("Luxury")}</span></p>`}
+      <div class="field"><label for="f-notes">Anything else?</label><textarea id="f-notes" name="notes" placeholder="Special rituals, how elders' names should be written, wording you like…">${esc(D.notes || "")}</textarea></div></div>`;
+    }
+    if (n === 4) {
+      const i = inv(), pr = price(), half = Math.ceil(pr / 2);
+      const rows = [["Design", `${i.name} (${i.tier} collection)`], ["Package", `${D.package} · ready in ${P().days} hours`], ["Couple", [D.bride, D.groom].filter(Boolean).join(" & ") || "—"], ["Wedding date", fmtDate(D.wedding_date) || "—"],
+        ["Families", [D.bride_family, D.groom_family].filter(Boolean).join(" · ") || "—"], ["Blessings", D.blessings || "—"], ["Language", D.language],
+        ["Functions", D.events.map((e) => `<b>${esc(evName(e))}</b>${e.date ? " · " + esc(fmtDate(e.date)) : ""}${e.time ? " · " + esc(e.time) : ""}${e.venue ? "<br><span class='muted'>" + esc(e.venue) + "</span>" : ""}`).join("<br>")],
+        ["Extras", [P().music && D.music && D.music !== "None" && D.music, P().gallery && D.gallery && "Photo gallery", P().rsvp && D.rsvp && "RSVP", P().colours && D.colours && "Custom colours", P().story && D.story && "Family story"].filter(Boolean).join(" · ") || "—"]];
+      return `<div class="review-box"><dl class="rv">${rows.map(([k, v]) => `<dt>${k}</dt><dd>${k === "Functions" ? v : esc(v)}</dd>`).join("")}</dl>
+        <button type="button" class="linkbtn" data-goto="1">Edit names</button> · <button type="button" class="linkbtn" data-goto="2">Edit functions</button></div>
+      <div class="price-box"><div><span class="muted">Estimated price</span><b>${inr(pr)}</b></div><div><span class="muted">Advance (50%)</span><b>${inr(half)}</b></div><div><span class="muted">After approval</span><b>${inr(pr - half)}</b></div></div>
+      <p class="muted" style="font-size:13.5px;margin-top:8px">Nothing is charged online. We confirm the final price with you on WhatsApp first.</p>
+      <div class="form" style="margin-top:18px"><div class="f2">${f("contact_name", "Your name <span class='req'>*</span>", 'required autocomplete="name"', D.contact_name || displayName())}${f("phone", "WhatsApp number <span class='req'>*</span>", 'type="tel" required inputmode="tel" autocomplete="tel"')}</div>
+        ${f("email", "Email", 'type="email" autocomplete="email"', D.email || user()?.email)}
+        <label class="check"><input type="checkbox" name="verified" required ${D.verified ? "checked" : ""}> I have checked every name, date and venue above.</label></div>
+      <div class="d-actions" style="margin-top:16px"><button type="button" class="btn btn-primary" id="submit-cz">Confirm &amp; send to BFI ${ic("arrow")}</button>
+      <a class="btn btn-wa" id="wa-cz">${WA_SVG} Send on WhatsApp instead</a></div>
+      <p style="margin-top:12px"><button type="button" class="linkbtn" id="save-cz">${user() ? "Save draft to my account" : "Login to save this draft"}</button> <span class="muted" style="font-size:13px">· Your progress is also saved on this device.</span></p>`;
+    }
+    return "";
   }
   function collect() {
     $$("[name]", form).forEach((el) => {
@@ -356,20 +423,20 @@ pages.customize = async () => {
       else D[el.name] = el.value.trim();
     });
     $$("#events .event").forEach((box) => { const e = D.events[+box.dataset.k]; $$("[data-ev]", box).forEach((el) => (e[el.dataset.ev] = el.value.trim())); });
-    save(); preview();
+    fixPkg(); save(); preview();
   }
   function draw() {
     const n = st.step;
-    $("#stepper").innerHTML = steps.map((s, k) => `<button type="button" aria-label="Step ${k + 1}: ${s}" class="${k < n ? "done" : k === n ? "cur" : ""}" data-go="${k}"></button>`).join("");
+    $("#stepper").innerHTML = steps.map((s, k) => `<button type="button" aria-label="Step ${k + 1}: ${s}" class="${k < n ? "done" : k === n ? "cur" : ""}" data-go="${k}" ${k === 5 ? "disabled" : ""}></button>`).join("");
     form.innerHTML = `<div class="step-title"><h2 style="font-size:28px">${steps[n]}</h2><small>Step ${n + 1} of ${steps.length}</small></div>${body(n)}
-      <div class="cz-nav">${n ? `<button type="button" class="btn btn-ghost" data-back>${ic("left")} Back</button>` : "<span></span>"}${n < steps.length - 1 ? `<button type="submit" class="btn btn-primary">Next ${ic("right")}</button>` : ""}</div>`;
+      <div class="cz-nav">${n ? `<button type="button" class="btn btn-ghost" data-back>${ic("left")} Back</button>` : "<span></span>"}${n < 4 ? `<button type="submit" class="btn btn-primary">Next ${ic("right")}</button>` : ""}</div>`;
     preview();
-    if (n === steps.length - 1) {
+    if (n === 4) {
       const i = inv();
-      $("#wa-cz").href = waHref(`Namaste BFI 🙏 We'd like the ${i.name} invitation.\nCouple: ${D.bride || "?"} & ${D.groom || "?"}\nEvents: ${D.events.map((e) => `${e.type} ${e.date || ""} ${e.venue || ""}`.trim()).join("; ")}\nLanguage: ${D.language}. Music: ${D.music}. RSVP: ${D.rsvp ? "yes" : "no"}.`);
+      $("#wa-cz").href = waHref(`Namaste BFI 🙏 We'd like the ${i.name} invitation (${D.package}).\nCouple: ${D.bride || "?"} & ${D.groom || "?"}\nWedding date: ${fmtDate(D.wedding_date) || "?"}\nFunctions: ${D.events.map((e) => `${evName(e)} ${e.date || ""} ${e.venue || ""}`.trim()).join("; ")}\nLanguage: ${D.language}.`);
       $("#wa-cz").target = "_blank";
       $("#submit-cz").onclick = submit;
-      $("#save-cz").onclick = saveRemote;
+      $("#save-cz").onclick = () => saveRemote();
     }
   }
   async function saveRemote(status = "draft") {
@@ -383,29 +450,47 @@ pages.customize = async () => {
     return data.id;
   }
   async function submit(e) {
-    const btn = e.currentTarget;
-    for (const [k, s] of [["bride", 1], ["groom", 1], ["contact_name", 4], ["phone", 4]]) if (!D[k]) { st.step = s; draw(); validate(form); return toast("Please fill in the required details"); }
-    if (!D.events[0]?.date) { st.step = 2; draw(); validate(form); return toast("Please add the wedding date"); }
+    const btn = e.currentTarget; collect();
+    for (const [k, s] of [["bride", 1], ["groom", 1], ["wedding_date", 1]]) if (!D[k]) { st.step = s; draw(); validate(form); return toast("Please fill in the required details"); }
+    if (D.events.some((x) => !x.date)) { st.step = 2; draw(); validate(form); return toast("Please add a date for every function"); }
+    if (!validate(form)) return toast(D.verified ? "Please add your name and WhatsApp number" : "Please confirm you've checked the details");
+    if (!confirm(`Send ${D.bride} & ${D.groom}'s invitation details to BFI?\n\nWe'll message you on WhatsApp to confirm the price and the 50% advance. Nothing is charged now.`)) return;
     setBusy(btn, true, "Sending…");
+    const pr = price();
     try {
       if (user()) await saveRemote("submitted");
-      await sendEnquiry({ name: D.contact_name, phone: D.phone, email: D.email || null, wedding_date: D.events.find((x) => /phera/i.test(x.type))?.date || D.events[0].date || null, package: D.package || "Not sure", design_slug: D.design, source: "customize",
-        message: `Couple: ${D.bride} & ${D.groom}. Events: ${D.events.map((x) => `${x.type} ${x.date} ${x.time} ${x.venue}`.replace(/\s+/g, " ").trim()).join("; ")}. Language: ${D.language}. Music: ${D.music}. RSVP: ${D.rsvp ? "on" : "off"}. ${D.notes || ""}`.slice(0, 2000) });
+      await sendEnquiry({ name: D.contact_name, phone: D.phone, email: D.email || null, wedding_date: D.wedding_date || mainEv().date || null, package: D.package, design_slug: D.design, source: "customize",
+        message: `Package: ${D.package} (est. ₹${pr}). Couple: ${D.bride} & ${D.groom}. Parents: ${D.bride_family || "-"} / ${D.groom_family || "-"}. Blessings: ${D.blessings || "-"}. Language: ${D.language}. Functions: ${D.events.map((x) => `${evName(x)} ${x.date} ${x.time} @ ${x.venue} ${x.map} ${x.notes}`.replace(/\s+/g, " ").trim()).join("; ")}. Music: ${P().music ? D.music : "-"}. Gallery: ${P().gallery && D.gallery ? "yes" : "no"}. RSVP: ${P().rsvp && D.rsvp ? "yes" : "no"}. Colours: ${D.colours || "-"}. Story: ${D.story || "-"}. Notes: ${D.notes || "-"}`.slice(0, 2000) });
+      track("customize_submit", { design: D.design, package: D.package, price: pr });
       localStorage.removeItem(CZ_KEY);
-      form.innerHTML = `<div class="notice ok" style="font-size:16px"><b>Dhanyavaad!</b> We've received the details for ${esc(inv().name)}. Our designer will share the first preview on WhatsApp within ${inv().tier === "Basic" ? "24" : inv().tier === "Premium" ? "48" : "72"} hours.</div>
+      st.step = 5;
+      $("#stepper").innerHTML = steps.map((s, k) => `<button type="button" class="${k < 5 ? "done" : "cur"}" disabled aria-label="${s}"></button>`).join("");
+      const half = Math.ceil(pr / 2);
+      form.innerHTML = `<div class="step-title"><h2 style="font-size:28px">Confirmed: we've received your details</h2><small>Step 6 of 6</small></div>
+        <div class="notice ok" style="font-size:16px"><b>Dhanyavaad, ${esc(D.contact_name)}!</b> ${esc(D.bride)} &amp; ${esc(D.groom)}'s ${esc(inv().name)} invitation (${D.package}) is with our designers.</div>
+        <ol class="next-steps">
+          <li><b>We message you on WhatsApp</b> within an hour (10am–8pm) to confirm the design, package and final price.</li>
+          <li><b>You pay the 50% advance</b> (about ${inr(half)}) by UPI or bank transfer.</li>
+          <li><b>We prepare your invitation</b>: ready in ${P().days} hours once we have all details and the advance.</li>
+          <li><b>You review the preview</b> on your phone. One round of changes is included; spelling fixes are always free.</li>
+          <li><b>You pay the remaining 50%</b> after you approve.</li>
+          <li><b>You receive your link, QR code and a ready-to-forward WhatsApp message.</b></li></ol>
         <div class="row" style="margin-top:18px"><a class="btn btn-wa" data-wa="${esc(waText(inv().name))}">${WA_SVG} Chat on WhatsApp</a>${user() ? '<a class="btn btn-ghost" href="account.html">Go to my account</a>' : ""}</div>`;
-      $("#stepper").innerHTML = ""; initChrome();
-    } catch { setBusy(btn, false); toast("Couldn't send. Please try again or continue on WhatsApp."); }
+      initChrome();
+    } catch { setBusy(btn, false); toast("Couldn't send. Please try again or send on WhatsApp."); }
   }
-  form.addEventListener("submit", (e) => { e.preventDefault(); collect(); if (!validate(form)) return; st.step++; save(); draw(); form.scrollIntoView({ block: "start" }); });
+  form.addEventListener("submit", (e) => { e.preventDefault(); collect(); if (!validate(form)) return; st.step++; save(); draw(); form.scrollIntoView({ block: "start" }); if (st.step === 1) track("customize_start", { design: D.design, package: D.package }); });
   form.addEventListener("input", collect);
-  form.addEventListener("change", collect);
+  form.addEventListener("change", (e) => { collect(); if (e.target.name === "design" || e.target.name === "package" || e.target.dataset.ev === "type") draw(); });
   form.addEventListener("click", (e) => {
     if (e.target.closest("[data-back]")) { collect(); st.step--; save(); draw(); }
-    if (e.target.closest("#add-ev")) { collect(); D.events.push({ type: "Reception", date: "", time: "", venue: "", map: "" }); draw(); }
+    const g = e.target.closest("[data-goto]"); if (g) { collect(); st.step = +g.dataset.goto; save(); draw(); }
+    const up = e.target.closest("[data-upgrade]"); if (up) { collect(); D.package = up.dataset.upgrade; save(); draw(); toast(`Switched to ${D.package}`); }
+    if (e.target.closest("#add-ev")) { collect(); if (D.events.length < P().events) D.events.push({ type: "Reception", name: "", date: "", time: "", venue: "", map: "", notes: "" }); draw(); }
     const rm = e.target.closest("[data-rm]"); if (rm) { collect(); D.events.splice(+rm.dataset.rm, 1); draw(); }
+    const mv = e.target.closest("[data-mv]"); if (mv) { collect(); const [k, d] = mv.dataset.mv.split(":").map(Number); const j = k + d; if (j >= 0 && j < D.events.length) { [D.events[k], D.events[j]] = [D.events[j], D.events[k]]; save(); draw(); } }
   });
-  $("#stepper").addEventListener("click", (e) => { const b = e.target.closest("[data-go]"); if (b && +b.dataset.go <= st.step) { collect(); st.step = +b.dataset.go; draw(); } });
+  $("#stepper").addEventListener("click", (e) => { const b = e.target.closest("[data-go]"); if (b && +b.dataset.go <= st.step && st.step < 5) { collect(); st.step = +b.dataset.go; draw(); } });
   $("#show-pv")?.addEventListener("click", () => $(".cz-preview").classList.add("open"));
   $(".pv-close")?.addEventListener("click", () => $(".cz-preview").classList.remove("open"));
   draw();
@@ -422,6 +507,7 @@ pages.contact = async () => {
     const btn = $("button[type=submit]", form); setBusy(btn, true, "Sending…");
     try {
       await sendEnquiry({ name: d.name, phone: d.phone, email: d.email || null, wedding_date: d.wedding_date || null, city: d.city || null, package: d.package || "Not sure", design_slug: d.design || null, message: d.message || null, source: "contact" });
+      track("contact_submit", { package: d.package || "Not sure" });
       const waMsg = `Namaste BFI 🙏 I just sent an enquiry on your website.\nName: ${d.name}\nWedding date: ${d.wedding_date || "not fixed"}\nCity: ${d.city || "-"}\nPackage: ${d.package || "Not sure"}\n${d.message || ""}`;
       form.outerHTML = `<div class="notice ok" style="font-size:16px"><b>Dhanyavaad, ${esc(d.name)}!</b> Your enquiry has reached us. We'll reply on WhatsApp within an hour (${esc(CFG.hours)}).</div>
         <p style="margin-top:14px">Want a faster reply? Send the same details on WhatsApp:</p><a class="btn btn-wa" style="margin-top:10px" target="_blank" rel="noopener" href="${waHref(waMsg)}">${WA_SVG} Send on WhatsApp</a>`;
@@ -697,7 +783,11 @@ pages.demo = async () => {
   const order = C.pics || [0, 1, 2];
   $("#dv-story-list").innerHTML = C.story.map(([when, title, text], k) => `<figure><img src="${IMG(pics[order[k]][0])}" alt="${pics[order[k]][1]}" loading="lazy"><figcaption><small>${esc(when)}</small><b>${esc(title)}</b><p>${esc(text)}</p></figcaption></figure>`).join("");
   $("#dv-venue").innerHTML = `<b>${esc(C.venue[0])}</b><br>${esc(C.venue[1])}`;
-  $("#dv-map-frame").src = `https://www.google.com/maps?q=${encodeURIComponent(C.venue[2])}&output=embed`;
+  $("#dv-map-frame").src = `https://maps.google.com/maps?q=${encodeURIComponent(C.venue[2] + ", India")}&z=14&hl=en&output=embed`;
+  try {
+    if (window.qrcode) { const q = qrcode(0, "M"); q.addData(location.origin + location.pathname + "?design=" + inv.slug); q.make();
+      $("#dv-qr").innerHTML = q.createSvgTag({ cellSize: 5, margin: 2, scalable: true }); }
+  } catch {}
   $("#dv-stay").textContent = C.stay;
   $("#dv-rsvp-note").textContent = C.rsvp;
   $("#wishes").innerHTML = C.wishes.map(([n, w]) => `<div class="wish"><b>${esc(n)}</b><p>${esc(w)}</p></div>`).join("");
@@ -966,5 +1056,18 @@ var WA_SVG = '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><p
   }
   initChrome();
   const page = document.body.dataset.page;
+  track("page_view", { ref: document.referrer ? new URL(document.referrer).hostname : "", q: location.search.slice(0, 60) });
+  document.addEventListener("click", (e) => {
+    const a = e.target.closest("a,button"); if (!a) return;
+    const href = a.getAttribute("href") || "";
+    if (a.dataset.track) track(a.dataset.track, { label: (a.textContent || "").trim().slice(0, 40) });
+    else if (/wa\.me\//.test(href) || a.hasAttribute("data-wa")) track("whatsapp_click", { from: page });
+    else if (/^tel:/.test(href)) track("call_click", { from: page });
+    else if (/^mailto:/.test(href)) track("email_click", { from: page });
+    else if (/demo\.html/.test(href)) track("demo_open", { from: page, to: href.slice(0, 60) });
+    else if (/customize\.html/.test(href)) track("customize_click", { from: page });
+    else if (/design-[\w-]+\.html/.test(href)) track("design_click", { from: page, to: href.slice(0, 60) });
+    else if (a.matches("[data-fmt]")) track("free_card_download", { fmt: a.dataset.fmt });
+  }, { capture: true });
   try { page.startsWith("design-") ? initDesignPage() : await pages[page]?.(); } catch (e) { console.error(e); }
 })();
