@@ -11,7 +11,7 @@ from html import escape
 from pathlib import Path
 
 OUT = Path(__file__).resolve().parent.parent / "site"
-V = "20261104b"  # bump to bust browser caches for css/js
+V = "20261104c"  # bump to bust browser caches for css/js
 BASE = "https://bfi-royal-heritage.vercel.app"
 IMGBASE = "https://oaosapkkzoynaqpnmvrj.supabase.co/storage/v1/object/public/site/"
 BIZ = {
@@ -592,12 +592,7 @@ page("customize", "Customize Your Wedding Invitation | BFI Marwari Invitations",
 
 # ---------------- Live demo invitation ----------------
 DEMO = f'''
-<div class="env" id="env" role="dialog" aria-label="Open the invitation">
-  <div class="env-box"><p class="env-names">Priya &amp; Rohan</p>
-    <div class="env-body"></div><div class="env-card" id="env-card"></div><div class="env-flap"></div>
-    <button class="env-seal" id="env-open" aria-label="Open the invitation">P&amp;R</button>
-    <p class="env-hint">Tap the seal to open</p></div>
-</div>
+<div id="intro"></div>
 <div class="petals" id="petals" aria-hidden="true"></div>
 <div class="demo-ribbon"><span>Sample invitation by <b>BFI</b></span><a class="btn btn-sm btn-gold" id="demo-cta" href="customize.html">Create yours</a></div>
 <header class="dv-cover"><div class="inv-wrap" id="dv-card"></div><a class="dv-scroll" href="#dv-blessing">Scroll to see the celebrations ↓</a></header>

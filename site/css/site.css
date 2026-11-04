@@ -572,8 +572,8 @@ body[data-page=demo]{background:#FBF4E6}
 .env.open .env-seal{opacity:0}
 .env.open .env-card{transform:translateY(-70%)}
 .petals{position:fixed;inset:0;pointer-events:none;z-index:40;overflow:hidden}
-.petals i{position:absolute;top:-30px;width:14px;height:12px;border-radius:12px 0 12px 0;background:linear-gradient(135deg,#e9566b,#a82235);opacity:.8;animation:fall linear forwards}
-.petals i:nth-child(3n){background:linear-gradient(135deg,#f7b733,#e8890c);width:11px;height:11px}
+.petals i:not(.pt){position:absolute;top:-30px;width:14px;height:12px;border-radius:12px 0 12px 0;background:linear-gradient(135deg,#e9566b,#a82235);opacity:.8;animation:fall linear forwards}
+.petals i:not(.pt):nth-child(3n){background:linear-gradient(135deg,#f7b733,#e8890c);width:11px;height:11px}
 @keyframes fall{to{transform:translate(var(--dx),110vh) rotate(540deg)}}
 .dv-cover{padding:0;min-height:auto;background:#2a0710;display:block}
 .dv-cover .inv-wrap{width:100%;max-width:520px;margin:0 auto;aspect-ratio:2/3}
@@ -693,3 +693,150 @@ main{animation:pageIn .5s ease-out both}
 .dv-brand{display:flex;flex-direction:column;align-items:center;gap:6px;margin-top:24px;padding-top:18px;border-top:1px solid var(--beige);text-decoration:none;color:var(--muted);font-size:13px;position:relative}
 .dv-brand img{width:84px;height:auto}
 .dv{padding-bottom:90px}
+
+/* ===== v7: a different demo for every design ===== */
+body[data-page=demo]{--dv-bg:#FBF4E6;--dv-surface:var(--paper);--dv-text:var(--brown);--dv-muted:var(--muted);--dv-head:var(--maroon);--dv-border:var(--beige);--dv-accent:var(--gold-ink);--dv-hfont:600 30px/1.1 var(--serif);background:var(--dv-bg);color:var(--dv-text);transition:background .4s}
+body[data-page=demo] .dv-sec{border-bottom-color:var(--dv-border)}
+body[data-page=demo] .dv-sec h2{font:var(--dv-hfont);color:var(--dv-head)}
+body[data-page=demo] .dv-sec p,body[data-page=demo] .muted,body[data-page=demo] .dv-fam span,body[data-page=demo] .dv-ev p,body[data-page=demo] .count span,body[data-page=demo] .dress{color:var(--dv-muted)}
+body[data-page=demo] .dv-fam b,body[data-page=demo] .dv-story b,body[data-page=demo] .count b,body[data-page=demo] .dv-ev .d b,body[data-page=demo] .dv-ev h3,body[data-page=demo] .wish b{color:var(--dv-head)}
+body[data-page=demo] .dv-weds,body[data-page=demo] .dv-story small,body[data-page=demo] .deva,body[data-page=demo] .eyebrow{color:var(--dv-accent)}
+body[data-page=demo] .dv-ev,body[data-page=demo] .count div,body[data-page=demo] .wish,body[data-page=demo] .dv-cta,body[data-page=demo] .dv-pills li{background:var(--dv-surface);border-color:var(--dv-border);color:var(--dv-text)}
+body[data-page=demo] .dv-ev .d{border-color:var(--dv-border)}
+body[data-page=demo] .dv-ev .acts a,body[data-page=demo] .dv-ev .acts button{color:var(--dv-head)}
+body[data-page=demo] .wish p,body[data-page=demo] .dv-cta h2{color:var(--dv-text)}
+body[data-page=demo] .dv-cta h2{color:var(--dv-head)}
+body[data-page=demo] .field label{color:var(--dv-text)}
+body[data-page=demo] .dv-story img{border-color:var(--dv-accent)}
+body[data-page=demo] .dv-designs a{color:var(--dv-text)}
+/* dark themes: readable form fields */
+body[data-theme=rajwada-royale] .field input,body[data-theme=rajwada-royale] .field select,body[data-theme=rajwada-royale] .field textarea,
+body[data-theme=mor-pankh] .field input,body[data-theme=mor-pankh] .field select,body[data-theme=mor-pankh] .field textarea,
+body[data-theme=neel-mahal] .field input,body[data-theme=neel-mahal] .field select,body[data-theme=neel-mahal] .field textarea,
+body[data-theme=sheesh-mahal] .field input,body[data-theme=sheesh-mahal] .field select,body[data-theme=sheesh-mahal] .field textarea{background:rgba(255,255,255,.08);border-color:var(--dv-border);color:var(--dv-text)}
+body[data-theme=rajwada-royale] option,body[data-theme=mor-pankh] option,body[data-theme=neel-mahal] option,body[data-theme=sheesh-mahal] option{color:#222}
+
+/* palettes + heading styles */
+body[data-theme=rajwada-royale]{--dv-bg:radial-gradient(circle at 50% 0,#5A1421,#2E0710 60%) fixed;--dv-surface:rgba(255,236,200,.06);--dv-text:#F6E6C2;--dv-muted:#D9C29A;--dv-head:#E8C77A;--dv-border:rgba(232,199,122,.35);--dv-accent:#E8C77A;--dv-hfont:600 32px/1.1 var(--serif)}
+body[data-theme=gulmohar-classic]{--dv-bg:#FFF8EC;--dv-head:#A4272F;--dv-border:#F0C9A0;--dv-accent:#D35E12;--dv-hfont:italic 600 32px/1.1 var(--serif)}
+body[data-theme=gulabi-bagh]{--dv-bg:linear-gradient(#FCEFF1,#FFF6F2) fixed;--dv-surface:#FFF9FA;--dv-text:#4A2B33;--dv-muted:#8A6670;--dv-head:#B3485F;--dv-border:#F3C9D3;--dv-accent:#B98A3E;--dv-hfont:400 44px/1 var(--script)}
+body[data-theme=mor-pankh]{--dv-bg:radial-gradient(circle at 20% 0,#14473F,#0B2420 70%) fixed;--dv-surface:rgba(255,255,255,.06);--dv-text:#E8F1EA;--dv-muted:#B9CFC3;--dv-head:#D9B86A;--dv-border:rgba(217,184,106,.32);--dv-accent:#4FC3B4;--dv-hfont:italic 600 32px/1.1 var(--serif)}
+body[data-theme=neel-mahal]{--dv-bg:radial-gradient(circle at 70% 0,#1C2D63,#081129 65%) fixed;--dv-surface:rgba(255,255,255,.06);--dv-text:#EAF0FF;--dv-muted:#B5C1E3;--dv-head:#F2D58A;--dv-border:rgba(242,213,138,.28);--dv-accent:#F2D58A;--dv-hfont:400 44px/1 var(--script)}
+body[data-theme=gajraj-swagat]{--dv-bg:#FFF4E0;--dv-surface:#FFFBF2;--dv-text:#3D2A12;--dv-muted:#7A6040;--dv-head:#B5541C;--dv-border:#F2C98A;--dv-accent:#E98A15;--dv-hfont:700 30px/1.1 var(--serif)}
+body[data-theme=sheesh-mahal]{--dv-bg:radial-gradient(circle at 50% 0,#7A1219,#3A060B 70%) fixed;--dv-surface:rgba(255,240,214,.07);--dv-text:#FFF0D6;--dv-muted:#E6C9A5;--dv-head:#F5D27A;--dv-border:rgba(245,210,122,.4);--dv-accent:#F5D27A;--dv-hfont:400 46px/1 var(--script)}
+body[data-theme=chhatri]{--dv-bg:#FFFDF7;--dv-surface:#fff;--dv-text:#2F2A24;--dv-muted:#7A7065;--dv-head:#8C6A2E;--dv-border:#E6D7B5;--dv-accent:#B8975A;--dv-hfont:500 15px/1.4 var(--sans)}
+body[data-theme=chhatri] .dv-sec h2{letter-spacing:.32em;text-transform:uppercase}
+body[data-theme=chhatri] .dv-sec{padding:60px 0}
+
+/* layout variants: timeline events (Mor Pankh, Neel Mahal, Chhatri) */
+body[data-theme=mor-pankh] .dv-events,body[data-theme=neel-mahal] .dv-events,body[data-theme=chhatri] .dv-events{position:relative;padding-left:22px;gap:22px}
+body[data-theme=mor-pankh] .dv-events::before,body[data-theme=neel-mahal] .dv-events::before,body[data-theme=chhatri] .dv-events::before{content:"";position:absolute;left:31px;top:6px;bottom:6px;width:2px;background:linear-gradient(var(--dv-accent),transparent)}
+body[data-theme=mor-pankh] .dv-ev,body[data-theme=neel-mahal] .dv-ev,body[data-theme=chhatri] .dv-ev{background:none;border:0;padding:0 0 0 6px;grid-template-columns:20px 1fr}
+body[data-theme=mor-pankh] .dv-ev .d,body[data-theme=neel-mahal] .dv-ev .d,body[data-theme=chhatri] .dv-ev .d{width:20px;height:20px;border-radius:50%;background:var(--dv-accent);border:4px solid var(--dv-bg,#000);padding:0;align-self:start;margin-top:4px;overflow:hidden;color:transparent;box-shadow:0 0 0 2px var(--dv-accent)}
+body[data-theme=mor-pankh] .dv-ev .d *,body[data-theme=neel-mahal] .dv-ev .d *,body[data-theme=chhatri] .dv-ev .d *{display:none}
+/* story variants */
+body[data-theme=gulabi-bagh] .dv-story figure:nth-child(even),body[data-theme=gulmohar-classic] .dv-story figure:nth-child(even){grid-template-columns:1fr 110px}
+body[data-theme=gulabi-bagh] .dv-story figure:nth-child(even) img,body[data-theme=gulmohar-classic] .dv-story figure:nth-child(even) img{order:2}
+body[data-theme=neel-mahal] .dv-story img,body[data-theme=mor-pankh] .dv-story img{border-radius:50%;height:110px}
+body[data-theme=sheesh-mahal] .dv-story img{border-radius:12px;box-shadow:0 0 0 4px rgba(245,210,122,.25),0 0 22px rgba(245,210,122,.35)}
+body[data-theme=chhatri] .dv-story img{border-radius:4px;border-width:1px}
+/* count + event card flavours */
+body[data-theme=sheesh-mahal] .count div,body[data-theme=rajwada-royale] .count div{background:linear-gradient(160deg,rgba(255,255,255,.12),rgba(255,255,255,.02));box-shadow:inset 0 0 0 1px var(--dv-border)}
+body[data-theme=gajraj-swagat] .count div{border-radius:50%;aspect-ratio:1;display:grid;place-content:center}
+body[data-theme=gulabi-bagh] .count div{border-radius:60px 60px 14px 14px}
+
+/* scroll reveal flavours */
+body[data-theme=rajwada-royale] .reveal-dv{transform:scale(.94)}
+body[data-theme=gulabi-bagh] .reveal-dv{filter:blur(6px)}
+body[data-theme=gulabi-bagh] .reveal-dv.in{filter:none}
+body[data-theme=mor-pankh] .reveal-dv{transform:translateX(-26px)}
+body[data-theme=neel-mahal] .reveal-dv{transform:translateY(30px);transition-duration:1s}
+body[data-theme=gajraj-swagat] .reveal-dv{transform:translateY(24px) rotate(-1.5deg)}
+body[data-theme=sheesh-mahal] .reveal-dv{transform:perspective(800px) rotateX(18deg);transform-origin:top}
+body[data-theme=chhatri] .reveal-dv{transform:none;transition-duration:1.2s}
+body[data-page=demo] .reveal-dv.in{transform:none}
+
+/* ---- intros ---- */
+.intro{position:fixed;inset:0;z-index:90;transition:opacity .7s ease .3s;overflow:hidden}
+.intro.gone{opacity:0;pointer-events:none}
+.in-mid{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;text-align:center;z-index:5;transition:opacity .4s}
+.intro.open .in-mid{opacity:0}
+.in-names{font:400 clamp(44px,12vw,70px)/1 var(--script);color:#F6E6C2;text-shadow:0 2px 12px rgba(0,0,0,.35)}
+.in-names span{font-size:.6em}
+.in-sub{font:500 13px var(--sans);letter-spacing:.24em;text-transform:uppercase;color:#E9D9BC}
+.in-btn{border:1px solid rgba(255,255,255,.6);background:rgba(255,255,255,.12);backdrop-filter:blur(4px);color:#fff;border-radius:999px;padding:12px 24px;font:600 15px var(--sans);cursor:pointer;animation:float 3s ease-in-out infinite}
+/* doors (Rajwada) */
+.intro-doors{background:#2E0710}
+.door{position:absolute;top:0;bottom:0;width:50%;background-size:200% 100%;transition:transform 1.2s cubic-bezier(.6,.05,.3,1);box-shadow:inset 0 0 0 10px rgba(46,7,16,.6),inset 0 0 0 12px #C6A15B;filter:brightness(.75)}
+.door.l{left:0;background-position:left center;transform-origin:left}
+.door.r{right:0;background-position:right center;transform-origin:right}
+.door::after{content:"";position:absolute;top:50%;width:14px;height:60px;border-radius:8px;background:linear-gradient(#F3DFA8,#A07A32);transform:translateY(-50%)}
+.door.l::after{right:18px}.door.r::after{left:18px}
+.intro-doors.open .door.l{transform:perspective(1400px) rotateY(-105deg)}
+.intro-doors.open .door.r{transform:perspective(1400px) rotateY(105deg)}
+/* envelope reuses .env styles */
+.intro-envelope .env{position:absolute}
+.intro-envelope.open .env{animation:none}
+.intro-envelope.open .env-flap{transform:rotateX(180deg);z-index:1}
+.intro-envelope.open .env-seal{opacity:0}
+.intro-envelope.open .env-card{transform:translateY(-70%)}
+.intro-envelope .env-seal{animation:none}
+/* bloom (Gulabi) */
+.intro-bloom{background:radial-gradient(circle,#F8D7DE,#E7A6B4);clip-path:circle(150% at 50% 50%);transition:clip-path 1.3s cubic-bezier(.7,0,.3,1),opacity .4s 1.2s}
+.intro-bloom .in-names{color:#7A2C42;text-shadow:none}
+.intro-bloom .in-sub{color:#9A5466}
+.intro-bloom .in-btn{color:#7A2C42;border-color:#B3485F;background:rgba(255,255,255,.5)}
+.bloom-ring{position:absolute;left:50%;top:50%;width:min(80vw,420px);aspect-ratio:1;transform:translate(-50%,-50%);border-radius:50%;background:repeating-conic-gradient(from 0deg,rgba(255,255,255,.55) 0 10deg,transparent 10deg 30deg);mask:radial-gradient(circle,transparent 45%,#000 46%,#000 70%,transparent 71%);animation:spin 30s linear infinite}
+.intro-bloom.open{clip-path:circle(0% at 50% 50%)}
+/* feather (Mor Pankh) */
+.intro-feather{background:radial-gradient(circle at 50% 40%,#17564C,#0B2420);transition:transform 1.2s cubic-bezier(.7,0,.3,1),opacity .5s 1s}
+.big-feather{position:absolute;left:50%;top:50%;width:min(46vw,240px);height:min(120vw,620px);transform:translate(-50%,-50%) rotate(-18deg);border-radius:50%;background:radial-gradient(ellipse at 50% 26%,#16245F 0 9%,#2BB3A3 10% 16%,#E2B84E 17% 20%,#2E8A4A 21% 30%,transparent 31%),repeating-linear-gradient(80deg,rgba(80,170,120,.55) 0 2px,transparent 2px 7px),repeating-linear-gradient(100deg,rgba(80,170,120,.55) 0 2px,transparent 2px 7px);opacity:.9;animation:sway 4s ease-in-out infinite}
+.big-feather::after{content:"";position:absolute;left:50%;top:30%;bottom:-20%;width:3px;background:#C9A24A;transform:translateX(-50%)}
+@keyframes sway{0%,100%{transform:translate(-50%,-50%) rotate(-18deg)}50%{transform:translate(-50%,-50%) rotate(-8deg)}}
+.intro-feather.open{transform:translate(110%,-110%) rotate(25deg)}
+/* stars (Neel Mahal) */
+.intro-stars{background:radial-gradient(circle at 50% 120%,#1C2D63,#050B1E 70%);transition:transform 1.4s ease,opacity 1s .4s}
+.intro-stars>i{position:absolute;width:3px;height:3px;border-radius:50%;background:#fff;animation:twinkle 2.6s ease-in-out infinite}
+.moon{position:absolute;right:16%;top:14%;width:70px;height:70px;border-radius:50%;box-shadow:-14px 8px 0 0 #F2D58A;animation:moonrise 2s ease-out both}
+@keyframes moonrise{from{transform:translateY(60px);opacity:0}}
+@keyframes twinkle{0%,100%{opacity:.2;transform:scale(.6)}50%{opacity:1;transform:scale(1.2)}}
+.intro-stars.open{transform:scale(1.25);opacity:0}
+/* curtain (Gajraj) */
+.intro-curtain{background:linear-gradient(#FFE8B8,#FFD38A);display:flex}
+.intro-curtain>span{flex:1;height:100%;background:radial-gradient(circle at 50% 50%,#7A2E0E 0 10%,#F59E0B 11% 46%,transparent 48%) 0 0/100% 30px repeat-y,linear-gradient(90deg,transparent 46%,#3E8E3E 46% 54%,transparent 54%);transition:transform 1.1s cubic-bezier(.7,0,.3,1);animation:sway2 3s ease-in-out infinite;transform-origin:top}
+.intro-curtain>span:nth-child(even){background:radial-gradient(circle at 50% 50%,#7A2E0E 0 10%,#FACC15 11% 46%,transparent 48%) 0 15px/100% 30px repeat-y,linear-gradient(90deg,transparent 46%,#3E8E3E 46% 54%,transparent 54%)}
+@keyframes sway2{0%,100%{transform:rotate(-1.2deg)}50%{transform:rotate(1.2deg)}}
+.intro-curtain .in-names{color:#7A2E0E;text-shadow:0 0 18px #FFF4E0,0 0 4px #FFF4E0}
+.intro-curtain .in-btn{color:#7A2E0E;border-color:#B5541C;background:rgba(255,248,236,.85)}
+.intro-curtain.open>span{transform:translateY(-110%);animation:none}
+.intro-curtain.open{background:transparent;transition:background .3s .6s,opacity .7s .5s}
+/* tiles (Sheesh Mahal) */
+.intro-tiles{background:transparent}
+.tile-grid{position:absolute;inset:0;display:grid;grid-template-columns:repeat(8,1fr);grid-template-rows:repeat(12,1fr)}
+.tile-grid span{background:linear-gradient(135deg,#8A1520,#4A0A10 55%,#C99A3E 56%,#7A1219 60%);box-shadow:inset 0 0 0 1px rgba(245,210,122,.25);transition:transform .7s cubic-bezier(.6,0,.4,1),opacity .7s}
+.intro-tiles.open .tile-grid span{transform:rotate(25deg) scale(0);opacity:0}
+/* line drawing (Chhatri) */
+.intro-line{background:#FFFDF7;transition:opacity 1s}
+.intro-line svg{position:absolute;left:50%;top:44%;width:min(60vw,260px);transform:translate(-50%,-50%);fill:none;stroke:#B8975A;stroke-width:1.2;stroke-dasharray:900;stroke-dashoffset:900;animation:draw 3.2s ease forwards}
+@keyframes draw{to{stroke-dashoffset:0}}
+.intro-line .in-mid{justify-content:flex-end;padding-bottom:16vh}
+.intro-line .in-names{color:#8C6A2E;text-shadow:none;opacity:0;animation:fadeUp 1s 1.8s forwards}
+.intro-line .in-btn{color:#8C6A2E;border-color:#B8975A;background:#fff;opacity:0;animation:fadeUp .8s 2.4s forwards}
+.intro-line.open{opacity:0}
+
+/* ---- floating effects ---- */
+.pt{position:absolute;top:-30px;pointer-events:none;animation:fall linear forwards}
+.pt-petals{width:14px;height:12px;border-radius:12px 0 12px 0;background:linear-gradient(135deg,#e9566b,#a82235);opacity:.85}
+.pt-petals:nth-child(3n){background:linear-gradient(135deg,#f7b733,#e8890c)}
+.pt-pink{width:16px;height:13px;border-radius:14px 0 14px 0;background:linear-gradient(135deg,#FBD3DC,#E98AA0);opacity:.85}
+.pt-marigold{width:16px;height:16px;border-radius:50%;background:radial-gradient(circle,#7A2E0E 0 14%,#F59E0B 16% 60%,#FACC15 62%)}
+.pt-feathers{width:12px;height:34px;border-radius:50%;background:radial-gradient(ellipse at 50% 30%,#16245F 0 14%,#2BB3A3 15% 26%,#E2B84E 27% 32%,#2E8A4A 33%);opacity:.8}
+.pt-glitter{width:9px;height:9px;background:linear-gradient(135deg,#FFF3C4,#E0B04A);transform:rotate(45deg);box-shadow:0 0 8px #F5D27A;animation-name:fallspin}
+@keyframes fallspin{to{transform:translate(var(--dx),110vh) rotate(720deg)}}
+.pt-gold,.pt-dust{top:auto;bottom:-20px;width:6px;height:6px;border-radius:50%;background:radial-gradient(circle,#FFF3C4,#E0B04A 60%,transparent 70%);box-shadow:0 0 10px #E8C77A;animation-name:rise}
+.pt-dust{width:4px;height:4px;opacity:.6;box-shadow:none}
+@keyframes rise{from{transform:translate(0,0);opacity:0}15%{opacity:1}to{transform:translate(var(--dx),-105vh);opacity:0}}
+.pt-stars{width:3px;height:3px;border-radius:50%;background:#fff;box-shadow:0 0 6px #F2D58A;animation-name:twinkle;animation-iteration-count:infinite;animation-timing-function:ease-in-out}
+.pt-stars:nth-child(5n){width:5px;height:5px;background:#FDE68A;box-shadow:0 0 12px #FDE68A}
+@media(prefers-reduced-motion:reduce){.intro{display:none}}
+.door::before{content:"";position:absolute;inset:22px;border:2px solid rgba(232,199,122,.7);border-radius:120px 120px 6px 6px;background:repeating-linear-gradient(45deg,rgba(232,199,122,.22) 0 2px,transparent 2px 18px),repeating-linear-gradient(-45deg,rgba(232,199,122,.22) 0 2px,transparent 2px 18px),radial-gradient(circle,rgba(243,223,168,.9) 0 3px,transparent 4px) 0 0/36px 36px;box-shadow:inset 0 0 40px rgba(0,0,0,.5)}

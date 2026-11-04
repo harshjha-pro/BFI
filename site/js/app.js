@@ -590,17 +590,61 @@ pages.demo = async () => {
   const wedding = day(60); wedding.setHours(19, 30);
   const fmt = (d) => d.toLocaleDateString("en-IN", { weekday: "long", day: "numeric", month: "long", year: "numeric" });
   $("#dv-card").innerHTML = `<img src="${IMG(inv.image)}" alt="${esc(inv.name)} invitation cover">` + inviteText(inv.slug, { date: fmt(wedding), venue: "Royal Palace Gardens, Jaipur" });
-  $("#env-card").style.backgroundImage = `url("${IMG(inv.image)}")`;
   $("#demo-cta").href = $("#demo-cta2").href = `customize.html?design=${inv.slug}`;
   document.title = `Live Demo in ${inv.name} · BFI Marwari Invitations`;
 
-  // envelope intro + falling petals
-  const env = $("#env");
+  // ---- each design has its own theme, opening animation and floating effect ----
+  const TH = {
+    "rajwada-royale": { intro: "doors", fx: "gold", btn: "Open the palace doors", tone: 146.83 },
+    "gulmohar-classic": { intro: "envelope", fx: "petals", btn: "Tap the seal to open", tone: 164.81 },
+    "gulabi-bagh": { intro: "bloom", fx: "pink", btn: "Open with love", tone: 174.61 },
+    "mor-pankh": { intro: "feather", fx: "feathers", btn: "Open invitation", tone: 155.56 },
+    "neel-mahal": { intro: "stars", fx: "stars", btn: "Step into the night", tone: 130.81 },
+    "gajraj-swagat": { intro: "curtain", fx: "marigold", btn: "Lift the toran", tone: 196 },
+    "sheesh-mahal": { intro: "tiles", fx: "glitter", btn: "Enter the Sheesh Mahal", tone: 138.59 },
+    "chhatri": { intro: "line", fx: "dust", btn: "Open invitation", tone: 220 },
+  };
+  const th = TH[inv.slug] || TH["rajwada-royale"];
+  document.body.dataset.theme = inv.slug;
   const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
-  const petals = (n) => { if (reduce) return; const box = $("#petals"); for (let k = 0; k < n; k++) { const p = document.createElement("i"); p.style.left = Math.random() * 100 + "vw"; p.style.setProperty("--dx", (Math.random() * 160 - 80) + "px"); p.style.animationDuration = 5 + Math.random() * 5 + "s"; p.style.animationDelay = Math.random() * 3 + "s"; box.append(p); setTimeout(() => p.remove(), 14000); } };
-  const open = () => { env.classList.add("open"); setTimeout(() => { env.classList.add("gone"); petals(36); }, 1100); setTimeout(() => env.remove(), 2000); };
-  $("#env-open").onclick = open;
-  if (params.get("open") === "1") open();
+  const fxBox = $("#petals");
+  const spawn = (n, burst) => {
+    if (reduce) return;
+    for (let k = 0; k < n; k++) {
+      const p = document.createElement("i"); p.className = "pt pt-" + th.fx;
+      p.style.left = Math.random() * 100 + "vw"; p.style.setProperty("--dx", (Math.random() * 160 - 80) + "px");
+      if (th.fx === "stars") { p.style.top = Math.random() * 100 + "vh"; p.style.animationDelay = Math.random() * 3 + "s"; }
+      else p.style.animationDelay = (burst ? Math.random() * 1.5 : Math.random() * 3) + "s";
+      p.style.animationDuration = (th.fx === "gold" || th.fx === "dust" ? 7 : th.fx === "stars" ? 2.5 : 6) + Math.random() * 5 + "s";
+      fxBox.append(p); setTimeout(() => p.remove(), 16000);
+    }
+  };
+  const ambient = () => { spawn(th.fx === "stars" ? 30 : 26, true); if (!reduce) setInterval(() => !document.hidden && spawn(3), 2600); };
+  const names = `<p class="in-names">Priya <span>&amp;</span> Rohan</p>`;
+  const btn = `<button class="in-btn" type="button">${th.btn}</button>`;
+  const img = `url("${IMG(inv.image)}")`;
+  const markup = {
+    doors: `<div class="in-doors"><div class="door l" style="background-image:${img}"></div><div class="door r" style="background-image:${img}"></div><div class="in-mid">${names}${btn}</div></div>`,
+    envelope: `<div class="env"><div class="env-box"><p class="env-names">Priya &amp; Rohan</p><div class="env-body"></div><div class="env-card" style="background-image:${img}"></div><div class="env-flap"></div><button class="env-seal in-btn" aria-label="Open the invitation">P&amp;R</button><p class="env-hint">Tap the seal to open</p></div></div>`,
+    bloom: `<div class="in-bloom"><div class="bloom-ring"></div><div class="in-mid">${names}<p class="in-sub">A celebration of love</p>${btn}</div></div>`,
+    feather: `<div class="in-feather"><div class="big-feather"></div><div class="in-mid">${names}${btn}</div></div>`,
+    stars: `<div class="in-stars">${Array.from({ length: 70 }, () => `<i style="left:${Math.random() * 100}%;top:${Math.random() * 100}%;animation-delay:${(Math.random() * 3).toFixed(2)}s"></i>`).join("")}<div class="moon"></div><div class="in-mid">${names}<p class="in-sub">under the moonlit sky</p>${btn}</div></div>`,
+    curtain: `<div class="in-curtain">${Array.from({ length: 16 }, (_, k) => `<span style="animation-delay:${(Math.abs(7.5 - k) * 0.05).toFixed(2)}s;transition-delay:${(Math.abs(7.5 - k) * 0.04).toFixed(2)}s"></span>`).join("")}<div class="in-mid">${names}${btn}</div></div>`,
+    tiles: `<div class="in-tiles"><div class="tile-grid">${Array.from({ length: 96 }, () => `<span style="transition-delay:${(Math.random() * 0.7).toFixed(2)}s"></span>`).join("")}</div><div class="in-mid">${names}${btn}</div></div>`,
+    line: `<div class="in-line"><svg viewBox="0 0 200 220" aria-hidden="true"><path d="M30 210 V120 Q30 60 100 40 Q170 60 170 120 V210 M50 210 V125 Q50 80 100 64 Q150 80 150 125 V210 M20 210 H180 M100 40 V22 M92 26 H108 M60 118 H140" /></svg><div class="in-mid">${names}${btn}</div></div>`,
+  };
+  const host = $("#intro");
+  host.innerHTML = `<div class="intro intro-${th.intro}" role="dialog" aria-label="Open the invitation">${markup[th.intro]}</div>`;
+  const ov = host.firstElementChild;
+  const open = () => {
+    if (ov.classList.contains("open")) return;
+    ov.classList.add("open");
+    setTimeout(() => { ov.classList.add("gone"); ambient(); }, th.intro === "tiles" ? 1300 : 1000);
+    setTimeout(() => host.remove(), 2400);
+  };
+  $$(".in-btn", ov).forEach((b) => (b.onclick = open));
+  if (params.get("open") === "1" || reduce) open();
+  const petals = (n) => spawn(n, true);
 
   // gentle music: a soft tanpura-like drone made in the browser (real invitations use your chosen track)
   let ctx, nodes = [];
@@ -610,7 +654,7 @@ pages.demo = async () => {
     if (!on) { nodes.forEach((n) => { try { n.stop(); } catch {} }); nodes = []; return; }
     ctx = ctx || new (window.AudioContext || window.webkitAudioContext)();
     const gain = ctx.createGain(); gain.gain.value = 0.05; gain.connect(ctx.destination);
-    [146.83, 220, 293.66, 146.83 * 2.0045].forEach((f, k) => {
+    const base = th.tone; [base, base * 1.5, base * 2, base * 2.0045].forEach((f, k) => {
       const o = ctx.createOscillator(); o.type = k % 2 ? "triangle" : "sine"; o.frequency.value = f;
       const lfo = ctx.createOscillator(), lg = ctx.createGain(); lfo.frequency.value = 0.15 + k * 0.07; lg.gain.value = 0.6; lfo.connect(lg); lg.connect(o.frequency);
       o.connect(gain); o.start(); lfo.start(); nodes.push(o, lfo);
