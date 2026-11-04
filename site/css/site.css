@@ -838,7 +838,7 @@ body[data-page=demo] .reveal-dv.in{transform:none}
 @keyframes rise{from{transform:translate(0,0);opacity:0}15%{opacity:1}to{transform:translate(var(--dx),-105vh);opacity:0}}
 .pt-stars{width:3px;height:3px;border-radius:50%;background:#fff;box-shadow:0 0 6px #F2D58A;animation-name:twinkle;animation-iteration-count:infinite;animation-timing-function:ease-in-out}
 .pt-stars:nth-child(5n){width:5px;height:5px;background:#FDE68A;box-shadow:0 0 12px #FDE68A}
-@media(prefers-reduced-motion:reduce){.intro{display:none}}
+@media(prefers-reduced-motion:reduce){.intro-line svg{stroke-dashoffset:0}.intro-line .in-names,.intro-line .in-btn{opacity:1}}
 .door::before{content:"";position:absolute;inset:22px;border:2px solid rgba(232,199,122,.7);border-radius:120px 120px 6px 6px;background:repeating-linear-gradient(45deg,rgba(232,199,122,.22) 0 2px,transparent 2px 18px),repeating-linear-gradient(-45deg,rgba(232,199,122,.22) 0 2px,transparent 2px 18px),radial-gradient(circle,rgba(243,223,168,.9) 0 3px,transparent 4px) 0 0/36px 36px;box-shadow:inset 0 0 40px rgba(0,0,0,.5)}
 
 /* v8: per-design fonts (set by the demo script) */
@@ -852,3 +852,12 @@ body[data-page=demo][data-theme=chhatri] .dv-story b,body[data-page=demo][data-t
 body[data-page=demo][data-theme] #dv-card .it-script{font-family:var(--dv-nf)}
 body[data-page=demo][data-theme] .wish p{font-family:var(--dv-bf);font-style:italic;font-size:16px}
 body[data-page=demo][data-theme=sheesh-mahal] .dv-sec p,body[data-page=demo][data-theme=sheesh-mahal] .dv-ev p{font-size:17px}
+/* cover backdrop follows each theme */
+body[data-page=demo] .dv-cover,body[data-page=demo] .dv-scroll{background:var(--dv-cover,#2a0710)}
+body[data-theme=gulmohar-classic]{--dv-cover:#F3E3C3}
+body[data-theme=gulabi-bagh]{--dv-cover:#F6D6DE}
+body[data-theme=gajraj-swagat]{--dv-cover:#F6DDB0}
+body[data-theme=chhatri]{--dv-cover:#EFE6D2}
+body[data-theme=mor-pankh]{--dv-cover:#0B2420}
+body[data-theme=neel-mahal]{--dv-cover:#060D22}
+body[data-theme=gulmohar-classic] .dv-scroll,body[data-theme=gulabi-bagh] .dv-scroll,body[data-theme=gajraj-swagat] .dv-scroll,body[data-theme=chhatri] .dv-scroll{color:var(--dv-head)}

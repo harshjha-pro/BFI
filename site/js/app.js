@@ -741,7 +741,7 @@ pages.demo = async () => {
     setTimeout(() => host.remove(), 2400);
   };
   $$(".in-btn", ov).forEach((b) => (b.onclick = open));
-  if (params.get("open") === "1" || reduce) open();
+  if (params.get("open") === "1") open();
   const petals = (n) => spawn(n, true);
 
   // gentle music: a soft tanpura-like drone made in the browser (real invitations use your chosen track)
@@ -780,7 +780,7 @@ pages.demo = async () => {
     <div class="acts"><a href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(venue)}" target="_blank" rel="noopener">Directions</a><button type="button" data-ics="${k}">Add to calendar</button></div></div></div>`; }).join("");
   $("#dv-events").addEventListener("click", (e) => { const b = e.target.closest("[data-ics]"); if (b) { const [n, name, time, venue] = ev[+b.dataset.ics]; ics(name, day(n), time, venue); } });
 
-  $("#dv-designs").innerHTML = all.map((i) => `<a href="demo.html?design=${i.slug}&open=1" aria-current="${i.slug === inv.slug}"><img src="${IMG(i.image)}" alt="" loading="lazy">${esc(i.name)}</a>`).join("");
+  $("#dv-designs").innerHTML = all.map((i) => `<a href="demo.html?design=${i.slug}" aria-current="${i.slug === inv.slug}"><img src="${IMG(i.image)}" alt="" loading="lazy">${esc(i.name)}</a>`).join("");
   $("#dv-rsvp").addEventListener("submit", (e) => {
     e.preventDefault(); if (!validate(e.target)) return;
     e.target.outerHTML = `<div class="notice ok">Thank you! (This is a demo, so nothing was sent. On your real invitation, RSVPs reach you instantly with the guest count.)</div>`;
