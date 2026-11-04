@@ -961,3 +961,23 @@ body[data-theme=gulmohar-classic] .dv-scroll,body[data-theme=gulabi-bagh] .dv-sc
 .case-gallery figcaption{font-size:13px;color:var(--muted);margin-top:8px}
 .work-home,.work-card{overflow:hidden}
 .case-gallery img,.work-phones img{height:auto}
+
+/* ===== v12: hero on every inner page ===== */
+.phero{position:relative;overflow:hidden;background:radial-gradient(circle at 85% 20%,rgba(198,161,91,.16),transparent 45%),linear-gradient(180deg,var(--tint),var(--ivory));border-bottom:1px solid var(--beige)}
+.phero::before{content:"";position:absolute;left:-30px;top:-30px;width:220px;height:220px;background:radial-gradient(circle,rgba(164,55,46,.16) 0 5px,transparent 6px) 0 0/34px 34px;mask:radial-gradient(circle at 0 0,#000,transparent 70%);pointer-events:none}
+.phero-grid{position:relative;display:grid;gap:22px;align-items:center;padding:32px var(--gut) 34px}
+@media(min-width:900px){.phero-grid{grid-template-columns:1.05fr .95fr;gap:56px;padding:56px var(--gut) 60px;min-height:420px}}
+.phero-copy h1{font-size:clamp(32px,4.6vw,52px);line-height:1.08}
+.phero-copy .lead{margin:14px 0 0;max-width:560px}
+.phero-copy .stepchips,.phero-copy .quick{justify-content:flex-start}
+.phero-copy .eyebrow{display:block}
+.phero-art{position:relative}
+.phero-art img{display:block;width:100%;height:auto;aspect-ratio:4/3;object-fit:cover;border-radius:240px 240px 20px 20px;border:2px solid var(--gold);box-shadow:var(--lift);outline:1px solid rgba(198,161,91,.45);outline-offset:8px;background:var(--beige)}
+.phero-art::after{content:"";position:absolute;right:-10px;bottom:-12px;width:90px;height:90px;background:radial-gradient(circle,var(--gold) 0 2px,transparent 3px) 0 0/14px 14px;opacity:.5;z-index:-1}
+.phero-art-svg{display:grid;place-items:center}
+.phero-svg{width:min(70%,240px);height:auto}
+@media(max-width:899px){
+  .phero-art img{aspect-ratio:16/10;border-radius:18px;outline:none}
+  .phero-art::after{display:none}
+  .phero-art-svg{display:none}
+}

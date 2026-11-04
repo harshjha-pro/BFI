@@ -6,12 +6,13 @@ Pages share one header, footer, mobile menu and WhatsApp buttons. Page logic liv
 Also writes robots.txt, sitemap.xml, llms.txt and the studio contact card (bfi-contact.vcf).
 """
 import json
+import re
 from datetime import date
 from html import escape
 from pathlib import Path
 
 OUT = Path(__file__).resolve().parent.parent / "site"
-V = "20261104g"  # bump to bust browser caches for css/js
+V = "20261104h"  # bump to bust browser caches for css/js
 BASE = "https://bfi-royal-heritage.vercel.app"
 IMGBASE = "https://oaosapkkzoynaqpnmvrj.supabase.co/storage/v1/object/public/site/"
 BIZ = {
@@ -211,7 +212,40 @@ def footer():
 </div></footer>'''
 
 
+
+# Every inner page gets a visual hero: the plain ".phead" header becomes text + an arch-framed illustration.
+HERO = {
+    "invitations": ("hero-invitations.jpg", "Ornate wedding invitation cards and a phone fanned out on maroon velvet"),
+    "pricing": ("hero-pricing.jpg", "Three Rajasthani jewellery boxes of increasing size on ivory silk"),
+    "how-it-works": ("hero-how-it-works.jpg", "A sketch, a phone with the finished invitation and a sealed envelope on a haveli table"),
+    "customize": ("hero-customize.jpg", "A hand with mehendi writing on an ornate invitation with a gold pen"),
+    "faq": ("hero-faq.jpg", "A grandmother and granddaughter chatting over chai at a jharokha window"),
+    "work": ("hero-work.jpg", "A haveli corridor gallery of framed invitation designs"),
+    "guide": ("hero-guide.jpg", "An antique Rajasthani scroll painting of a wedding procession"),
+    "free-cards": ("hero-free-cards.jpg", "Festive invitation cards for birthday, Diwali, housewarming and baby shower"),
+    "contact": ("contact-studio.jpg", "The BFI studio: a desk by a jharokha window overlooking Jaipur"),
+}
+ARCH_SVG = ('<svg class="phero-svg" viewBox="0 0 240 260" aria-hidden="true"><g fill="none" stroke="#C6A15B" stroke-width="1.4" stroke-linecap="round">'
+            '<path d="M30 250V130Q30 60 120 34Q210 60 210 130V250"/><path d="M52 250V136Q52 84 120 62Q188 84 188 136V250" opacity=".6"/>'
+            '<path d="M14 250H226"/><path d="M120 34V16M112 20H128"/><circle cx="120" cy="12" r="3"/>'
+            '<path d="M120 150c-14 0-26-6-30-18 9 0 18 3 30 12 12-9 21-12 30-12-4 12-16 18-30 18Z"/><path d="M120 146c-6-6-9-15-9-24 3 0 6 3 9 6 3-3 6-6 9-6 0 9-3 18-9 24Z"/>'
+            '<path d="M84 200h72M96 212h48" opacity=".7"/></g></svg>')
+
+
+def with_hero(slug, body):
+    m = re.search(r'<section class="phead"[^>]*><div class="wrap">(.*?)</div></section>', body, re.S)
+    if not m:
+        return body
+    if slug in HERO:
+        img, alt = HERO[slug]
+        art = f'<div class="phero-art"><img src="{IMGBASE}{img}" alt="{alt}" width="1100" height="825" fetchpriority="high"></div>'
+    else:
+        art = f'<div class="phero-art phero-art-svg">{ARCH_SVG}</div>'
+    hero = f'<section class="phero"><div class="wrap phero-grid"><div class="phero-copy">{m.group(1)}</div>{art}</div></section>'
+    return body[:m.start()] + hero + body[m.end():]
+
 def page(slug, title, desc, body, active=None, bar=True, ld=None, index=True, og_image=None, chrome=True, path=None):
+    body = with_hero(slug, body)
     url = f"{BASE}/{path if path is not None else (slug + '.html' if slug != 'index' else '')}"
     lds = "".join(f'\n<script type="application/ld+json">{json.dumps(x, ensure_ascii=False)}</script>' for x in (ld or []))
     mbar = f'''<div class="mbar"><a class="btn btn-primary" href="invitations.html">Explore invitations</a><a class="btn btn-wa" data-wa>{WA} WhatsApp</a></div>''' if bar else ""
@@ -830,12 +864,12 @@ CONTACT_FAQ = [
     ("What should I send in my first message?", "Your wedding date, city, the functions you want on the invitation and any design you liked. We'll suggest designs and a package."),
 ]
 CONTACT = f'''
-<section class="phead"><div class="wrap phead-split"><div><h1>Contact BFI</h1><p class="lead">Have a question or want a custom invitation? Talk to a designer today; we reply within an hour.</p>
+<section class="phead"><div class="wrap"><h1>Contact BFI</h1><p class="lead">Have a question or want a custom invitation? Talk to a designer today; we reply within an hour.</p>
   <div class="quick">
     <a class="btn btn-wa" data-wa>{WA} WhatsApp</a>
     <a class="btn btn-outline" href="tel:{BIZ["tel"]}">{icon(I["call"])} Call</a>
     <a class="btn btn-outline" href="mailto:{BIZ["email"]}">{icon(I["mail"])} Email</a>
-  </div></div><img data-img="contact-studio.jpg" alt="The BFI studio: a desk by a jharokha window overlooking Jaipur" width="1200" height="800"></div></section>
+  </div></div></section>
 <section class="sec" style="padding-top:36px"><div class="wrap contact">
   <div class="cinfo">
     <a class="wa" data-wa><span class="ci-ic">{WA}</span><span><b>WhatsApp (fastest)</b><span>{BIZ["phone"]} · replies within an hour</span></span></a>
