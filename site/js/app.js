@@ -582,6 +582,74 @@ pages.account = async () => {
   else $("#pw-box").innerHTML = `<p style="margin-top:14px"><button class="linkbtn" id="pw-open">Change password</button></p>`, ($("#pw-open").onclick = pwForm);
 };
 
+/* ---------- sample content for each demo design (fictional families) ---------- */
+const DEMO_CONTENT = {
+  "rajwada-royale": { a: "Priya", b: "Rohan", city: "Jaipur", line: "॥ शुभ विवाह ॥", coverLine: "॥ श्री गणेशाय नमः ॥",
+    h: { bless: "With the blessings of our elders", story: "Our story", count: "Counting down to the wedding", events: "Wedding celebrations", venue: "The royal venue", rsvp: "Will you join us?", wishes: "Blessings & wishes" },
+    elders: ["Smt. Kamla Devi & Late Shri Ramniwas Agarwal", "Smt. Shanti Devi & Shri Gopal Maheshwari"],
+    aFam: "D/o Smt. Sunita & Shri Mahesh Agarwal, Jaipur", bFam: "S/o Smt. Rekha & Shri Anil Maheshwari, Jodhpur",
+    story: [["2023 · Jodhpur", "We met at a cousin's sangeet", "One dance, one long walk along the fort walls, and a lot of chai."], ["2025 · Udaipur", "The question by the lake", "Rohan asked; Priya said yes before he finished."], ["This winter · Jaipur", "Now, forever", "Our families are coming together. We'd love you to be there."]],
+    events: [[56, "Ganesh Puja", "10:00", "Agarwal Niwas, C-Scheme, Jaipur", "Family only", [["#F2C230", "Yellow"], ["#E86A2C", "Orange"]]], [57, "Mayra", "11:00", "Agarwal Niwas, C-Scheme, Jaipur", "Traditional", [["#B0122C", "Red"], ["#C6A15B", "Gold"]]], [58, "Pithi & Mehendi", "16:00", "The Heritage Lawns, Jaipur", "Leheriya & florals", [["#F7D84A", "Yellow"], ["#3E9B5B", "Green"]]], [59, "Mahila Sangeet", "19:30", "The Heritage Lawns, Jaipur", "Indo-western glam", [["#D8457A", "Pink"], ["#7B3FA0", "Purple"]]], [60, "Baraat & Phere", "19:30", "Royal Palace Gardens, Jaipur", "Royal traditional", [["#641E2B", "Maroon"], ["#F3E3C3", "Ivory"]]], [61, "Reception", "20:00", "Royal Palace Gardens, Jaipur", "Formal: sherwani & saree", [["#1B2A4A", "Navy"], ["#C6A15B", "Gold"]]]],
+    venue: ["Royal Palace Gardens", "Amer Road, Jaipur, Rajasthan", "Amer Road, Jaipur"], stay: "Rooms are booked for outstation guests near Amer. Message the family for details.", rsvp: "Please let us know by one week before the wedding.",
+    wishes: [["Nani", "Sada sukhi raho, mere bachchon. Bahut saara aashirwad."], ["Ankit & Shruti", "Can't wait to dance at the sangeet! Love you both."]] },
+  "gulmohar-classic": { a: "Ananya", b: "Vikram", city: "Bikaner", line: "॥ श्री गणेशाय नमः ॥", coverLine: "॥ शुभ विवाह ॥", weds: "sang",
+    h: { bless: "Aashirwad of our elders", story: "From neighbours to forever", count: "Days to the shubh muhurat", events: "Rasmein & functions", venue: "Shaadi ka sthaan", rsvp: "Kindly confirm your presence", wishes: "Your aashirwad" },
+    elders: ["Smt. Bhanwari Devi & Shri Mohanlal Goyal", "Smt. Saraswati Devi & Late Shri Ramdev Khandelwal"],
+    aFam: "D/o Smt. Kiran & Shri Suresh Goyal, Bikaner", bFam: "S/o Smt. Lata & Shri Rajendra Khandelwal, Bikaner",
+    story: [["Childhood · Rampuria lane", "Two houses, one gali", "We grew up sharing bhujia, kites and terrace Diwalis."], ["Gangaur 2024", "A fair, a question", "Vikram proposed between the swings at the Gangaur mela."], ["This Akshaya Tritiya", "Gathbandhan", "Our families finally fixed the muhurat. Please come."]], pics: [2, 0, 1],
+    events: [[55, "Vinayak Sthapna", "09:30", "Goyal Haveli, Rampuria, Bikaner", "Traditional", [["#E36414", "Saffron"], ["#F7D84A", "Yellow"]]], [57, "Mayra", "12:00", "Goyal Haveli, Rampuria, Bikaner", "Bandhej & safa", [["#B0122C", "Red"], ["#2E7D32", "Green"]]], [58, "Pithi Dastoor", "10:00", "Goyal Haveli, Rampuria, Bikaner", "Yellow & white", [["#F7D84A", "Yellow"], ["#FFFFFF", "White"]]], [59, "Mehendi & Geet", "17:00", "Laxmi Niwas Lawns, Bikaner", "Leheriya", [["#3E9B5B", "Green"], ["#E36414", "Orange"]]], [60, "Phere", "21:00", "Laxmi Niwas Lawns, Bikaner", "Poshak & achkan", [["#A4272F", "Red"], ["#C6A15B", "Gold"]]]],
+    venue: ["Laxmi Niwas Lawns", "Lalgarh area, Bikaner, Rajasthan", "Lalgarh, Bikaner"], stay: "Dharamshala rooms are reserved near Junagarh for our guests.", rsvp: "Please reply by Akhatij so we can arrange your stay.",
+    wishes: [["Bua ji", "Mhari laadli ne ghani ghani badhai! Khush raho sada."], ["Tanmay", "Finally! The gali's longest love story gets its happy ending."]] },
+  "gulabi-bagh": { a: "Meera", b: "Arjun", city: "Udaipur", line: "✿ with love ✿", coverLine: "॥ शुभ विवाह ॥",
+    h: { bless: "With love from our families", story: "Our little love story", count: "Until we say forever", events: "The celebrations", venue: "Where we'll be", rsvp: "Save us a dance?", wishes: "Leave us some love" },
+    elders: ["Smt. Pushpa & Shri Hari Prasad Bansal", "Smt. Usha & Shri Om Prakash Singhal"],
+    aFam: "D/o Smt. Neelam & Shri Ashok Bansal, Udaipur", bFam: "S/o Smt. Anita & Shri Vinod Singhal, Ahmedabad",
+    story: [["Spring 2022 · Udaipur", "A friend's mehendi", "Arjun spilled kesar thandai on Meera's dupatta. She forgave him."], ["2024 · Lake Pichola", "Coffee became sunsets", "Every weekend, the same ghat, the same corner table."], ["This Basant Panchami", "Blossoming into forever", "Join us as two families become one garden."]], pics: [1, 0, 2],
+    events: [[57, "Haldi in the garden", "11:00", "Bansal Bagh, Fatehpura, Udaipur", "Pastel yellow", [["#FFE8A3", "Butter"], ["#F8C8D4", "Blush"]]], [58, "Mehendi & high tea", "16:00", "Bansal Bagh, Fatehpura, Udaipur", "Florals", [["#F3B6C6", "Pink"], ["#BFE3C9", "Mint"]]], [59, "Sangeet under the stars", "19:30", "Lakeview Terrace, Udaipur", "Shimmer & sequins", [["#E7A6B4", "Rose"], ["#C9A15B", "Gold"]]], [60, "Phere by the lake", "18:00", "Lakeview Terrace, Udaipur", "Blush & ivory", [["#F8D7DE", "Blush"], ["#FFF8EC", "Ivory"]]]],
+    venue: ["Lakeview Terrace", "Lake Pichola, Udaipur, Rajasthan", "Lake Pichola, Udaipur"], stay: "We've reserved lake-facing rooms in the old city for our guests.", rsvp: "Please let us know by the end of this month. Pretty please.",
+    wishes: [["Mausi", "Meera beta, tum dono ki jodi gulab jaisi hai. Bahut pyaar."], ["The college gang", "From canteen chai to mandap! So proud of you two."]] },
+  "mor-pankh": { a: "Kavya", b: "Siddharth", city: "Jaipur", line: "॥ मंगलम् ॥", coverLine: "॥ श्री गणेशाय नमः ॥",
+    h: { bless: "Blessed by our families", story: "Chapter by chapter", count: "The countdown is on", events: "The weekend", venue: "Find us here", rsvp: "RSVP", wishes: "Guestbook" },
+    elders: ["Smt. Sushila & Shri Ramesh Chandra Mittal", "Smt. Kaushalya & Shri Banwarilal Jindal"],
+    aFam: "D/o Smt. Rachna & Shri Pradeep Mittal, Mumbai", bFam: "S/o Smt. Seema & Shri Naresh Jindal, Jaipur",
+    story: [["2019 · Pune", "Same college, different hostels", "A group project, three all-nighters and one shared Maggi."], ["2023 · Bengaluru", "Co-founders first", "We built a startup together. Then we built a life."], ["2025 · Jawai", "A leopard, a sunset, a ring", "Siddharth proposed on a safari. The leopard approved."]], pics: [0, 2, 1],
+    events: [[58, "Welcome brunch", "12:00", "The Courtyard Hotel, Jaipur", "Smart casuals", [["#0E7C72", "Teal"], ["#F5F5F0", "White"]]], [59, "Mehendi & cocktails", "17:00", "The Courtyard Hotel, Jaipur", "Peacock tones", [["#14473F", "Emerald"], ["#4FC3B4", "Teal"]]], [60, "Baraat & Phere", "18:30", "Garden Pavilion, Jaipur", "Indian festive", [["#D9B86A", "Gold"], ["#0B2420", "Bottle green"]]], [61, "After-party", "21:30", "Rooftop Lounge, Jaipur", "Black tie", [["#111111", "Black"], ["#D9B86A", "Gold"]]]],
+    venue: ["Garden Pavilion", "Tonk Road, Jaipur, Rajasthan", "Tonk Road, Jaipur"], stay: "Airport pickups and rooms are arranged for flying-in guests.", rsvp: "Kindly RSVP by the 15th so we can plan your stay.",
+    wishes: [["Team Startup", "Best merger we've ever seen. Congratulations!"], ["Dadi", "Dono khush raho, aur jaldi se Jaipur aao."]] },
+  "neel-mahal": { a: "Riya", b: "Kunal", city: "Jodhpur", line: "॥ शुभ विवाह ॥", coverLine: "॥ श्री गणेशाय नमः ॥",
+    h: { bless: "Under our elders' blessings", story: "Written in the stars", count: "Nights to go", events: "Evenings to remember", venue: "In the Blue City", rsvp: "Will you light up our night?", wishes: "Send a star our way" },
+    elders: ["Smt. Gyarsi Devi & Shri Rameshwar Somani", "Smt. Kesar Devi & Late Shri Jethmal Daga"],
+    aFam: "D/o Smt. Mamta & Shri Dinesh Somani, Jodhpur", bFam: "S/o Smt. Kavita & Shri Sunil Daga, Surat",
+    story: [["2021 · Sam dunes", "A desert camp, a meteor shower", "Strangers at a bonfire, wishing on the same shooting star."], ["2023 · Mehrangarh", "Midnight letters", "Two years of long-distance calls under the same moon."], ["This winter · Jodhpur", "Our forever night", "Join us for evenings of music, lights and blessings."]], pics: [0, 1, 2],
+    events: [[58, "Mehendi night", "19:00", "Neel Bagh, Jodhpur", "Indigo & silver", [["#1C2D63", "Indigo"], ["#C0C7D6", "Silver"]]], [59, "Sangeet under the stars", "20:00", "Neel Bagh, Jodhpur", "Sequins", [["#0B1736", "Midnight"], ["#F2D58A", "Gold"]]], [60, "Phere at moonrise", "21:30", "Blue City Palace Lawns, Jodhpur", "Royal traditional", [["#8B1E2D", "Red"], ["#F2D58A", "Gold"]]], [61, "Reception", "20:00", "Blue City Palace Lawns, Jodhpur", "Black tie", [["#111111", "Black"], ["#EAF0FF", "Pearl"]]]],
+    venue: ["Blue City Palace Lawns", "Below Mehrangarh, Jodhpur, Rajasthan", "Mehrangarh, Jodhpur"], stay: "Rooms with fort views are held for you in the old city.", rsvp: "Let us know by the next full moon.",
+    wishes: [["Chachi", "Tum dono ki jodi chaand-sitaron jaisi chamke!"], ["Neha", "Saving my best dance for the sangeet night!"]] },
+  "gajraj-swagat": { a: "Pooja", b: "Rahul", city: "Kolkata", line: "॥ श्री गणेशाय नमः ॥", coverLine: "॥ श्री गणेशाय नमः ॥", weds: "संग",
+    h: { bless: "Padharo mhare des", story: "Do parivaar, ek kahani", count: "Shubh din aane mein", events: "Rasmon ka utsav", venue: "Vivah sthal", rsvp: "Aapki upasthiti prarthaniya hai", wishes: "Shubhkamnayein" },
+    elders: ["Smt. Gulab Devi & Shri Bhagwandas Lohia", "Smt. Prem Devi & Shri Ghanshyam Das Bajaj"],
+    aFam: "D/o Smt. Sangeeta & Shri Vinod Lohia, Kolkata", bFam: "S/o Smt. Madhu & Shri Kailash Bajaj, Kolkata",
+    story: [["Generations ago · Fatehpur", "Families from Shekhawati", "Our grandfathers left Fatehpur for Calcutta in the same year."], ["Durga Puja 2023", "A pandal, a meeting", "Our mothers planned it. We pretended not to notice."], ["This Dev Uthani Ekadashi", "The elephants are coming", "Gaje-baje ke saath, please join the baraat!"]], pics: [2, 1, 0],
+    events: [[54, "Ganesh Sthapna", "10:00", "Lohia Bhawan, Alipore, Kolkata", "Traditional", [["#E98A15", "Saffron"], ["#B5541C", "Rust"]]], [56, "Mayra", "11:00", "Lohia Bhawan, Alipore, Kolkata", "Bandhej & safa", [["#C2185B", "Rani pink"], ["#E98A15", "Orange"]]], [57, "Haldi & Mehendi", "15:00", "Rajasthan Club Lawns, Kolkata", "Leheriya", [["#F7D84A", "Yellow"], ["#3E9B5B", "Green"]]], [58, "Mahila Geet", "19:00", "Rajasthan Club Lawns, Kolkata", "Gota-patti", [["#E36414", "Orange"], ["#C6A15B", "Gold"]]], [60, "Baraat with Gajraj", "18:00", "Marwari Bhawan, Ballygunge, Kolkata", "Poshak & achkan", [["#B5541C", "Saffron"], ["#7A2E0E", "Maroon"]]]],
+    venue: ["Marwari Bhawan", "Ballygunge, Kolkata, West Bengal", "Ballygunge, Kolkata"], stay: "Guests from Rajasthan: rooms are arranged near Burrabazar.", rsvp: "Kripya do din pehle soochit karein.",
+    wishes: [["Dadaji", "Ghano aashirwad, mhara laadla. Sukhi raho."], ["Cousins of Fatehpur", "Gajraj ready hai, baraat ready hai, hum ready hain!"]] },
+  "sheesh-mahal": { a: "Nandini", b: "Aditya", city: "Samode", line: "✦ शुभ विवाह ✦", coverLine: "॥ श्री गणेशाय नमः ॥",
+    h: { bless: "With the grace of our elders", story: "A story in a thousand mirrors", count: "The grand day draws near", events: "A royal weekend", venue: "The palace", rsvp: "Kindly reply", wishes: "Words of blessing" },
+    elders: ["Smt. Rajrani & Shri Gopikishan Poddar", "Smt. Vimla & Late Shri Shyamsundar Ruia"],
+    aFam: "D/o Smt. Shobha & Shri Arun Poddar, Mumbai", bFam: "S/o Smt. Rekha & Shri Manoj Ruia, Delhi",
+    story: [["2020 · A family wedding", "Across a mirrored hall", "We first saw each other reflected in the walls of a sheesh mahal."], ["2024 · London", "The ring at midnight", "Aditya proposed on a bridge, in the rain, with a jasmine garland."], ["This season · Samode", "Our grand celebration", "Three days of music, feasts and festivities. Be our guest."]], pics: [2, 1, 0],
+    events: [[58, "Royal welcome & haldi", "11:00", "Palace Courtyard, Samode", "Yellow & gold", [["#F5D27A", "Gold"], ["#F7D84A", "Yellow"]]], [58, "Mehendi in the Diwan-e-Khas", "17:00", "Palace Courtyard, Samode", "Mirrorwork", [["#7A1219", "Ruby"], ["#C0C7D6", "Silver"]]], [59, "Sangeet at the Sheesh Mahal", "20:00", "Mirror Hall, Samode", "Sparkle", [["#5A0B12", "Wine"], ["#F5D27A", "Gold"]]], [60, "Baraat & Phere", "17:30", "Palace Lawns, Samode", "Royal Rajputana", [["#A4272F", "Red"], ["#F5D27A", "Gold"]]], [61, "Farewell brunch", "11:00", "Palace Lawns, Samode", "Pastels", [["#F8D7DE", "Blush"], ["#BFE3C9", "Mint"]]]],
+    venue: ["Palace Lawns", "Samode, near Jaipur, Rajasthan", "Samode, Rajasthan"], stay: "The palace is reserved for all three nights. Transfers from Jaipur airport are arranged.", rsvp: "Please reply three weeks ahead so we can reserve your suite.",
+    wishes: [["Maasi", "Itni roshni tumhari zindagi mein bhi rahe. Ashirwad."], ["Kabir", "The wedding of the year! Bringing my best sherwani."]] },
+  "chhatri": { a: "Isha", b: "Varun", city: "Mandawa", line: "॥ शुभ विवाह ॥", coverLine: "॥ ॐ ॥",
+    h: { bless: "With gratitude", story: "Briefly, us", count: "Until then", events: "The day", venue: "The place", rsvp: "Respond", wishes: "Notes" },
+    elders: ["Smt. Savitri & Shri Hanuman Prasad Kedia", "Smt. Leela & Shri Girdhari Lal Jhunjhunwala"],
+    aFam: "D/o Smt. Asha & Shri Pawan Kedia", bFam: "S/o Smt. Nirmala & Shri Sanjay Jhunjhunwala",
+    story: [["2018", "Met", "At an architecture workshop in Mandawa."], ["2022", "Built", "A small studio, a slow life, many sketches."], ["Now", "Promised", "A quiet ceremony with the people we love."]], pics: [2, 0, 1],
+    events: [[59, "Haldi", "10:00", "Kedia Haveli, Mandawa", "White", [["#FFFFFF", "White"], ["#E6D7B5", "Sand"]]], [60, "Phere", "11:30", "Kedia Haveli courtyard, Mandawa", "Ivory & gold", [["#FFF8EC", "Ivory"], ["#B8975A", "Gold"]]], [60, "Lunch", "13:30", "Kedia Haveli, Mandawa", "As you like", [["#E6D7B5", "Sand"], ["#7A7065", "Stone"]]]],
+    venue: ["Kedia Haveli", "Mandawa, Shekhawati, Rajasthan", "Mandawa, Rajasthan"], stay: "An intimate wedding; we'll share stay details personally.", rsvp: "A small gathering. Please reply soon.",
+    wishes: [["Ma", "Simple, beautiful, yours. Bless you both."], ["Arjun", "Quietly the best wedding we'll attend."]] },
+};
+
 /* ---------- live demo invitation ---------- */
 pages.demo = async () => {
   const all = await invitations();
@@ -589,9 +657,7 @@ pages.demo = async () => {
   const day = (n) => { const d = new Date(); d.setHours(0, 0, 0, 0); d.setDate(d.getDate() + n); return d; };
   const wedding = day(60); wedding.setHours(19, 30);
   const fmt = (d) => d.toLocaleDateString("en-IN", { weekday: "long", day: "numeric", month: "long", year: "numeric" });
-  $("#dv-card").innerHTML = `<img src="${IMG(inv.image)}" alt="${esc(inv.name)} invitation cover">` + inviteText(inv.slug, { date: fmt(wedding), venue: "Royal Palace Gardens, Jaipur" });
   $("#demo-cta").href = $("#demo-cta2").href = `customize.html?design=${inv.slug}`;
-  document.title = `Live Demo in ${inv.name} · BFI Marwari Invitations`;
 
   // ---- each design has its own theme, opening animation and floating effect ----
   const TH = {
@@ -605,6 +671,38 @@ pages.demo = async () => {
     "chhatri": { intro: "line", fx: "dust", btn: "Open invitation", tone: 220 },
   };
   const th = TH[inv.slug] || TH["rajwada-royale"];
+
+  // ---- each design tells its own sample story, in its own fonts ----
+  const FONTS = {
+    "rajwada-royale": ["Cinzel:wght@500;700&family=Pinyon+Script&family=Lora:wght@400;500;600", "'Cinzel',serif", "26px", "normal", 700, "none", ".04em", "'Pinyon Script',cursive", "44px", "'Lora',serif"],
+    "gulmohar-classic": ["Rozha+One&family=Yatra+One&family=Poppins:wght@400;500;600", "'Rozha One',serif", "32px", "normal", 400, "none", "0", "'Yatra One',cursive", "36px", "'Poppins',sans-serif"],
+    "gulabi-bagh": ["Parisienne&family=Josefin+Sans:wght@400;600", "'Parisienne',cursive", "42px", "normal", 400, "none", "0", "'Parisienne',cursive", "46px", "'Josefin Sans',sans-serif"],
+    "mor-pankh": ["Marcellus&family=Alex+Brush&family=Mulish:wght@400;600", "'Marcellus',serif", "30px", "normal", 400, "none", ".02em", "'Alex Brush',cursive", "48px", "'Mulish',sans-serif"],
+    "neel-mahal": ["Italiana&family=Great+Vibes&family=Raleway:wght@400;600", "'Italiana',serif", "34px", "normal", 400, "none", ".06em", "'Great Vibes',cursive", "48px", "'Raleway',sans-serif"],
+    "gajraj-swagat": ["Amita:wght@400;700&family=Kaushan+Script&family=Hind:wght@400;500;600", "'Amita',serif", "30px", "normal", 700, "none", "0", "'Kaushan Script',cursive", "40px", "'Hind',sans-serif"],
+    "sheesh-mahal": ["Cinzel+Decorative:wght@700&family=Tangerine:wght@700&family=Cormorant+Garamond:wght@500;600", "'Cinzel Decorative',serif", "24px", "normal", 700, "none", ".02em", "'Tangerine',cursive", "60px", "'Cormorant Garamond',serif"],
+    "chhatri": ["Josefin+Sans:wght@300;400;600&family=Italiana&family=Jost:wght@300;400;500", "'Josefin Sans',sans-serif", "15px", "normal", 300, "uppercase", ".32em", "'Italiana',serif", "40px", "'Jost',sans-serif"],
+  }[inv.slug];
+  if (FONTS) {
+    const l = document.createElement("link"); l.rel = "stylesheet"; l.href = `https://fonts.googleapis.com/css2?family=${FONTS[0]}&display=swap`; document.head.append(l);
+    const st = document.body.style; [["--dv-hf", 1], ["--dv-hs", 2], ["--dv-hst", 3], ["--dv-hw", 4], ["--dv-ht", 5], ["--dv-hls", 6], ["--dv-nf", 7], ["--dv-ns", 8], ["--dv-bf", 9]].forEach(([k, i]) => st.setProperty(k, FONTS[i]));
+  }
+  const C = DEMO_CONTENT[inv.slug] || DEMO_CONTENT["rajwada-royale"];
+  const H = C.h;
+  $$("[data-h]").forEach((h) => { if (H[h.dataset.h]) h.textContent = H[h.dataset.h]; });
+  $("#dv-bless-line").textContent = C.line;
+  $("#dv-elders").innerHTML = C.elders.map(esc).join("<br>");
+  $("#dv-fam").innerHTML = `<div><b>${esc(C.a)}</b><span>${esc(C.aFam)}</span></div><div class="dv-weds">${esc(C.weds || "weds")}</div><div><b>${esc(C.b)}</b><span>${esc(C.bFam)}</span></div>`;
+  const pics = [["demo-fort.jpg", "Illustration of a couple on a fort rampart"], ["demo-lake.jpg", "Illustration of a couple in a boat by a lake palace"], ["demo-rings.jpg", "Illustration of mehendi hands holding a ring box"]];
+  const order = C.pics || [0, 1, 2];
+  $("#dv-story-list").innerHTML = C.story.map(([when, title, text], k) => `<figure><img src="${IMG(pics[order[k]][0])}" alt="${pics[order[k]][1]}" loading="lazy"><figcaption><small>${esc(when)}</small><b>${esc(title)}</b><p>${esc(text)}</p></figcaption></figure>`).join("");
+  $("#dv-venue").innerHTML = `<b>${esc(C.venue[0])}</b><br>${esc(C.venue[1])}`;
+  $("#dv-map-frame").src = `https://www.google.com/maps?q=${encodeURIComponent(C.venue[2])}&output=embed`;
+  $("#dv-stay").textContent = C.stay;
+  $("#dv-rsvp-note").textContent = C.rsvp;
+  $("#wishes").innerHTML = C.wishes.map(([n, w]) => `<div class="wish"><b>${esc(n)}</b><p>${esc(w)}</p></div>`).join("");
+  document.title = `Live Demo: ${C.a} & ${C.b} in ${inv.name} · BFI`;
+  $("#dv-card").innerHTML = `<img src="${IMG(inv.image)}" alt="${esc(inv.name)} invitation cover">` + inviteText(inv.slug, { a: C.a, b: C.b, blessing: C.coverLine, date: fmt(wedding), venue: C.venue[0] + ", " + C.city });
   document.body.dataset.theme = inv.slug;
   const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
   const fxBox = $("#petals");
@@ -620,12 +718,12 @@ pages.demo = async () => {
     }
   };
   const ambient = () => { spawn(th.fx === "stars" ? 30 : 26, true); if (!reduce) setInterval(() => !document.hidden && spawn(3), 2600); };
-  const names = `<p class="in-names">Priya <span>&amp;</span> Rohan</p>`;
+  const names = `<p class="in-names">${esc(C.a)} <span>&amp;</span> ${esc(C.b)}</p>`;
   const btn = `<button class="in-btn" type="button">${th.btn}</button>`;
   const img = `url("${IMG(inv.image)}")`;
   const markup = {
     doors: `<div class="in-doors"><div class="door l" style="background-image:${img}"></div><div class="door r" style="background-image:${img}"></div><div class="in-mid">${names}${btn}</div></div>`,
-    envelope: `<div class="env"><div class="env-box"><p class="env-names">Priya &amp; Rohan</p><div class="env-body"></div><div class="env-card" style="background-image:${img}"></div><div class="env-flap"></div><button class="env-seal in-btn" aria-label="Open the invitation">P&amp;R</button><p class="env-hint">Tap the seal to open</p></div></div>`,
+    envelope: `<div class="env"><div class="env-box"><p class="env-names">${esc(C.a)} &amp; ${esc(C.b)}</p><div class="env-body"></div><div class="env-card" style="background-image:${img}"></div><div class="env-flap"></div><button class="env-seal in-btn" aria-label="Open the invitation">${esc(C.a[0])}&amp;${esc(C.b[0])}</button><p class="env-hint">Tap the seal to open</p></div></div>`,
     bloom: `<div class="in-bloom"><div class="bloom-ring"></div><div class="in-mid">${names}<p class="in-sub">A celebration of love</p>${btn}</div></div>`,
     feather: `<div class="in-feather"><div class="big-feather"></div><div class="in-mid">${names}${btn}</div></div>`,
     stars: `<div class="in-stars">${Array.from({ length: 70 }, () => `<i style="left:${Math.random() * 100}%;top:${Math.random() * 100}%;animation-delay:${(Math.random() * 3).toFixed(2)}s"></i>`).join("")}<div class="moon"></div><div class="in-mid">${names}<p class="in-sub">under the moonlit sky</p>${btn}</div></div>`,
@@ -668,18 +766,11 @@ pages.demo = async () => {
   };
   tick(); setInterval(tick, 1000);
 
-  const ev = [
-    [56, "Ganesh Puja", "10:00", "Agarwal Niwas, C-Scheme, Jaipur", "Family only", [["#F2C230", "Yellow"], ["#E86A2C", "Orange"]]],
-    [57, "Mayra", "11:00", "Agarwal Niwas, C-Scheme, Jaipur", "Traditional", [["#B0122C", "Red"], ["#C6A15B", "Gold"]]],
-    [58, "Pithi & Mehendi", "16:00", "The Heritage Lawns, Jaipur", "Leheriya & florals", [["#F7D84A", "Yellow"], ["#3E9B5B", "Green"]]],
-    [59, "Mahila Sangeet", "19:30", "The Heritage Lawns, Jaipur", "Indo-western glam", [["#D8457A", "Pink"], ["#7B3FA0", "Purple"]]],
-    [60, "Baraat & Phere", "19:30", "Royal Palace Gardens, Jaipur", "Royal traditional", [["#641E2B", "Maroon"], ["#F3E3C3", "Ivory"]]],
-    [61, "Reception", "20:00", "Royal Palace Gardens, Jaipur", "Formal / sherwani & saree", [["#1B2A4A", "Navy"], ["#C6A15B", "Gold"]]],
-  ];
+  const ev = C.events;
   const ics = (name, d, time, venue) => {
     const [hh, mm] = time.split(":"); const st = new Date(d); st.setHours(+hh, +mm); const en = new Date(st.getTime() + 3 * 36e5);
     const z = (x) => x.toISOString().replace(/[-:]/g, "").replace(/\.\d{3}/, "");
-    const body = ["BEGIN:VCALENDAR", "VERSION:2.0", "PRODID:-//BFI//Invitation//EN", "BEGIN:VEVENT", `UID:${Date.now()}@bfi`, `DTSTAMP:${z(new Date())}`, `DTSTART:${z(st)}`, `DTEND:${z(en)}`, `SUMMARY:${name} · Priya & Rohan`, `LOCATION:${venue}`, "END:VEVENT", "END:VCALENDAR"].join("\r\n");
+    const body = ["BEGIN:VCALENDAR", "VERSION:2.0", "PRODID:-//BFI//Invitation//EN", "BEGIN:VEVENT", `UID:${Date.now()}@bfi`, `DTSTAMP:${z(new Date())}`, `DTSTART:${z(st)}`, `DTEND:${z(en)}`, `SUMMARY:${name} · ${C.a} & ${C.b}`, `LOCATION:${venue}`, "END:VEVENT", "END:VCALENDAR"].join("\r\n");
     const a = document.createElement("a"); a.href = URL.createObjectURL(new Blob([body], { type: "text/calendar" })); a.download = `${name.replace(/\W+/g, "-")}.ics`; a.click();
   };
   $("#dv-events").innerHTML = ev.map(([n, name, time, venue, dress, cols], k) => { const d = day(n); const t = new Date(d); t.setHours(+time.split(":")[0], +time.split(":")[1]);
@@ -701,7 +792,7 @@ pages.demo = async () => {
     e.target.reset(); toast("Wish posted (demo only)");
   });
   const link = location.href.split("&open")[0];
-  $("#dv-share").onclick = () => window.open(`https://wa.me/?text=${encodeURIComponent(`Look at this wedding invitation by BFI: ${link}`)}`, "_blank", "noopener");
+  $("#dv-share").onclick = () => window.open(`https://wa.me/?text=${encodeURIComponent(`${C.a} & ${C.b} invite you to their wedding: ${link}`)}`, "_blank", "noopener");
   $("#dv-copy").onclick = async () => { try { await navigator.clipboard.writeText(link); toast("Link copied"); } catch { toast(link); } };
   const io = "IntersectionObserver" in window && new IntersectionObserver((es) => es.forEach((x) => { if (x.isIntersecting) { x.target.classList.add("in"); io.unobserve(x.target); } }), { rootMargin: "0px 0px -10% 0px" });
   $$(".reveal-dv").forEach((el) => (io ? io.observe(el) : el.classList.add("in")));

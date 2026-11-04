@@ -11,7 +11,7 @@ from html import escape
 from pathlib import Path
 
 OUT = Path(__file__).resolve().parent.parent / "site"
-V = "20261104c"  # bump to bust browser caches for css/js
+V = "20261104d"  # bump to bust browser caches for css/js
 BASE = "https://bfi-royal-heritage.vercel.app"
 IMGBASE = "https://oaosapkkzoynaqpnmvrj.supabase.co/storage/v1/object/public/site/"
 BIZ = {
@@ -598,31 +598,31 @@ DEMO = f'''
 <header class="dv-cover"><div class="inv-wrap" id="dv-card"></div><a class="dv-scroll" href="#dv-blessing">Scroll to see the celebrations ↓</a></header>
 <main id="main" class="dv">
   <section class="dv-sec reveal-dv" id="dv-blessing">
-    <p class="deva" lang="hi">॥ शुभ विवाह ॥</p>
-    <h2>With the blessings of our elders</h2>
-    <p>Smt. Kamla Devi &amp; Late Shri Ramniwas Agarwal<br>Smt. Shanti Devi &amp; Shri Gopal Maheshwari</p>
-    <div class="dv-fam"><div><b>Priya</b><span>D/o Smt. Sunita &amp; Shri Mahesh Agarwal, Jaipur</span></div><div class="dv-weds">weds</div><div><b>Rohan</b><span>S/o Smt. Rekha &amp; Shri Anil Maheshwari, Jodhpur</span></div></div>
+    <p class="deva" lang="hi" id="dv-bless-line">॥ शुभ विवाह ॥</p>
+    <h2 data-h="bless">With the blessings of our elders</h2>
+    <p id="dv-elders">Smt. Kamla Devi &amp; Late Shri Ramniwas Agarwal<br>Smt. Shanti Devi &amp; Shri Gopal Maheshwari</p>
+    <div class="dv-fam" id="dv-fam"><div><b>Priya</b><span>D/o Smt. Sunita &amp; Shri Mahesh Agarwal, Jaipur</span></div><div class="dv-weds">weds</div><div><b>Rohan</b><span>S/o Smt. Rekha &amp; Shri Anil Maheshwari, Jodhpur</span></div></div>
   </section>
-  <section class="dv-sec reveal-dv"><h2>Our story</h2>
-    <div class="dv-story">
+  <section class="dv-sec reveal-dv"><h2 data-h="story">Our story</h2>
+    <div class="dv-story" id="dv-story-list">
       <figure><img data-img="demo-fort.jpg" alt="Illustration of the couple on the ramparts of a hill fort" loading="lazy"><figcaption><small>2023 · Jodhpur</small><b>We met at a cousin's sangeet</b><p>One dance, one long walk along the fort walls, and a lot of chai.</p></figcaption></figure>
       <figure><img data-img="demo-lake.jpg" alt="Illustration of the couple in a boat by a lake palace" loading="lazy"><figcaption><small>2025 · Udaipur</small><b>The question by the lake</b><p>Rohan asked; Priya said yes before he finished.</p></figcaption></figure>
       <figure><img data-img="demo-rings.jpg" alt="Illustration of mehendi hands holding a ring box" loading="lazy"><figcaption><small>This winter · Jaipur</small><b>Now, forever</b><p>Our families are coming together. We'd love you to be there.</p></figcaption></figure>
     </div></section>
-  <section class="dv-sec dv-count reveal-dv"><h2>Counting down to the wedding</h2>
+  <section class="dv-sec dv-count reveal-dv"><h2 data-h="count">Counting down to the wedding</h2>
     <div class="count" id="count"><div><b data-u="d">0</b><span>Days</span></div><div><b data-u="h">0</b><span>Hours</span></div><div><b data-u="m">0</b><span>Minutes</span></div><div><b data-u="s">0</b><span>Seconds</span></div></div></section>
-  <section class="dv-sec reveal-dv"><h2>Wedding celebrations</h2><p class="muted" style="margin-bottom:14px">Tap “Add to calendar” so you never miss a function.</p><div class="dv-events" id="dv-events"></div></section>
-  <section class="dv-sec reveal-dv"><h2>Wedding venue</h2><p><b>Royal Palace Gardens</b><br>Amer Road, Jaipur, Rajasthan</p>
-    <div class="dv-map"><iframe title="Map of the wedding venue" loading="lazy" referrerpolicy="no-referrer-when-downgrade" src="https://www.google.com/maps?q=Amer+Road,+Jaipur&amp;output=embed"></iframe></div>
-    <p class="muted" style="margin-top:12px;font-size:14px">Stay: rooms are booked for outstation guests. Message the family for details.</p></section>
-  <section class="dv-sec reveal-dv" id="rsvp"><h2>Will you join us?</h2><p class="muted">Please let us know by one week before the wedding.</p>
+  <section class="dv-sec reveal-dv"><h2 data-h="events">Wedding celebrations</h2><p class="muted" style="margin-bottom:14px">Tap “Add to calendar” so you never miss a function.</p><div class="dv-events" id="dv-events"></div></section>
+  <section class="dv-sec reveal-dv"><h2 data-h="venue">Wedding venue</h2><p id="dv-venue"><b>Royal Palace Gardens</b><br>Amer Road, Jaipur, Rajasthan</p>
+    <div class="dv-map"><iframe id="dv-map-frame" title="Map of the wedding venue" loading="lazy" referrerpolicy="no-referrer-when-downgrade" src="https://www.google.com/maps?q=Amer+Road,+Jaipur&amp;output=embed"></iframe></div>
+    <p class="muted" id="dv-stay" style="margin-top:12px;font-size:14px">Stay: rooms are booked for outstation guests. Message the family for details.</p></section>
+  <section class="dv-sec reveal-dv" id="rsvp"><h2 data-h="rsvp">Will you join us?</h2><p class="muted" id="dv-rsvp-note">Please let us know by one week before the wedding.</p>
     <form class="form dv-rsvp" id="dv-rsvp" novalidate>
       <div class="field"><label for="r-name">Your name</label><input id="r-name" required autocomplete="name"></div>
       <div class="f2"><div class="field"><label for="r-att">Attending?</label><select id="r-att"><option>Yes, with joy</option><option>Sorry, can't make it</option></select></div>
       <div class="field"><label for="r-n">Number of guests</label><input id="r-n" type="number" min="1" max="20" value="2" inputmode="numeric"></div></div>
       <button class="btn btn-primary btn-block" type="submit">Send RSVP</button>
     </form></section>
-  <section class="dv-sec reveal-dv"><h2>Blessings &amp; wishes</h2>
+  <section class="dv-sec reveal-dv"><h2 data-h="wishes">Blessings &amp; wishes</h2>
     <form class="form dv-rsvp" id="dv-wish" novalidate><div class="field"><label for="w-name">Your name</label><input id="w-name" required></div>
       <div class="field"><label for="w-msg">Your wish for the couple</label><textarea id="w-msg" required style="min-height:80px"></textarea></div><button class="btn btn-outline btn-block" type="submit">Post wish</button></form>
     <div class="wishes" id="wishes">
