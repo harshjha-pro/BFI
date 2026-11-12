@@ -67,3 +67,20 @@ All URLs, design slugs, `?design=`, `?t=` and `?c=` links, forms, sign-in, Supab
 5. **Founder or studio details for About:** nothing has been invented.
 6. **Final logo / name:** the current heritage logo and "BFI Marwari Invitations" are kept. "BfiLuxe" is not used.
 7. **Legal review** of Privacy and Terms: the text is unchanged.
+
+## 5. Production release checks (12 November 2026)
+
+- **Branch:** `main` (`0aae4c3`) is an ancestor of `redesign-luxury`, so the merge is conflict-free with no deleted files. Regenerating from `tools/build_website.py` matches the committed output exactly.
+- **Fixed before release:** the "View the live demo of …" button overflowed by 1 px at 360 px. Full-width buttons now wrap.
+- **Re-run:**
+  - 37 pages × 360/375/390/430/768/1024/1366/1440 px, plus 1280 and 1920 px on 9 key pages: no overflow, broken links or script errors.
+  - Menu (focus kept inside, Escape, `aria-expanded`), all 9 collection filters, `?tier=` links, demo themes, directions and countdown all work.
+  - WhatsApp (`wa.me/918949509745`), `tel:` and `mailto:` links are correct.
+- **SEO:**
+  - Unique titles; descriptions and Open Graph images on every page.
+  - Canonical links on the production domain.
+  - `robots.txt` allows everything except account/login. The sitemap lists 33 URLs.
+  - Every image has alt text.
+  - `demo.html` and the `invitation.html` redirect have no H1. This was the same before.
+- **Forms:** the contact and partner submissions were inserted as the `anon` role inside a transaction and then rolled back. Row-level security accepts both; the table still has 0 rows.
+- **Rollback point:** production deployment `dpl_EyspeeNQD1PUNS6rvqpYNGCeoRFZ` (commit `0aae4c3`).
