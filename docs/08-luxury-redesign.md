@@ -26,7 +26,7 @@ Branch: `redesign-luxury`. Production (`main`) is untouched until the owner appr
 | Page | Changes |
 |---|---|
 | All pages | **Header:** logo, five links (Invitations, Our Work, How It Works, Pricing, About), one "Start your invitation" button and a quiet "Sign in" link. The duplicate WhatsApp and login buttons are gone.<br>**Menu:** one accessible menu dialog with `aria-expanded`, focus kept inside, Escape and backdrop to close, and it closes after you pick a link.<br>**Footer:** sand background, brand line, Explore / Resources / Contact columns, privacy and terms.<br>**Phones:** one fixed action bar; the floating WhatsApp bubble is removed. |
-| Home | Rebuilt to the brief's 14-section order:<br>• editorial split hero with one large real invitation<br>• the four verified facts<br>• "Rooted in tradition. Made for today."<br>• 4 featured designs<br>• the guest experience, labelled fictional<br>• eight rituals, with a note that customs vary<br>• Mahi & Ayush<br>• four steps<br>• the three packages, with the delivery-clock note<br>• terms<br>• FAQ<br>• burgundy closing panel. The free card maker is now a single line. |
+| Home | Rebuilt to the brief's 14-section order:<br>• editorial split hero with one large real invitation<br>• the four verified facts<br>• "Rooted in tradition. Made for today."<br>• 4 featured designs<br>• the guest experience, labelled fictional<br>• eight rituals, with a note that customs vary<br>• the Chittorgarh engagement project<br>• four steps<br>• the three packages, with the delivery-clock note<br>• terms<br>• FAQ<br>• burgundy closing panel. The free card maker is now a single line. |
 | Invitations | Now opens with "The Invitation Collection". The filters are restyled, and a `?tier=` link pre-selects a package. "Need help choosing?" (WhatsApp) and "Something only yours" (bespoke) sit side by side. |
 | Cards (everywhere) | Large image with a hairline frame, quiet text, prices aligned, and two clear actions: "View live demo" and "View design". |
 | Design pages (8) | "Sample wording: names, date and venue are fictional" under the gallery. Calmer gallery frame and price. |
@@ -60,7 +60,7 @@ All URLs, design slugs, `?design=`, `?t=` and `?c=` links, forms, sign-in, Supab
 
 ## 4. Needs owner input
 
-1. **Mahi & Ayush:** confirm the family's permission to show their names, photos, place and month. It is still labelled a client project.
+1. **Chittorgarh engagement (resolved):** the owner asked for names and images to be hidden. The couple's names are removed site-wide and the screenshots are blurred. The live-invitation link is removed, the case study now lives at `work-chittorgarh-engagement.html`, and the old address forwards there (noindex).
 2. **"We reply within an hour":** this appears on Contact, design pages and form confirmations. Keep it only if it is true in practice; otherwise we will change it to "the same day, 10am–8pm".
 3. **Link validity** (wedding + 6 months), **delivery times** (24/48/72 h) and **one change round:** confirm these are operationally guaranteed. They are shown as before.
 4. **Partner terms:** 15% / 20% commission, paid after the client completes payment.
@@ -84,3 +84,11 @@ All URLs, design slugs, `?design=`, `?t=` and `?c=` links, forms, sign-in, Supab
   - `demo.html` and the `invitation.html` redirect have no H1. This was the same before.
 - **Forms:** the contact and partner submissions were inserted as the `anon` role inside a transaction and then rolled back. Row-level security accepts both; the table still has 0 rows.
 - **Rollback point:** production deployment `dpl_EyspeeNQD1PUNS6rvqpYNGCeoRFZ` (commit `0aae4c3`).
+
+## 6. Owner answers (12 November 2026)
+
+- **Client project:** anonymised as described in §4, item 1.
+- **Reply within an hour, delivery 24/48/72 h, one change round, link valid for the wedding plus 6 months:** confirmed by the owner, kept as published.
+- **Partner terms:** 15% / 20%, paid after the client completes payment. Confirmed by the owner.
+- **Founder details:** not needed for now. About stays as it is.
+- **Sign-up limit:** the 6 old test accounts were deleted. A re-test of 6 simultaneous sign-ups to the live function gave 5 × 200 and 1 × 429. The created accounts were confirmed, had profiles and could log in. All test accounts and attempt records were then deleted.
