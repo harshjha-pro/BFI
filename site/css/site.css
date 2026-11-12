@@ -1457,3 +1457,20 @@ details.acc p{margin:0 0 18px;font-size:15.5px}
 .nav a{white-space:nowrap}
 .brand{flex:none}.brand img{flex:none;max-width:none}.util-link,.hdr-cta{white-space:nowrap;flex:none}
 @media(min-width:980px) and (max-width:1079px){.nav{display:none}.menu-btn{display:inline-grid}.auth-slot{display:none}}
+/* dark bands: secondary buttons and fine text switch to ivory */
+.cta-band .btn-wa,.cta-band .btn-outline,.cta-band .btn-ghost,.lx-close .btn-outline,.h-banner .btn-outline,.h-banner .btn-ghost,.h-banner .btn-wa{color:var(--ivory);border-color:rgba(247,243,235,.55);background:transparent}
+.cta-band .btn-wa:hover,.cta-band .btn-outline:hover,.cta-band .btn-ghost:hover,.h-banner .btn-outline:hover,.h-banner .btn-ghost:hover{border-color:var(--ivory);color:var(--ivory)}
+.cta-band{color:var(--ivory)}
+.cta-band p{color:rgba(247,243,235,.82)}
+.cta-band::before{border-color:rgba(247,243,235,.18);border-radius:2px}
+.cta-band .deva,.mini-inv small{color:var(--sand)}
+/* guide hero: still image, plain card (no unrolling scroll) */
+.h-scroll::after{clip-path:none;animation:none}
+.h-scroll .phero-copy{animation:none;border:1px solid var(--rule);border-radius:4px;box-shadow:none;background:rgba(247,243,235,.96)}
+.h-scroll .phero-copy::before,.h-scroll .phero-copy::after{display:none}
+/* partners hero: commission as a quiet bar under the four roles, never on top of them */
+.roles{margin-bottom:0}
+.role{border-radius:4px;border-color:var(--rule);box-shadow:none;animation:none}
+.role-badge{position:static;grid-column:1/-1;transform:none;width:auto;height:auto;border-radius:3px;border:0;box-shadow:none;animation:none;display:flex;justify-content:center;align-items:baseline;gap:10px;padding:14px 18px;font-size:13px;letter-spacing:.06em}
+.role-badge b{font-size:24px;color:var(--ivory)}
+[hidden]{display:none!important}

@@ -12,7 +12,7 @@ from html import escape
 from pathlib import Path
 
 OUT = Path(__file__).resolve().parent.parent / "site"
-V = "20261112e"  # bump to bust browser caches for css/js
+V = "20261112f"  # bump to bust browser caches for css/js
 BASE = "https://bfi-royal-heritage.vercel.app"
 IMGBASE = "https://oaosapkkzoynaqpnmvrj.supabase.co/storage/v1/object/public/site/"
 BIZ = {
@@ -149,7 +149,7 @@ I = {
 }
 ORN = f'<div class="orn" aria-hidden="true">{icon(I["lotus"])}</div>'
 
-NAV = [("invitations", "Invitations"), ("work", "Our Work"), ("how-it-works", "How It Works"), ("pricing", "Pricing"), ("about", "About"), ("free-cards", "Free Card Maker")]
+NAV = [("invitations", "Invitations"), ("free-cards", "Free Card Maker"), ("work", "Our Work"), ("how-it-works", "How It Works"), ("pricing", "Pricing"), ("about", "About")]
 MORE = [("features", "Features"), ("customize", "Start your invitation"), ("demo", "Live demo"), ("resources", "Guides"), ("faq", "FAQ"),
         ("partners", "Partner with us"), ("contact", "Contact")]
 
@@ -327,9 +327,53 @@ def with_hero(slug, body):
     return body[:m.start()] + hero + body[m.end():]
 
 
+# Search snippets: titles stay under ~60 characters and descriptions under 160 so Google shows them whole.
+TITLES = {
+    "index": "Digital Marwari Wedding Invitations & Kankotri | BFI",
+    "invitations": "Wedding Invitation Designs: Royal to Minimal | BFI",
+    "pricing": "Digital Wedding Invitation Pricing from ₹3,999 | BFI",
+    "faq": "FAQ: Digital Marwari Wedding Invitations | BFI",
+    "features": "Invitation Features: Maps, RSVP, Music & QR | BFI",
+    "free-cards": "Free Invitation Card Maker: PNG, JPG & PDF | BFI",
+    "guide": "Marwari Wedding Rituals & Invitation Wording | BFI",
+    "hindi-wedding-invitation": "Hindi Wedding Invitation Wording & Designs | BFI",
+    "digital-vs-printed-kankotri": "Digital vs Printed Kankotri: Which to Choose? | BFI",
+    "inviting-guests-mayra-pithi-phere": "Inviting Guests to Mayra, Pithi & Phere | BFI",
+    "marwari-kankotri-online": "Marwari Kankotri Online: Digital Kankotri | BFI",
+    "rajasthani-digital-wedding-invitation": "Rajasthani Digital Wedding Invitations | BFI",
+    "wedding-invitation-website-rsvp": "Wedding Invitation Website with RSVP | BFI",
+    "partners": "Partner With BFI: Planners, Photographers, Venues",
+    "work-chittorgarh-engagement": "Engagement Invitation Website, Chittorgarh | BFI",
+}
+DESCS = {
+    "index": "Digital Marwari wedding invitations and kankotri: royal Rajasthani designs, every ritual and family name, maps, RSVP and QR. From ₹3,999, ready in 24–72 hours.",
+    "faq": "Answers about digital Marwari wedding invitations: Hindi wording, Mayra and Pithi, RSVP, WhatsApp sharing, delivery times, payment and link validity.",
+    "features": "Every feature of a BFI digital wedding invitation in plain words: family names, every function with maps, Hindi wording, music, RSVP, QR code and sharing.",
+    "free-cards": "Make a free invitation card for a birthday, Griha Pravesh, Godh Bharai, puja, Diwali and more. 16 templates, live preview, PNG, JPG or PDF. No sign-up.",
+    "work-chittorgarh-engagement": "A storybook-style engagement invitation website BFI made for a family in Chittorgarh: illustrated opening, blessings, programme, countdown and maps.",
+    "privacy": "How BFI Marwari Invitations collects, uses, stores and protects your enquiry details, account data and the information shown on your wedding invitation.",
+    "terms": "Terms for BFI digital wedding invitations: orders, payment in two parts, delivery times, rounds of changes, refunds and how long invitation links stay live.",
+}
+for _k, _v in {**TITLES, **DESCS}.items():
+    assert len(_v) <= (60 if _v in TITLES.values() else 160), (_k, len(_v))
+PAGE_TYPE = {"about": "AboutPage", "contact": "ContactPage", "work": "CollectionPage", "resources": "CollectionPage"}
+
+
 def page(slug, title, desc, body, active=None, bar=True, ld=None, index=True, og_image=None, chrome=True, path=None):
     body = with_hero(slug, body)
+    title, desc = TITLES.get(slug, title), DESCS.get(slug, desc)
     url = f"{BASE}/{path if path is not None else (slug + '.html' if slug != 'index' else '')}"
+    ld = list(ld or [])
+    if index and slug not in ("index", "404"):
+        have = {x.get("@type") for x in ld}
+        name = title.split(" | ")[0]
+        # every indexable page says what it is and where it sits (helps search and AI answers cite the right page)
+        if not have & {"WebPage", "AboutPage", "ContactPage", "CollectionPage", "Article", "FAQPage", "Product"}:
+            ld.append({"@context": "https://schema.org", "@type": PAGE_TYPE.get(slug, "WebPage"), "name": name, "description": desc, "url": url,
+                       "inLanguage": "en-IN", "isPartOf": {"@type": "WebSite", "name": "BFI Marwari Invitations", "url": BASE + "/"}, "publisher": {"@id": BASE + "/#business"}})
+        if "BreadcrumbList" not in have:
+            ld.append({"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [
+                {"@type": "ListItem", "position": 1, "name": "Home", "item": BASE + "/"}, {"@type": "ListItem", "position": 2, "name": name, "item": url}]})
     lds = "".join(f'\n<script type="application/ld+json">{json.dumps(x, ensure_ascii=False)}</script>' for x in (ld or []))
     mbar = f'''<div class="mbar"><a class="btn btn-primary" href="invitations.html">Explore invitations</a><a class="btn btn-outline" data-wa>{WA} WhatsApp</a></div>''' if bar else ""
     og = og_image or BASE + "/img/og-image.jpg"
@@ -348,6 +392,7 @@ def page(slug, title, desc, body, active=None, bar=True, ld=None, index=True, og
 <meta property="og:description" content="{escape(desc)}">
 <meta property="og:url" content="{url}">
 <meta property="og:image" content="{og}">
+<meta property="og:image:alt" content="{escape(title)}">
 <meta property="og:type" content="website">
 <meta property="og:locale" content="en_IN">
 <meta name="twitter:card" content="summary_large_image">
@@ -803,6 +848,7 @@ DEMO = f'''
 <div class="demo-ribbon"><span><b>Sample invitation</b> · names, venues and photos are fictional</span><a class="btn btn-sm btn-gold" id="demo-cta" href="customize.html">Create yours</a></div>
 <header class="dv-cover"><div class="inv-wrap" id="dv-card"></div><a class="dv-scroll" href="#dv-blessing">Scroll to see the celebrations ↓</a></header>
 <main id="main" class="dv">
+  <h1 class="sr">Live demo of a BFI digital Marwari wedding invitation (sample names and venues)</h1>
   <section class="dv-sec reveal-dv" id="dv-blessing">
     <p class="deva" lang="hi" id="dv-bless-line">॥ शुभ विवाह ॥</p>
     <h2 data-h="bless">With the blessings of our elders</h2>
