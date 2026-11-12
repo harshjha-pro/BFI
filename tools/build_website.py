@@ -12,7 +12,7 @@ from html import escape
 from pathlib import Path
 
 OUT = Path(__file__).resolve().parent.parent / "site"
-V = "20261112c"  # bump to bust browser caches for css/js
+V = "20261112e"  # bump to bust browser caches for css/js
 BASE = "https://bfi-royal-heritage.vercel.app"
 IMGBASE = "https://oaosapkkzoynaqpnmvrj.supabase.co/storage/v1/object/public/site/"
 BIZ = {
@@ -149,9 +149,9 @@ I = {
 }
 ORN = f'<div class="orn" aria-hidden="true">{icon(I["lotus"])}</div>'
 
-NAV = [("invitations", "Invitations"), ("work", "Our Work"), ("how-it-works", "How It Works"), ("pricing", "Pricing"), ("about", "About")]
+NAV = [("invitations", "Invitations"), ("work", "Our Work"), ("how-it-works", "How It Works"), ("pricing", "Pricing"), ("about", "About"), ("free-cards", "Free Card Maker")]
 MORE = [("features", "Features"), ("customize", "Start your invitation"), ("demo", "Live demo"), ("resources", "Guides"), ("faq", "FAQ"),
-        ("free-cards", "Free card maker"), ("partners", "Partner with us"), ("contact", "Contact")]
+        ("partners", "Partner with us"), ("contact", "Contact")]
 
 
 def faq_html(items):

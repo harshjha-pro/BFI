@@ -1454,3 +1454,6 @@ details.acc p{margin:0 0 18px;font-size:15.5px}
 .dv-dir{font-weight:600}
 .gallery .prev{left:6px}.gallery .next{right:6px}
 .btn-block{white-space:normal;text-align:center;line-height:1.35;padding-top:10px;padding-bottom:10px}
+.nav a{white-space:nowrap}
+.brand{flex:none}.brand img{flex:none;max-width:none}.util-link,.hdr-cta{white-space:nowrap;flex:none}
+@media(min-width:980px) and (max-width:1079px){.nav{display:none}.menu-btn{display:inline-grid}.auth-slot{display:none}}
