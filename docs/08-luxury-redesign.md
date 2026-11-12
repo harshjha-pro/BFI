@@ -123,3 +123,41 @@ Five standalone sample invitation websites live at `/live-demo-1/` to `/live-dem
 - Directions resolve to Google Maps searches; the .ics file downloads.
 - The RSVP blocks empty steps and completes once filled in.
 - The language switch (demo 4) works; music starts only on a tap.
+
+## 8. Live demos rebuilt as cinematic invitations (12 November 2026)
+
+The owner asked for invitations that work like the Invifest "Pattu" sample, which we studied in a real browser. Its flow:
+- a loading screen with a monogram;
+- an embossed envelope with "Tap to Reveal";
+- the flap opens into a light burst and the music starts;
+- the card has falling petals;
+- scratch cards reveal the date;
+- then the countdown, story, venue, festivities and a closing.
+
+All five demos now follow that flow on one new engine (`live-demo-assets/ld2.js` and `ld2.css`), each with its own animation, music and reveal game. No artwork, code or music was copied.
+
+| # | Opening | Burst | Petals | Reveal game | Music (original, made in the browser) |
+|---|---|---|---|---|---|
+| 1 Rajmahal | Embossed envelope, wax seal breaks, flap opens | Golden swirl | Gold leaves | Scratch the gold cards | Shehnai, raag Yaman, tanpura drone |
+| 2 Gulabi Nagri | Carved jharokha doors swing open | Rose bloom | Rose petals | Tap-to-flip window tiles | Santoor, Bilawal, light tabla |
+| 3 Thar ki Raat | Light the diya; glow fills the screen | Light glow | Twinkling stars | Light three lanterns | Bansuri, Bhimpalasi, drone |
+| 4 Haldi Haveli | Marigold curtain lifts | Marigold shower | Marigolds | Slide the diya across a bandhani curtain | Festive shehnai with a dhol beat |
+| 5 Line & Light | Monogram draws itself | Gold ink ring | Rising gold dust | Odometer date roll | Soft piano, pentatonic |
+
+**Shared behaviour:**
+- Music starts on the opening tap (a user gesture, so phones allow it) and has a mute button.
+- To use the family's own song, set `music.src` in the page's `window.LD`.
+- Dates are always in the future.
+- Directions open the real locality.
+- Each function has an add-to-calendar (.ics) button.
+- The RSVP says that a sample sends nothing.
+- With reduced motion, effects are skipped.
+- The opening works by keyboard.
+
+The previous engine (`ld.js` and `ld.css`) is removed.
+
+**Tests:** all 5 at 390 and 1440 px:
+- the loading screen, opening and burst run, and the music turns on;
+- the reveal game completes and triggers its burst;
+- no overflow and no script errors;
+- the main site's 38 pages still pass.

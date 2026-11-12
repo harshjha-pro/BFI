@@ -4,116 +4,121 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Nitya &amp; Aditya · Line &amp; Light sample invitation · BFI</title>
-<meta name="description" content="A sample modern minimal wedding invitation website by BFI: hand-drawn monogram opening, schedule, photo strip, travel and stay, guest FAQs and an RSVP with food preferences.">
+<meta name="description" content="A sample modern minimal wedding invitation by BFI: a monogram draws itself, soft piano, rolling date numbers, schedule, photo strip, travel and stay, guest FAQs and RSVP.">
 <link rel="canonical" href="https://bfi-royal-heritage.vercel.app/live-demo-5/">
 <meta name="theme-color" content="#FFFFFF">
 <meta property="og:title" content="Nitya & Aditya · Line & Light sample invitation by BFI">
-<meta property="og:description" content="A modern, minimal Marwari wedding invitation website with a hand-drawn monogram. Sample by BFI Marwari Invitations.">
+<meta property="og:description" content="A modern, minimal Marwari wedding invitation with a self-drawing monogram. Sample by BFI Marwari Invitations.">
 <meta property="og:image" content="https://bfi-royal-heritage.vercel.app/img/live-demo/live-demo-5.jpg">
 <meta property="og:url" content="https://bfi-royal-heritage.vercel.app/live-demo-5/">
 <link rel="icon" href="../img/favicon.ico" sizes="any">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Italiana&family=Inter:wght@300;400;500&family=Tiro+Devanagari+Hindi&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="../live-demo-assets/ld.css?v=2">
+<link rel="stylesheet" href="../live-demo-assets/ld2.css?v=1">
 <style>
-:root{--ink:#121212;--grey:#6B6B6B;--line:#E6E2DA;--gold:#B18C58;--bg:#FFFFFF;--soft:#F6F4EF}
-body{background:var(--bg);color:var(--ink);font:300 17px/1.7 "Inter",system-ui,sans-serif}
+:root{--ink:#121212;--grey:#6B6B6B;--line:#E6E2DA;--gold:#B18C58;--soft:#F6F4EF}
+body{background:#fff;color:var(--ink);font:300 17px/1.7 "Inter",system-ui,sans-serif}
 h1,h2,h3{font-family:"Italiana",serif;font-weight:400;margin:0;letter-spacing:.02em}
-.lab{font:500 11px/1 "Inter",sans-serif;letter-spacing:.28em;text-transform:uppercase;color:var(--grey)}
-/* ---------- cover: monogram draws itself ---------- */
-.cover{background:var(--bg);display:grid;place-items:center;text-align:center}
+.lab{font:500 11px/1.3 "Inter",sans-serif;letter-spacing:.28em;text-transform:uppercase;color:var(--grey)}
+[data-pre]{background:#fff;color:var(--gold)}
+.pre-mono{font:400 26px "Italiana",serif;color:var(--ink)}
+.pre-name{margin-top:18px;font:400 20px "Italiana",serif;color:var(--ink)}
+/* ---------- cover: the monogram draws itself ---------- */
+.cover{background:#fff;display:grid;place-items:center;text-align:center}
 .mono{width:min(64vw,260px);height:auto}
-.mono path,.mono circle{fill:none;stroke:var(--ink);stroke-width:1.2;stroke-dasharray:900;stroke-dashoffset:900;animation:draw 2.6s .2s ease forwards}
-.mono circle{stroke:var(--gold);animation-delay:1s}
+.mono .s{fill:none;stroke:var(--ink);stroke-width:1.3;stroke-dasharray:900;stroke-dashoffset:900;animation:draw 2.4s .3s ease forwards}
+.mono .c{fill:none;stroke:var(--gold);stroke-width:1.2;stroke-dasharray:760;stroke-dashoffset:760;animation:draw 2s 1s ease forwards}
 @keyframes draw{to{stroke-dashoffset:0}}
-.cover p{margin-top:20px;opacity:0;animation:fade .8s 2.2s forwards}
-.enter{margin-top:22px;opacity:0;animation:fade .8s 2.5s forwards;border:1px solid var(--ink);background:transparent;padding:13px 30px;font:500 11px "Inter",sans-serif;letter-spacing:.3em;text-transform:uppercase;cursor:pointer}
+.cover .lab{margin-top:20px;opacity:0;animation:fade .8s 2.2s forwards}
+.enter{margin-top:22px;opacity:0;animation:fade .8s 2.5s forwards;border:1px solid var(--ink);background:transparent;padding:14px 32px;font:500 11px "Inter",sans-serif;letter-spacing:.3em;text-transform:uppercase;cursor:pointer}
 .enter:hover{background:var(--ink);color:#fff}
 @keyframes fade{to{opacity:1}}
-.cover.is-open{transition:opacity .9s,transform .9s;opacity:0;transform:scale(1.04)}
-/* ---------- layout: swiss grid ---------- */
+.cover.is-open .mono{transition:transform 1.2s cubic-bezier(.6,0,.2,1),opacity 1s;transform:scale(1.6);opacity:0}
+.cover.is-open .enter,.cover.is-open .lab{opacity:0!important;transition:opacity .3s}
+.cover.is-open{transition:opacity .8s .7s;opacity:0}
+/* ---------- page ---------- */
+main{position:relative;z-index:1}
 .wrap{max-width:1180px;margin:0 auto;padding:0 clamp(20px,5vw,64px)}
-.hero{min-height:calc(100svh - 34px);display:grid;align-content:center;padding:60px 0;border-bottom:1px solid var(--line)}
-.hero-grid{display:grid;gap:30px}
-@media(min-width:900px){.hero-grid{grid-template-columns:7fr 5fr;align-items:end}}
-.hero h1{font-size:clamp(64px,14vw,180px);line-height:.88}
-.hero h1 span{color:var(--gold)}
-.hero .meta{display:grid;gap:14px;border-top:1px solid var(--ink);padding-top:18px}
-.hero .meta div{display:flex;justify-content:space-between;gap:20px;border-bottom:1px solid var(--line);padding-bottom:12px}
-.hero .deva{font-family:"Tiro Devanagari Hindi",serif;color:var(--gold);margin-bottom:28px}
+.hero{min-height:calc(100svh - 34px);display:grid;align-content:center;padding:56px 0;border-bottom:1px solid var(--line)}
+.deva{font-family:"Tiro Devanagari Hindi",serif;color:var(--gold);margin-bottom:24px}
+.hero h1{font-size:clamp(66px,15vw,190px);line-height:.88}
+.hero h1 .g{color:var(--gold)}
+.hero h1 .w{display:block;overflow:hidden}
+.hero h1 .w i{display:block;font-style:normal;animation:rise 1.2s cubic-bezier(.2,.7,.1,1) both}
+.hero h1 .w:nth-child(2) i{animation-delay:.15s}.hero h1 .w:nth-child(3) i{animation-delay:.3s}
+@keyframes rise{from{transform:translateY(105%)}}
+.hero .rule{height:1px;background:var(--ink);margin-top:32px;transform-origin:left;animation:grow 1.6s .4s cubic-bezier(.2,.7,.1,1) both}
+@keyframes grow{from{transform:scaleX(0)}}
+.hero .meta{display:flex;justify-content:space-between;flex-wrap:wrap;gap:14px;margin-top:16px}
 section{padding:clamp(72px,10vw,128px) 0;border-bottom:1px solid var(--line)}
-.split{display:grid;gap:28px}
+.split{display:grid;gap:26px}
 @media(min-width:900px){.split{grid-template-columns:4fr 8fr}}
-h2{font-size:clamp(38px,6vw,68px);line-height:1}
+h2{font-size:clamp(40px,6vw,68px);line-height:1}
 .big{font:400 clamp(22px,2.6vw,30px)/1.45 "Italiana",serif}
-.fams{display:grid;gap:22px;margin-top:34px}
+.fams{display:grid;gap:22px;margin-top:30px}
 @media(min-width:700px){.fams{grid-template-columns:1fr 1fr}}
 .fams div{border-top:1px solid var(--ink);padding-top:14px}
 .fams b{display:block;font:400 34px "Italiana",serif}
 .fams span{color:var(--grey);font-size:15px}
+/* rolling date */
+.date{display:flex;gap:clamp(14px,4vw,48px);align-items:flex-end;flex-wrap:wrap;margin-top:10px}
+.date div{border-top:1px solid var(--ink);padding-top:10px;min-width:120px}
+.date [data-roll]{font:400 clamp(64px,13vw,150px)/1 "Italiana",serif;height:1em}
+.date [data-roll] .roll-in span{display:block;height:1em}
+.date .g [data-roll]{color:var(--gold)}
+.after{opacity:0;transition:1s .3s;margin-top:26px}
+.revealed .after{opacity:1}
 /* photo strip */
-.strip{display:flex;gap:14px;overflow-x:auto;scroll-snap-type:x mandatory;padding-bottom:10px}
-.strip figure{flex:0 0 min(80%,420px);scroll-snap-align:start}
-.strip img{width:100%;aspect-ratio:4/5;object-fit:cover;filter:grayscale(.15)}
+.strip{display:flex;gap:14px;overflow-x:auto;scroll-snap-type:x mandatory;padding-bottom:10px;margin-top:34px}
+.strip figure{flex:0 0 min(78%,420px);scroll-snap-align:start}
+.strip img{width:100%;aspect-ratio:4/5;object-fit:cover}
 .strip figcaption{font-size:13px;color:var(--grey);margin-top:8px}
-/* schedule table */
-.sched{width:100%;border-collapse:collapse;margin-top:10px}
+/* schedule */
+.sched{width:100%;border-collapse:collapse}
 .sched th,.sched td{text-align:left;padding:20px 12px 20px 0;border-bottom:1px solid var(--line);vertical-align:top}
 .sched th{font:400 clamp(22px,2.6vw,30px) "Italiana",serif;width:42%}
 .sched td small{display:block;color:var(--grey);font-size:14px}
-.sched .acts{display:flex;gap:14px;margin-top:6px;flex-wrap:wrap}
-.sched .acts a,.sched .acts button{background:none;border:0;padding:0;color:var(--ink);font:500 11px "Inter",sans-serif;letter-spacing:.2em;text-transform:uppercase;text-decoration:underline;text-underline-offset:4px;cursor:pointer}
-@media(max-width:640px){.sched th,.sched td{display:block;width:100%;padding:0}.sched tr{display:block;padding:18px 0;border-bottom:1px solid var(--line)}.sched th{border:0}.sched td{border:0;margin-top:6px}}
-/* counter */
+.acts{display:flex;gap:14px;margin-top:6px;flex-wrap:wrap}
+.acts a,.acts button{background:none;border:0;padding:0;color:var(--ink);font:500 11px "Inter",sans-serif;letter-spacing:.2em;text-transform:uppercase;text-decoration:underline;text-underline-offset:4px;cursor:pointer}
+@media(max-width:640px){.sched th,.sched td{display:block;width:100%;padding:0}.sched tr{display:block;padding:18px 0;border-bottom:1px solid var(--line)}.sched th,.sched td{border:0}.sched td{margin-top:6px}}
 .count{display:grid;grid-template-columns:repeat(4,1fr);border-top:1px solid var(--ink)}
-.count div{padding:20px 0 0}
-.count b{display:block;font:400 clamp(48px,9vw,120px)/1 "Italiana",serif}
+.count div{padding-top:18px}
+.count b{display:block;font:400 clamp(44px,9vw,110px)/1 "Italiana",serif}
 .count span{font-size:11px;letter-spacing:.24em;text-transform:uppercase;color:var(--grey)}
-/* info grid */
-.info{display:grid;gap:0;border-top:1px solid var(--ink)}
+.info{display:grid;border-top:1px solid var(--ink)}
 @media(min-width:800px){.info{grid-template-columns:repeat(3,1fr)}}
-.info div{padding:22px 22px 26px 0;border-bottom:1px solid var(--line)}
-.info h3{font-size:26px;margin-bottom:8px}
+.info div{padding:22px 22px 24px 0;border-bottom:1px solid var(--line)}
+.info h3{font-size:26px;margin-bottom:6px}
 .info p{color:var(--grey);font-size:15.5px}
 details{border-bottom:1px solid var(--line)}
 details summary{cursor:pointer;list-style:none;padding:18px 0;display:flex;justify-content:space-between;font:400 22px "Italiana",serif}
 details summary::after{content:"+";font-family:"Inter";font-weight:300}
 details[open] summary::after{content:"−"}
 details p{padding-bottom:18px;color:var(--grey)}
-/* rsvp */
 .rsvp{background:var(--soft)}
-form{max-width:560px}
-legend{font:400 30px "Italiana",serif}
+form{max-width:520px;margin-top:20px}
 label{display:block;font:500 11px "Inter",sans-serif;letter-spacing:.22em;text-transform:uppercase;color:var(--grey);margin:18px 0 6px}
-input,select,textarea{width:100%;padding:12px 0;border:0;border-bottom:1px solid var(--ink);background:transparent;font-size:18px;border-radius:0}
-.seg{display:flex;border:1px solid var(--ink)}
-.seg label{flex:1;margin:0;cursor:pointer;letter-spacing:.1em}
-.seg input{position:absolute;opacity:0}
-.seg span{display:block;text-align:center;padding:14px;color:var(--ink);font:400 13px "Inter",sans-serif;letter-spacing:.06em;text-transform:none}
-.seg label+label span{border-left:1px solid var(--ink)}
-.seg input:checked+span{background:var(--ink);color:#fff}
-.seg input:focus-visible+span{outline:2px solid var(--gold);outline-offset:-4px}
-.btn{display:inline-flex;align-items:center;justify-content:center;min-height:48px;padding:0 28px;border:1px solid var(--ink);background:var(--ink);color:#fff;font:500 11px "Inter",sans-serif;letter-spacing:.26em;text-transform:uppercase;cursor:pointer;text-decoration:none}
+input,select{width:100%;padding:12px 0;border:0;border-bottom:1px solid var(--ink);background:transparent;font-size:18px;border-radius:0}
+.btn{display:inline-flex;align-items:center;justify-content:center;min-height:48px;padding:0 28px;border:1px solid var(--ink);background:var(--ink);color:#fff;font:500 11px "Inter",sans-serif;letter-spacing:.26em;text-transform:uppercase;cursor:pointer;text-decoration:none;margin-top:24px}
 .btn.ghost{background:transparent;color:var(--ink)}
-.rs-bar{color:var(--gold)}
-.rs-done{text-align:left}
-.rs-done-t{font-family:"Italiana",serif;font-size:42px}
-footer{padding:64px 0 90px}
-footer .row{display:flex;gap:12px;flex-wrap:wrap;margin-top:22px}
-footer p{color:var(--grey);font-size:14px;margin-top:30px}
+.rs-done{text-align:left}.rs-done-t{font-family:"Italiana",serif;font-size:42px}
+footer{padding:64px 0 100px;position:relative;z-index:1}
+footer .row{display:flex;gap:12px;flex-wrap:wrap}
+footer p{color:var(--grey);font-size:14px;margin-top:28px}
 footer a{color:var(--ink)}
-.music{position:fixed;right:16px;bottom:16px;z-index:70;border:1px solid var(--ink);background:#fff;padding:10px 14px;font:500 10.5px "Inter",sans-serif;letter-spacing:.24em;text-transform:uppercase;cursor:pointer}
-.music[aria-pressed=true]{background:var(--ink);color:#fff}
+[data-music]{border-radius:0;background:#fff;color:var(--ink);border:1px solid var(--ink)}
 </style>
 </head>
 <body>
-<div class="cover" data-cover data-dur="900" role="dialog" aria-label="Open the invitation">
+<div data-pre aria-hidden="true"><div><div class="pre-mono">N|A</div><p class="pre-name">Nitya &amp; Aditya</p><div class="pre-track"><i data-pre-bar></i></div><p class="pre-cap">Preparing your invitation</p></div></div>
+
+<div class="cover" data-cover data-dur="1500" data-burst-at="200" role="dialog" aria-label="Open the invitation">
   <div>
     <svg class="mono" viewBox="0 0 260 260" aria-hidden="true">
-      <circle cx="130" cy="130" r="118"/>
-      <path d="M70 180 V80 L120 180 V80"/>
-      <path d="M140 180 L170 80 L200 180 M152 142 H188"/>
-      <path d="M130 60 V200" stroke-dasharray="2 6"/>
+      <circle class="c" cx="130" cy="130" r="118"/>
+      <path class="s" d="M70 180 V80 L120 180 V80"/>
+      <path class="s" d="M140 180 L170 80 L200 180 M152 142 H188"/>
+      <path class="s" d="M130 60 V200" stroke-dasharray="2 6"/>
     </svg>
     <p class="lab">Nitya &amp; Aditya · Mumbai</p>
     <button class="enter" data-open>Enter</button>
@@ -123,103 +128,97 @@ footer a{color:var(--ink)}
 <main id="main" tabindex="-1">
   <header class="hero"><div class="wrap">
     <p class="deva" lang="hi">॥ श्री गणेशाय नमः ॥</p>
-    <div class="hero-grid">
-      <h1>Nitya<br><span>&amp;</span> Aditya</h1>
-      <div class="meta">
-        <div><span class="lab">Date</span><span data-day="90" data-fmt="dm"></span></div>
-        <div><span class="lab">City</span><span>Mumbai</span></div>
-        <div><span class="lab">Dress</span><span>Ivory, gold, black tie</span></div>
-        <div><span class="lab">Reply by</span><span data-day="70" data-fmt="dm"></span></div>
-      </div>
-    </div>
+    <h1><span class="w"><i>Nitya</i></span><span class="w"><i class="g">&amp;</i></span><span class="w"><i>Aditya</i></span></h1>
+    <div class="rule"></div>
+    <div class="meta"><span class="lab">Mumbai</span><span class="lab" data-day="90" data-fmt="long"></span><span class="lab">Ivory · gold · black tie</span></div>
   </div></header>
 
   <section><div class="wrap split">
-    <p class="lab" data-reveal>01 — Families</p>
-    <div data-reveal>
-      <p class="big">With the blessings of Smt. Usha Devi Poddar and Shri Hanuman Prasad Saraf, Kamla and Ashok Poddar, and Rita and Sanjay Saraf invite you to celebrate the marriage of their children.</p>
-      <div class="fams">
-        <div><b>Nitya Poddar</b><span>Daughter of Kamla &amp; Ashok Poddar, Mumbai</span></div>
-        <div><b>Aditya Saraf</b><span>Son of Rita &amp; Sanjay Saraf, Kolkata</span></div>
-      </div>
+    <p class="lab" data-anim="up">01 — Families</p>
+    <div data-anim="blur">
+      <p class="big">With the blessings of Smt. Usha Devi Poddar and Shri Hanuman Prasad Saraf, Kamla and Ashok Poddar, and Rita and Sanjay Saraf, invite you to celebrate the marriage of their children.</p>
+      <div class="fams"><div><b>Nitya Poddar</b><span>Daughter of Kamla &amp; Ashok Poddar, Mumbai</span></div><div><b>Aditya Saraf</b><span>Son of Rita &amp; Sanjay Saraf, Kolkata</span></div></div>
     </div>
   </div></section>
 
   <section><div class="wrap">
-    <div class="split" style="margin-bottom:36px"><p class="lab" data-reveal>02 — Us</p><h2 data-reveal>Ten years, two cities, one answer.</h2></div>
+    <p class="lab" data-anim="up">02 — Save the date</p>
+    <div data-reveal-group data-auto>
+      <div class="date">
+        <div><p class="lab">Day</p><span data-roll><span class="roll-in"><span data-day="90" data-fmt="d2"></span><span>27</span><span>04</span><span>19</span><span>08</span><span>31</span><span>12</span><span>23</span><span>06</span><span>15</span></span></span></div>
+        <div class="g"><p class="lab">Month</p><span data-roll><span class="roll-in"><span data-day="90" data-fmt="month"></span><span>Jul</span><span>Mar</span><span>Oct</span><span>May</span><span>Dec</span><span>Aug</span><span>Jan</span><span>Sep</span><span>Apr</span></span></span></div>
+        <div><p class="lab">Year</p><span data-roll><span class="roll-in"><span data-day="90" data-fmt="year"></span><span>2031</span><span>2029</span><span>2024</span><span>2033</span><span>2025</span><span>2030</span><span>2028</span><span>2032</span><span>2026</span></span></span></div>
+      </div>
+      <p class="after big">Ten years, two cities, one answer.</p>
+    </div>
+  </div></section>
+
+  <section><div class="wrap">
+    <p class="lab" data-anim="up">03 — Us</p>
     <div class="strip">
-      <figure><img src="https://oaosapkkzoynaqpnmvrj.supabase.co/storage/v1/object/public/site/couple.jpg" alt="Illustration of the couple under a floral arch" loading="lazy" width="800" height="1000"><figcaption>Kolkata, 2016 — classmates</figcaption></figure>
-      <figure><img src="https://oaosapkkzoynaqpnmvrj.supabase.co/storage/v1/object/public/site/demo-lake.jpg" alt="Illustration of a couple in a boat" loading="lazy" width="800" height="1000"><figcaption>Udaipur, 2024 — the question</figcaption></figure>
-      <figure><img src="https://oaosapkkzoynaqpnmvrj.supabase.co/storage/v1/object/public/site/demo-rings.jpg" alt="Illustration of mehendi hands holding a ring box" loading="lazy" width="800" height="1000"><figcaption>Mumbai, this season — forever</figcaption></figure>
+      <figure data-anim="right"><img src="https://oaosapkkzoynaqpnmvrj.supabase.co/storage/v1/object/public/site/couple.jpg" alt="Illustration of the couple under a floral arch" loading="lazy" width="800" height="1000"><figcaption>Kolkata, 2016 — classmates</figcaption></figure>
+      <figure data-anim="right" data-delay=".15"><img src="https://oaosapkkzoynaqpnmvrj.supabase.co/storage/v1/object/public/site/demo-lake.jpg" alt="Illustration of a couple in a boat" loading="lazy" width="800" height="1000"><figcaption>Udaipur, 2024 — the question</figcaption></figure>
+      <figure data-anim="right" data-delay=".3"><img src="https://oaosapkkzoynaqpnmvrj.supabase.co/storage/v1/object/public/site/demo-rings.jpg" alt="Illustration of mehendi hands holding a ring box" loading="lazy" width="800" height="1000"><figcaption>Mumbai, this season — forever</figcaption></figure>
     </div>
   </div></section>
 
   <section><div class="wrap split">
-    <p class="lab" data-reveal>03 — Schedule</p>
-    <div data-reveal>
+    <p class="lab" data-anim="up">04 — Schedule</p>
+    <div data-anim="up">
       <table class="sched"><caption class="sr">Wedding schedule</caption><tbody>
-        <tr><th scope="row">Ganesh Puja &amp; Mayra</th><td><span data-day="88" data-fmt="wd"></span>, <span data-day="88" data-fmt="dm"></span> · <span data-day="88" data-time="10:30" data-fmt="time"></span><small>Poddar residence, Worli · family</small>
-          <div class="acts"><button data-ics="Ganesh Puja & Mayra · Nitya & Aditya" data-day="88" data-time="10:30" data-place="Worli, Mumbai">Calendar</button><a data-dir="Worli, Mumbai">Directions</a></div></td></tr>
-        <tr><th scope="row">Mehendi &amp; Sangeet</th><td><span data-day="89" data-fmt="wd"></span>, <span data-day="89" data-fmt="dm"></span> · <span data-day="89" data-time="16:00" data-fmt="time"></span><small>The Sea Lawn, Juhu · colour, then sequins</small>
-          <div class="acts"><button data-ics="Mehendi & Sangeet · Nitya & Aditya" data-day="89" data-time="16:00" data-hours="7" data-place="Juhu, Mumbai">Calendar</button><a data-dir="Juhu, Mumbai">Directions</a></div></td></tr>
-        <tr><th scope="row">Baraat &amp; Phere</th><td><span data-day="90" data-fmt="wd"></span>, <span data-day="90" data-fmt="dm"></span> · <span data-day="90" data-time="18:00" data-fmt="time"></span><small>The Courtyard, Colaba · ivory &amp; gold</small>
-          <div class="acts"><button data-ics="Wedding · Nitya & Aditya" data-day="90" data-time="18:00" data-hours="5" data-place="Colaba, Mumbai">Calendar</button><a data-dir="Colaba, Mumbai">Directions</a></div></td></tr>
-        <tr><th scope="row">Reception</th><td><span data-day="91" data-fmt="wd"></span>, <span data-day="91" data-fmt="dm"></span> · <span data-day="91" data-time="20:00" data-fmt="time"></span><small>The Courtyard, Colaba · black tie</small>
-          <div class="acts"><button data-ics="Reception · Nitya & Aditya" data-day="91" data-time="20:00" data-place="Colaba, Mumbai">Calendar</button><a data-dir="Colaba, Mumbai">Directions</a></div></td></tr>
+        <tr><th scope="row">Ganesh Puja &amp; Mayra</th><td><span data-day="88" data-fmt="wd"></span>, <span data-day="88" data-fmt="dm"></span> · <span data-day="88" data-time="10:30" data-fmt="time"></span><small>Poddar residence, Worli · family</small><div class="acts"><button data-ics="Ganesh Puja & Mayra · Nitya & Aditya" data-day="88" data-time="10:30" data-place="Worli, Mumbai">Calendar</button><a data-dir="Worli, Mumbai">Directions</a></div></td></tr>
+        <tr><th scope="row">Mehendi &amp; Sangeet</th><td><span data-day="89" data-fmt="wd"></span>, <span data-day="89" data-fmt="dm"></span> · <span data-day="89" data-time="16:00" data-fmt="time"></span><small>The Sea Lawn, Juhu</small><div class="acts"><button data-ics="Mehendi & Sangeet · Nitya & Aditya" data-day="89" data-time="16:00" data-hours="7" data-place="Juhu, Mumbai">Calendar</button><a data-dir="Juhu, Mumbai">Directions</a></div></td></tr>
+        <tr><th scope="row">Baraat &amp; Phere</th><td><span data-day="90" data-fmt="wd"></span>, <span data-day="90" data-fmt="dm"></span> · <span data-day="90" data-time="18:00" data-fmt="time"></span><small>The Courtyard, Colaba · ivory &amp; gold</small><div class="acts"><button data-ics="Wedding · Nitya & Aditya" data-day="90" data-time="18:00" data-hours="5" data-place="Colaba, Mumbai">Calendar</button><a data-dir="Colaba, Mumbai">Directions</a></div></td></tr>
+        <tr><th scope="row">Reception</th><td><span data-day="91" data-fmt="wd"></span>, <span data-day="91" data-fmt="dm"></span> · <span data-day="91" data-time="20:00" data-fmt="time"></span><small>The Courtyard, Colaba · black tie</small><div class="acts"><button data-ics="Reception · Nitya & Aditya" data-day="91" data-time="20:00" data-place="Colaba, Mumbai">Calendar</button><a data-dir="Colaba, Mumbai">Directions</a></div></td></tr>
       </tbody></table>
     </div>
   </div></section>
 
   <section><div class="wrap">
-    <p class="lab" style="margin-bottom:24px">04 — Counting down</p>
-    <div class="count" data-countdown data-day="90" data-time="18:00">
-      <div><b data-u="d">0</b><span>Days</span></div><div><b data-u="h">00</b><span>Hours</span></div><div><b data-u="m">00</b><span>Minutes</span></div><div><b data-u="s">00</b><span>Seconds</span></div>
+    <p class="lab" style="margin-bottom:22px" data-anim="up">05 — Counting down</p>
+    <div class="count" data-countdown data-day="90" data-time="18:00" data-anim="up">
+      <div><b data-u="d">00</b><span>Days</span></div><div><b data-u="h">00</b><span>Hours</span></div><div><b data-u="m">00</b><span>Minutes</span></div><div><b data-u="s">00</b><span>Seconds</span></div>
     </div>
   </div></section>
 
   <section><div class="wrap">
-    <div class="split" style="margin-bottom:30px"><p class="lab" data-reveal>05 — Good to know</p><h2 data-reveal>Travel, stay &amp; questions</h2></div>
-    <div class="info">
-      <div data-reveal><h3>Arriving</h3><p>Mumbai airport (BOM). Cars for family guests leave every hour; share your flight in the RSVP.</p></div>
-      <div data-reveal><h3>Staying</h3><p>Rooms are held near Colaba for both families. The family will confirm your booking on WhatsApp.</p></div>
-      <div data-reveal><h3>Gifts</h3><p>Your presence and blessings are our gift. If you'd like to give, please don't bring boxed gifts.</p></div>
+    <div class="split" style="margin-bottom:28px"><p class="lab" data-anim="up">06 — Good to know</p><h2 data-anim="up">Travel, stay &amp; questions</h2></div>
+    <div class="info" data-anim="up">
+      <div><h3>Arriving</h3><p>Mumbai airport (BOM). Cars for family guests leave every hour.</p></div>
+      <div><h3>Staying</h3><p>Rooms are held near Colaba for both families. We'll confirm on WhatsApp.</p></div>
+      <div><h3>Gifts</h3><p>Your presence and blessings are our gift.</p></div>
     </div>
-    <div style="margin-top:40px">
+    <div style="margin-top:34px">
       <details><summary>Is the food vegetarian?</summary><p>Everything is vegetarian, with a Jain counter at every meal.</p></details>
       <details><summary>Will the ceremonies start on time?</summary><p>The phere follow the muhurat, so please be seated 30 minutes early.</p></details>
-      <details><summary>Can I share photos?</summary><p>Yes. A shared album link will be sent to everyone after the wedding.</p></details>
     </div>
   </div></section>
 
   <section class="rsvp"><div class="wrap split">
-    <p class="lab">06 — RSVP</p>
-    <div>
-      <h2>Kindly reply</h2>
-      <form data-rsvp data-thanks="Thank you" novalidate style="margin-top:20px">
-        <div class="rs-bar"><i></i></div>
-        <fieldset class="rs-step"><legend>Your details</legend>
-          <label for="n5">Name</label><input id="n5" name="name" required autocomplete="name">
-          <label for="e5">Email or WhatsApp</label><input id="e5" name="contact" required>
-          <div class="rs-row"><button class="btn" data-next>Next</button></div></fieldset>
-        <fieldset class="rs-step" hidden><legend>Attending?</legend>
-          <div class="seg"><label><input type="radio" name="attending" value="yes" required><span>Accept with pleasure</span></label><label><input type="radio" name="attending" value="no"><span>Decline with regret</span></label></div>
-          <div class="if-yes"><label for="g5">Guests</label><select id="g5" name="guests"><option>1</option><option selected>2</option><option>3</option><option>4</option></select></div>
-          <div class="rs-row"><button class="btn ghost" data-back>Back</button><button class="btn" data-next>Next</button></div></fieldset>
-        <fieldset class="rs-step" hidden><legend>Food &amp; travel</legend>
-          <label for="f5">Food</label><select id="f5" name="food"><option>Vegetarian</option><option>Jain</option><option>Vegan</option><option>No onion, no garlic</option></select>
-          <label for="t5">Flight or train (optional)</label><input id="t5" name="travel" placeholder="e.g. 6E 2042, arriving 10:40">
-          <div class="rs-row"><button class="btn ghost" data-back>Back</button><button class="btn" type="submit">Send RSVP</button></div></fieldset>
-      </form>
-    </div>
+    <p class="lab">07 — RSVP</p>
+    <div><h2>Kindly reply</h2>
+      <form data-rsvp data-thanks="Thank you" novalidate>
+        <label for="n5">Name</label><input id="n5" name="name" required autocomplete="name">
+        <label for="g5">Guests</label><select id="g5" name="guests"><option>1</option><option selected>2</option><option>3</option><option>4</option></select>
+        <label for="f5">Food</label><select id="f5" name="food"><option>Vegetarian</option><option>Jain</option><option>Vegan</option></select>
+        <button class="btn" type="submit">Send RSVP</button>
+      </form></div>
   </div></section>
 
   <footer><div class="wrap">
-    <h2>See you there.</h2>
-    <div class="row"><button class="btn" data-share>Share on WhatsApp</button><button class="btn ghost" data-copy>Copy link</button></div>
-    <p>A sample invitation by <a href="../">BFI Marwari Invitations</a>. Couple, families and venues are fictional. <a href="../customize.html">Create yours →</a></p>
+    <h2 data-anim="up">See you there.</h2>
+    <div class="row"><button class="btn" data-share>Share on WhatsApp</button><a class="btn ghost" href="../customize.html">Create yours</a></div>
+    <p>Sample invitation by <a href="../">BFI Marwari Invitations</a> · names, venues and photos are fictional</p>
   </div></footer>
 </main>
-<button class="music" data-music aria-pressed="false" aria-label="Play music">Sound</button>
-<script src="../live-demo-assets/ld.js?v=2"></script>
+<button data-music aria-pressed="false" aria-label="Play music"><svg class="m-on" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M11 5 6 9H2v6h4l5 4V5Z"/><path d="M15.5 8.5a5 5 0 0 1 0 7M19 5a10 10 0 0 1 0 14"/></svg><svg class="m-off" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M11 5 6 9H2v6h4l5 4V5Z"/><path d="m22 9-6 6M16 9l6 6"/></svg></button>
+<script>
+window.LD = { burst: "ink", burstMs: 1500, revealBurst: "ink", burstColors: ["#D9BE8C", "#B18C58", "#E8D3A6", "#C9A46A"],
+  petals: { type: "dust", colors: ["#C9A46A", "#E8D3A6", "#B18C58"], count: 34 },
+  /* soft piano on a pentatonic scale: an original, gentle loop */
+  music: { inst: "piano", scale: "pentatonic", root: 261.63, tempo: 72, drone: false, tabla: 0,
+    melody: [[0,1],[2,1],[4,1],[5,1],[4,2],[3,1],[2,1],[1,2],[2,1],[3,1],[4,2],[null,1],[5,1],[7,1],[6,1],[5,2],[4,1],[2,1],[3,2],[2,1],[1,1],[0,3],[null,1]] } };
+</script>
+<script src="../live-demo-assets/ld2.js?v=1"></script>
 </body>
 </html>

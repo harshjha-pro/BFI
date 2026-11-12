@@ -12,7 +12,7 @@ from html import escape
 from pathlib import Path
 
 OUT = Path(__file__).resolve().parent.parent / "site"
-V = "20261112h"  # bump to bust browser caches for css/js
+V = "20261112i"  # bump to bust browser caches for css/js
 BASE = "https://bfi-royal-heritage.vercel.app"
 IMGBASE = "https://oaosapkkzoynaqpnmvrj.supabase.co/storage/v1/object/public/site/"
 BIZ = {
@@ -94,11 +94,11 @@ WORK = [dict(
     design="Blush blossoms, ivory paper and fine gold line ornaments, with script names and serif details: calm and romantic rather than heavy and ornate.")]
 
 LIVE = [
-    (1, "Rajmahal", "Aarohi & Vivaan", "Royal editorial · Jaipur", "A wax-sealed envelope opens to a royal invitation in chapters, with ritual paintings and a venue map."),
-    (2, "Gulabi Nagri", "Ishita & Kabir", "Pink City magazine · Jaipur", "Jharokha doors open onto a magazine layout: love-story timeline, dress-code mood boards and travel tips."),
-    (3, "Thar ki Raat", "Meher & Arjun", "Desert night · Jaisalmer", "Guests light a diya to open a starry desert sky, with every function on a constellation timeline."),
-    (4, "Haldi Haveli", "Saanvi & Raghav", "Hindi-first festive · Bikaner", "A marigold curtain lifts on a bilingual invitation with a हिंदी / English switch and ritual cards."),
-    (5, "Line & Light", "Nitya & Aditya", "Modern minimal · Mumbai", "A monogram draws itself, then a clean schedule, photo strip, guest FAQs and an RSVP with food choices."),
+    (1, "Rajmahal", "Aarohi & Vivaan", "Royal · shehnai · Jaipur", "Tap the wax seal: the embossed envelope opens into a golden swirl. Scratch the gold to reveal the date."),
+    (2, "Gulabi Nagri", "Ishita & Kabir", "Pink City · santoor · Jaipur", "Carved jharokha doors swing open into rose petals. Tap each window to reveal the date."),
+    (3, "Thar ki Raat", "Meher & Arjun", "Desert night · bansuri · Jaisalmer", "Light the diya and the desert sky fills with stars. Light three lanterns to reveal the date."),
+    (4, "Haldi Haveli", "Saanvi & Raghav", "Hindi-first · shehnai & dhol · Bikaner", "A marigold curtain lifts on a हिंदी / English invitation. Slide the diya to unveil the date."),
+    (5, "Line & Light", "Nitya & Aditya", "Modern minimal · piano · Mumbai", "A monogram draws itself, gold dust rises, and the date rolls into place like an odometer."),
 ]
 
 
@@ -1178,7 +1178,7 @@ WORK_BODY = f"""
 </div></section>
 <section class="sec" id="live"><div class="wrap">
   <div class="lx-head"><div><p class="eyebrow">Live invitation websites</p><h2>Five complete sample invitations</h2></div>
-    <p class="lx-head-note">Each one is a full invitation website with its own opening, layout, fonts and colours. Open them on your phone: couples, families and venues are fictional.</p></div>
+    <p class="lx-head-note">Each opens like a real invitation, with its own animation, music and a little game to reveal the date. Turn your sound on and open them on your phone: couples, families and venues are fictional.</p></div>
   {live_cards()}
 </div></section>
 <section class="sec sec-tint"><div class="wrap">

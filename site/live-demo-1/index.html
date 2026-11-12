@@ -4,217 +4,259 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Aarohi &amp; Vivaan · Rajmahal sample invitation · BFI</title>
-<meta name="description" content="A sample royal Marwari wedding invitation website by BFI: wax-sealed envelope opening, blessings, families, five functions with maps, countdown and RSVP.">
+<meta name="description" content="A sample royal Marwari wedding invitation by BFI: an embossed envelope with a wax seal, a golden swirl, shehnai music, scratch-to-reveal date, countdown, story, venue and festivities.">
 <link rel="canonical" href="https://bfi-royal-heritage.vercel.app/live-demo-1/">
-<meta name="theme-color" content="#3B0F18">
+<meta name="theme-color" content="#4A1420">
 <meta property="og:title" content="Aarohi & Vivaan · Rajmahal sample invitation by BFI">
-<meta property="og:description" content="A royal Marwari wedding invitation website, opened with a wax seal. Sample by BFI Marwari Invitations.">
+<meta property="og:description" content="Tap the wax seal to open a royal Marwari wedding invitation. Sample by BFI Marwari Invitations.">
 <meta property="og:image" content="https://bfi-royal-heritage.vercel.app/img/live-demo/live-demo-1.jpg">
 <meta property="og:url" content="https://bfi-royal-heritage.vercel.app/live-demo-1/">
 <link rel="icon" href="../img/favicon.ico" sizes="any">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400&family=Marcellus+SC&family=Pinyon+Script&family=Tiro+Devanagari+Hindi&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="../live-demo-assets/ld.css?v=2">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Pinyon+Script&family=Tenor+Sans&family=Tiro+Devanagari+Hindi&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../live-demo-assets/ld2.css?v=1">
 <style>
-:root{--wine:#3B0F18;--wine2:#5A202B;--gold:#C9A46A;--gold2:#E8D3A6;--paper:#F8F1E4;--ink:#2A1A16}
-body{background:var(--paper);color:var(--ink);font:400 18px/1.7 "Cormorant Garamond",Georgia,serif}
-.caps{font-family:"Marcellus SC",serif;letter-spacing:.22em;font-size:12px}
+:root{--wine:#4A1420;--wine2:#6E2233;--gold:#C9A46A;--gold2:#E8D3A6;--cream:#FBF6EE;--ink:#3B2420;--rose:#9E4B5A}
+body{background:var(--cream);color:var(--ink);font:400 18px/1.7 "Cormorant Garamond",Georgia,serif}
+.caps{font:400 11px/1.3 "Tenor Sans",sans-serif;letter-spacing:.32em;text-transform:uppercase}
 .script{font-family:"Pinyon Script",cursive;font-weight:400}
-.deva{font-family:"Tiro Devanagari Hindi",serif}
-/* ---------- cover: wax-sealed envelope ---------- */
-.cover{background:radial-gradient(circle at 50% 40%,#5A202B,#2A0910 70%);display:grid;place-items:center;perspective:1200px;color:var(--gold2)}
-.env{position:relative;width:min(86vw,420px);aspect-ratio:1.45;transform-style:preserve-3d}
-.env-back,.env-front,.env-flap,.env-card{position:absolute;inset:0}
-.env-back{background:#7A2A36;border-radius:4px;box-shadow:0 40px 80px rgba(0,0,0,.5)}
-.env-card{inset:6% 6% 10%;background:var(--paper) url("https://oaosapkkzoynaqpnmvrj.supabase.co/storage/v1/object/public/site/inv-sheesh-mahal.jpg") center 30%/cover;border:1px solid var(--gold);transition:transform 1.1s .5s cubic-bezier(.3,.7,.2,1)}
-.env-front{background:linear-gradient(to top right,#6B2230 50%,transparent 50.2%) left/50.2% 100% no-repeat,linear-gradient(to top left,#6B2230 50%,transparent 50.2%) right/50.2% 100% no-repeat;z-index:2}
-.env-flap{height:58%;background:linear-gradient(to bottom,#7E2C39,#5E1E2A);clip-path:polygon(0 0,100% 0,50% 100%);transform-origin:top;z-index:3;transition:transform .8s cubic-bezier(.6,0,.3,1)}
-.seal{position:absolute;left:50%;top:58%;transform:translate(-50%,-50%);z-index:4;width:84px;height:84px;border-radius:50%;border:0;cursor:pointer;
-  background:radial-gradient(circle at 35% 30%,#E6C17A,#A8792E 60%,#6E4A14);color:#3B0F18;font:400 26px "Pinyon Script",cursive;box-shadow:0 6px 16px rgba(0,0,0,.4),inset 0 0 0 4px rgba(255,255,255,.18);transition:transform .4s,opacity .4s}
-.seal:hover{transform:translate(-50%,-50%) scale(1.06)}
-.cover-names{position:absolute;bottom:-70px;left:0;right:0;text-align:center}
-.cover-names p{font-size:15px;opacity:.85}
-.cover.is-open .seal{opacity:0;transform:translate(-50%,-50%) scale(.6)}
-.cover.is-open .env-flap{transform:rotateX(180deg);z-index:1}
-.cover.is-open .env-card{transform:translateY(-62%)}
-.cover.is-open{animation:fadeOut .6s 1.3s forwards}
-@keyframes fadeOut{to{opacity:0;visibility:hidden}}
-/* ---------- layout ---------- */
-.wrap{max-width:760px;margin:0 auto;padding:0 24px}
-section{padding:clamp(72px,12vw,128px) 0;text-align:center}
-.num{display:block;color:var(--gold);font:400 13px "Marcellus SC",serif;letter-spacing:.3em;margin-bottom:18px}
-h2{font:400 clamp(34px,6vw,52px)/1.1 "Cormorant Garamond",serif;color:var(--wine2)}
-.rule{width:120px;height:14px;margin:22px auto;background:radial-gradient(circle,var(--gold) 2.5px,transparent 3px) center/14px 14px no-repeat,linear-gradient(var(--gold),var(--gold)) center/100% 1px no-repeat}
-.hero{min-height:calc(100svh - 34px);display:grid;place-items:center;text-align:center;padding:60px 0;color:var(--paper);background:linear-gradient(rgba(42,9,16,.55),rgba(42,9,16,.82)),url("https://oaosapkkzoynaqpnmvrj.supabase.co/storage/v1/object/public/site/palace.jpg") center/cover}
-.hero .deva{color:var(--gold2);font-size:18px}
-.hero h1{font:400 clamp(58px,13vw,120px)/.95 "Pinyon Script",cursive;margin:26px 0 10px;color:#fff}
-.hero h1 span{display:block;font:400 clamp(20px,3vw,26px) "Cormorant Garamond",serif;font-style:italic;color:var(--gold2);margin:10px 0}
-.hero .when{margin-top:22px}
-.hero .when b{display:block;font:400 clamp(24px,4vw,32px) "Cormorant Garamond",serif}
-.frame{border:1px solid var(--gold);outline:1px solid var(--gold);outline-offset:6px;padding:clamp(28px,6vw,54px);background:#FFFBF3}
-.elders{font-size:clamp(18px,2.4vw,21px)}
-.fam{display:grid;gap:26px;margin-top:34px}
-@media(min-width:640px){.fam{grid-template-columns:1fr auto 1fr;align-items:center}}
-.fam b{display:block;font:400 clamp(44px,8vw,64px)/1 "Pinyon Script",cursive;color:var(--wine2)}
-.fam small{display:block;font-size:16px;opacity:.85;margin-top:8px}
-.fam i{font-size:22px;color:var(--gold)}
+/* preloader */
+[data-pre]{background:radial-gradient(circle at 50% 45%,#fff,var(--cream) 70%);color:var(--wine2)}
+.pre-mono{font:400 30px "Cormorant Garamond",serif;color:var(--wine2)}
+.pre-mono em{font-style:normal;color:var(--gold);font-size:.7em}
+.pre-name{margin-top:18px;font:500 22px "Cormorant Garamond",serif}
+/* ---------- cover: embossed envelope + wax seal ---------- */
+.cover{background:#5A1A27;perspective:1400px}
+.paper{position:absolute;inset:0;background:radial-gradient(120% 80% at 50% 0%,#74283A,#56182A 60%,#3E0F1B)}
+.paper::after{content:"";position:absolute;inset:0;opacity:.35;mix-blend-mode:overlay;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)'/%3E%3C/svg%3E")}
+.emboss{position:absolute;inset:0;width:100%;height:100%;z-index:3;pointer-events:none}
+.emboss path,.emboss circle{fill:none;stroke:#6A2333;stroke-width:3.2;stroke-linecap:round;filter:drop-shadow(1.2px 1.2px 0 rgba(255,210,210,.13)) drop-shadow(-1.2px -1.2px 1px rgba(20,0,5,.55))}
+.flap{position:absolute;left:-2%;right:-2%;top:0;height:62%;background:linear-gradient(#6E2435,#5B1D2C);clip-path:polygon(0 0,100% 0,100% 18%,50% 100%,0 18%);transform-origin:top;transition:transform 1s cubic-bezier(.6,0,.3,1);box-shadow:0 18px 40px rgba(0,0,0,.4);z-index:2}
+.flap::after{content:"";position:absolute;inset:0;background:inherit;filter:brightness(1.08);clip-path:polygon(0 0,100% 0,100% 16%,50% 97%,0 16%)}
+.pocket{position:absolute;left:0;right:0;bottom:0;height:60%;z-index:1;background:linear-gradient(to top right,#521727 50%,transparent 50.3%) left/50.2% 100% no-repeat,linear-gradient(to top left,#4E1524 50%,transparent 50.3%) right/50.2% 100% no-repeat}
+.tap{position:absolute;left:0;right:0;top:34%;text-align:center;z-index:4;font:400 clamp(34px,9vw,52px)/1 "Pinyon Script",cursive;color:#FFF3E6;text-shadow:0 2px 12px rgba(0,0,0,.4);transition:opacity .4s;animation:breathe 2.6s ease-in-out infinite}
+@keyframes breathe{50%{opacity:.65;transform:translateY(-3px)}}
+.seal{position:absolute;left:50%;top:62%;z-index:5;transform:translate(-50%,-50%);width:min(46vw,190px);aspect-ratio:1;border:0;padding:0;cursor:pointer;background:none;transition:transform .5s cubic-bezier(.3,.7,.2,1),opacity .5s}
+.seal svg{width:100%;height:100%;filter:drop-shadow(0 10px 16px rgba(0,0,0,.45))}
+.seal:hover{transform:translate(-50%,-50%) scale(1.04)}
+.cover.is-open .seal{transform:translate(-50%,-50%) scale(1.25) rotate(-12deg);opacity:0}
+.cover.is-open .tap{opacity:0}
+.cover.is-open .flap{transform:rotateX(178deg)}
+.cover.is-open .pocket,.cover.is-open .paper,.cover.is-open .emboss{transition:transform 1s .55s cubic-bezier(.6,0,.3,1);transform:translateY(105%)}
+.cover.is-open .flap{transition:transform .9s cubic-bezier(.6,0,.3,1),opacity .4s 1s}
+.cover.is-open{background:transparent;transition:background .5s .6s}
+/* ---------- invitation ---------- */
+main{position:relative;z-index:1}
+.wrap{max-width:560px;margin:0 auto;padding:0 20px}
+.card{background:#fff;border-radius:22px;box-shadow:0 20px 50px rgba(74,20,32,.10);border:1px solid rgba(201,164,106,.35);padding:clamp(34px,7vw,52px) clamp(22px,6vw,44px);text-align:center;position:relative}
+.card::before{content:"";position:absolute;inset:10px;border:1px solid rgba(201,164,106,.4);border-radius:16px;pointer-events:none}
+.frame{position:fixed;inset:44px 12px 12px;border:1px solid rgba(201,164,106,.5);pointer-events:none;z-index:2}
+.frame::before,.frame::after{content:"";position:absolute;width:44px;height:44px;border:2px solid var(--gold)}
+.frame::before{left:-4px;top:-4px;border-right:0;border-bottom:0}.frame::after{right:-4px;bottom:-4px;border-left:0;border-top:0}
+.hero{padding:44px 0 30px}
+.kalash{width:72px;height:72px;margin:0 auto 10px;color:var(--gold)}
+.deva{font-family:"Tiro Devanagari Hindi",serif;color:#B07D2E;font-size:18px}
+.shloka{font-style:italic;color:#8A6A5E;font-size:16px;margin-top:10px}
+.lead{margin-top:18px;font-style:italic;color:#6B4E46;font-size:17px}
+.name{font:400 clamp(54px,15vw,76px)/1 "Pinyon Script",cursive;color:var(--wine2);margin-top:22px}
+.parent{font:500 17px "Cormorant Garamond",serif;margin-top:6px}
+.amp{display:flex;align-items:center;justify-content:center;gap:14px;color:var(--gold);font-size:28px;margin:14px 0 4px}
+.amp::before,.amp::after{content:"";width:50px;height:1px;background:var(--gold)}
+.union{margin-top:20px;font-style:italic;color:var(--rose)}
+.hint{margin-top:30px;display:flex;flex-direction:column;align-items:center;gap:6px;color:#B07D2E}
+.hint i{width:1px;height:34px;background:linear-gradient(var(--gold),transparent);animation:drip 1.8s infinite}
+@keyframes drip{0%{transform:scaleY(0);transform-origin:top}50%{transform:scaleY(1);transform-origin:top}51%{transform-origin:bottom}100%{transform:scaleY(0);transform-origin:bottom}}
+section{padding:clamp(56px,10vw,90px) 0;text-align:center}
+.eyebrow{color:#B07D2E}
+h2{font:400 clamp(42px,11vw,60px)/1.05 "Pinyon Script",cursive;color:var(--wine2);margin-top:10px}
+.sub{font-style:italic;color:#8A6A5E;margin-top:6px}
+/* scratch cards */
+.dates{display:grid;grid-template-columns:1fr 1fr;gap:18px;max-width:340px;margin:30px auto 0}
+.dates .yr{grid-column:1/-1;justify-self:center;width:calc(50% - 9px)}
+.slot small{display:block;font:400 10px "Tenor Sans",sans-serif;letter-spacing:.3em;margin-bottom:8px;color:#8A6A5E}
+.sc{aspect-ratio:3/4;border-radius:14px;background:#fff;border:1px solid rgba(201,164,106,.5);display:grid;place-items:center;box-shadow:0 10px 24px rgba(74,20,32,.12);transform:rotate(var(--r,0deg))}
+.sc b{font:500 clamp(30px,9vw,44px)/1 "Cormorant Garamond",serif;color:var(--wine2)}
+.slot p{font:400 10px "Tenor Sans",sans-serif;letter-spacing:.24em;color:#B07D2E;margin-top:8px}
+.revealed .slot p{visibility:hidden}
+.after{opacity:0;transform:translateY(10px);transition:1s .4s;margin-top:26px;font-style:italic}
+.revealed .after{opacity:1;transform:none}
 /* countdown */
-.count{display:flex;justify-content:center;gap:clamp(10px,4vw,36px);margin-top:28px}
-.count div{min-width:70px}
-.count b{display:block;font:400 clamp(40px,8vw,64px)/1 "Cormorant Garamond",serif;color:var(--wine2)}
-.count span{font:400 11px "Marcellus SC",serif;letter-spacing:.25em}
-/* events: ornate list */
-.events{list-style:none;margin:40px 0 0;padding:0;text-align:left;display:grid;gap:0}
-.ev{display:grid;grid-template-columns:86px 1fr;gap:20px;padding:26px 0;border-top:1px solid rgba(201,164,106,.55)}
-.ev:last-child{border-bottom:1px solid rgba(201,164,106,.55)}
-.ev-date{text-align:center;color:var(--wine2)}
-.ev-date b{display:block;font:400 44px/1 "Cormorant Garamond",serif}
-.ev-date span{font:400 11px "Marcellus SC",serif;letter-spacing:.2em}
-.ev h3{font:400 28px/1.15 "Cormorant Garamond",serif;color:var(--wine2)}
-.ev p{font-size:17px}
-.ev .dress{display:flex;align-items:center;gap:6px;font-size:15px;margin-top:6px;font-style:italic}
-.ev .dress i{width:14px;height:14px;border-radius:50%;display:inline-block;border:1px solid rgba(0,0,0,.15)}
-.acts{display:flex;gap:18px;margin-top:10px;flex-wrap:wrap}
-.acts a,.acts button{background:none;border:0;padding:0;color:var(--wine2);font:400 12px "Marcellus SC",serif;letter-spacing:.18em;text-decoration:underline;text-underline-offset:4px;cursor:pointer}
-.ev-img{grid-column:1/-1;aspect-ratio:3/2;object-fit:cover;width:100%;border:1px solid var(--gold);margin-top:6px}
-/* venue */
-.map{margin-top:28px;border:1px solid var(--gold);aspect-ratio:16/10}
-.map iframe{width:100%;height:100%;border:0;display:block}
+.count{display:flex;justify-content:center;gap:clamp(10px,4vw,26px);margin-top:26px}
+.count div{width:72px}
+.count b{display:block;font:500 40px/1 "Cormorant Garamond",serif;color:var(--wine2)}
+.count span{font:400 10px "Tenor Sans",sans-serif;letter-spacing:.24em;color:#8A6A5E}
+.muhurat{font:600 22px "Cormorant Garamond",serif;letter-spacing:.2em;color:#B07D2E;margin-top:8px}
+/* story: polaroids */
+.story{display:grid;gap:26px;margin-top:34px}
+.pol{background:#fff;padding:12px 12px 16px;box-shadow:0 14px 34px rgba(74,20,32,.14);transform:rotate(var(--r));max-width:380px;margin:0 auto}
+.pol img{aspect-ratio:4/5;object-fit:cover;width:100%}
+.pol figcaption{font:400 26px "Pinyon Script",cursive;color:var(--wine2);margin-top:8px}
+.pol small{display:block;font:400 10px "Tenor Sans",sans-serif;letter-spacing:.24em;color:#8A6A5E}
+/* venue & festivities */
+.venue h3{font:500 28px "Cormorant Garamond",serif;color:var(--wine2);margin-top:14px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:46px;padding:0 24px;border-radius:999px;border:0;background:var(--wine2);color:#fff;font:400 11px "Tenor Sans",sans-serif;letter-spacing:.24em;text-transform:uppercase;cursor:pointer;text-decoration:none;margin-top:18px}
+.btn.line{background:transparent;color:var(--wine2);border:1px solid var(--wine2)}
+.ev{margin-top:26px;text-align:center;overflow:hidden;padding:0}
+.ev img{width:100%;aspect-ratio:3/2;object-fit:cover}
+.ev .in{padding:24px 22px 28px}
+.ev h3{font:400 44px/1 "Pinyon Script",cursive;color:var(--wine2)}
+.ev .when{display:flex;justify-content:center;gap:12px;align-items:center;margin-top:10px;font:500 16px "Cormorant Garamond",serif}
+.ev .when i{width:1px;height:18px;background:var(--gold)}
+.ev q{display:block;font-style:italic;color:#6B4E46;margin-top:12px}
+.ev .row{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
 /* rsvp */
-.dark{background:var(--wine);color:var(--paper)}
-.dark h2{color:var(--gold2)}
-form{max-width:480px;margin:34px auto 0;text-align:left;color:var(--paper)}
-label{display:block;font:400 12px "Marcellus SC",serif;letter-spacing:.2em;margin:16px 0 6px}
-input,select,textarea{width:100%;background:transparent;border:0;border-bottom:1px solid var(--gold);padding:10px 2px;color:var(--paper);font-size:19px}
-select option{color:#222}
-.choice{display:flex;gap:10px}
-.choice label{flex:1;margin:0;cursor:pointer}
-.choice input{position:absolute;opacity:0}
-.choice span{display:block;text-align:center;padding:14px;border:1px solid rgba(232,211,166,.5);font:400 16px "Cormorant Garamond",serif;letter-spacing:0}
-.choice input:checked+span{background:var(--gold2);color:var(--wine)}
-.choice input:focus-visible+span{outline:2px solid var(--gold2);outline-offset:2px}
-.btn{display:inline-flex;align-items:center;justify-content:center;min-height:48px;padding:0 26px;border:1px solid var(--gold2);background:var(--gold2);color:var(--wine);font:400 13px "Marcellus SC",serif;letter-spacing:.2em;cursor:pointer;text-decoration:none}
-.btn.ghost{background:transparent;color:inherit}
-legend{font:400 26px "Cormorant Garamond",serif;color:var(--gold2)}
-.rs-done{padding:20px;color:var(--paper)}
-.rs-done-t{font-family:"Pinyon Script",cursive;font-size:44px;color:var(--gold2)}
-.share{display:flex;justify-content:center;gap:12px;flex-wrap:wrap;margin-top:26px}
-.share .btn{background:transparent;color:var(--wine2);border-color:var(--wine2)}
-footer{background:#2A0910;color:var(--gold2);text-align:center;padding:56px 24px 72px}
-footer p{font-size:15px}
-footer a{color:var(--gold2)}
-.music{position:fixed;right:16px;bottom:16px;z-index:70;width:48px;height:48px;border-radius:50%;border:1px solid var(--gold);background:var(--wine);color:var(--gold2);cursor:pointer;display:grid;place-items:center}
-.music[aria-pressed=true]{animation:spin 6s linear infinite}
-@keyframes spin{to{transform:rotate(360deg)}}
-.music svg{width:20px;height:20px}
+form{max-width:380px;margin:24px auto 0;text-align:left}
+label{display:block;font:400 10px "Tenor Sans",sans-serif;letter-spacing:.26em;text-transform:uppercase;color:#8A6A5E;margin:14px 0 6px}
+input,select{width:100%;padding:12px 14px;border:1px solid rgba(201,164,106,.6);border-radius:12px;background:#fff;font-size:18px}
+.rs-done-t{font:400 44px "Pinyon Script",cursive;color:var(--wine2)}
+/* closing */
+.close{background:var(--wine);color:#F5E6DA;padding:70px 0 90px;position:relative;z-index:1}
+.close h2{color:#F7DCC0}
+.close p{font-style:italic;margin-top:12px}
+.close .fam{font:400 11px "Tenor Sans",sans-serif;letter-spacing:.3em;text-transform:uppercase;margin-top:24px;color:var(--gold2)}
+.close .deva{color:var(--gold2);margin-top:20px}
+.close small{display:block;margin-top:34px;font:400 12px "Tenor Sans",sans-serif;letter-spacing:.14em;opacity:.75}
+.close a{color:var(--gold2)}
+[data-music]{background:#fff;color:var(--wine2);border:1px solid rgba(201,164,106,.6)}
 </style>
 </head>
 <body>
-<div class="cover" data-cover data-dur="1900" role="dialog" aria-label="Open the invitation">
-  <div class="env">
-    <div class="env-back"></div><div class="env-card"></div><div class="env-front"></div><div class="env-flap"></div>
-    <button class="seal" data-open aria-label="Break the seal to open the invitation">A&amp;V</button>
-    <div class="cover-names"><p class="caps">Aarohi &amp; Vivaan</p><p>Tap the seal to open</p></div>
-  </div>
+<div data-pre aria-hidden="true"><div><div class="pre-mono">A<em>&amp;</em>V</div><p class="pre-name">Aarohi &amp; Vivaan</p><div class="pre-track"><i data-pre-bar></i></div><p class="pre-cap">Preparing your invitation</p></div></div>
+
+<div class="cover" data-cover data-dur="2100" data-burst-at="900" role="dialog" aria-label="Open the invitation">
+  <div class="paper"></div>
+  <svg class="emboss" viewBox="0 0 390 844" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+    <path d="M40 60c30 10 40 40 30 70M70 130c-20 0-40-10-46-30M70 130c20-6 34-20 36-40M150 40c-10 30 0 60 30 80M180 120c16-18 40-22 60-12M180 120c-6 22-24 36-46 38"/>
+    <circle cx="120" cy="200" r="16"/><path d="M120 184c6-14 20-18 30-10M120 216c-6 14-20 18-30 10M104 200c-14-6-18-20-10-30M136 200c14 6 18 20 10 30"/>
+    <path d="M300 60c-30 14-34 50-10 76M290 136c22-4 40 4 50 22M290 136c-20 10-28 30-22 52M260 230c20 8 30 30 24 52M330 250c-10 18-6 40 12 54"/>
+    <circle cx="300" cy="300" r="14"/><path d="M300 286c4-12 16-16 26-8M300 314c-4 12-16 16-26 8"/>
+    <path d="M30 640c30-10 60 0 70 30M100 670c10-20 30-28 52-24M60 760c20-18 50-18 66 2M260 700c26-6 50 8 56 32M316 732c12-16 34-18 50-6M240 800c20-14 46-10 60 8"/>
+    <circle cx="200" cy="760" r="12"/><circle cx="70" cy="720" r="8"/><circle cx="340" cy="660" r="9"/>
+  </svg>
+  <div class="pocket"></div>
+  <div class="flap"></div>
+  <p class="tap">Tap to Reveal</p>
+  <button class="seal" data-open aria-label="Break the wax seal to open the invitation">
+    <svg viewBox="0 0 200 200" aria-hidden="true">
+      <defs><radialGradient id="wx" cx="40%" cy="35%" r="70%"><stop offset="0" stop-color="#FBEBD0"/><stop offset=".55" stop-color="#E7C99A"/><stop offset="1" stop-color="#B58A55"/></radialGradient>
+        <radialGradient id="wx2" cx="45%" cy="40%" r="60%"><stop offset="0" stop-color="#F6E1BE"/><stop offset="1" stop-color="#C9A06A"/></radialGradient></defs>
+      <path fill="url(#wx)" d="M100 8c18 0 22 10 36 14s28 2 34 16-2 22 4 36 18 20 14 36-18 16-22 30-2 28-16 36-24-2-38 4-20 18-36 14-14-18-28-22-28 0-36-14 2-24-4-38-18-20-14-36 18-14 22-28 2-28 16-36 22 2 36-4S82 8 100 8Z"/>
+      <circle cx="100" cy="100" r="60" fill="url(#wx2)" stroke="#B58A55" stroke-width="2"/>
+      <circle cx="100" cy="100" r="52" fill="none" stroke="#B58A55" stroke-width="1.2" stroke-dasharray="3 4"/>
+      <text x="100" y="114" text-anchor="middle" font-family="Pinyon Script, cursive" font-size="44" fill="#7A5226">A&amp;V</text>
+    </svg>
+  </button>
 </div>
 
+<div class="frame" aria-hidden="true"></div>
 <main id="main" tabindex="-1">
-  <header class="hero">
-    <div class="wrap">
+  <div class="wrap hero">
+    <div class="card" data-anim="zoom">
+      <svg class="kalash" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round" aria-hidden="true"><path d="M32 50c-9-5-14-14-14-24 6 2 11 6 14 12 3-6 8-10 14-12 0 10-5 19-14 24Z"/><path d="M32 50c-14 0-24-6-28-16 9-1 18 3 24 10M32 50c14 0 24-6 28-16-9-1-18 3-24 10"/><path d="M32 38c-3-6-3-14 0-22 3 8 3 16 0 22Z"/><path d="M14 56h36"/></svg>
       <p class="deva" lang="hi">॥ श्री गणेशाय नमः ॥</p>
-      <p class="caps" style="margin-top:22px">Together with their families</p>
-      <h1>Aarohi <span>weds</span> Vivaan</h1>
-      <div class="rule"></div>
-      <p class="when"><b data-day="60" data-fmt="long"></b>Rambagh area, Jaipur</p>
+      <p class="shloka">Vakratunda mahākāya sūryakoṭi samaprabha, nirvighnaṁ kuru me deva sarvakāryeṣu sarvadā.</p>
+      <p class="lead">With the blessings of Smt. Kaushalya Devi &amp; Late Shri Banwarilal Goenka and Smt. Pushpa Devi &amp; Shri Ramgopal Bajaj, we joyfully invite you to the wedding of</p>
+      <p class="name">Aarohi</p>
+      <p class="parent">Daughter of Smt. Nirmala &amp; Shri Sushil Goenka, Jaipur</p>
+      <p class="amp" aria-hidden="true">&amp;</p>
+      <p class="name" style="margin-top:4px">Vivaan</p>
+      <p class="parent">Son of Smt. Kavita &amp; Shri Anand Bajaj, Kolkata</p>
+      <p class="union">Two families, one royal celebration</p>
+      <p class="hint caps"><span>Scroll to see the magic</span><i></i></p>
     </div>
-  </header>
+  </div>
 
-  <section><div class="wrap" data-reveal>
-    <span class="num">I · Aashirwad</span>
-    <h2>With the blessings of our elders</h2>
-    <div class="rule"></div>
-    <div class="frame">
-      <p class="elders">Smt. Kaushalya Devi &amp; Late Shri Banwarilal Goenka<br>Smt. Pushpa Devi &amp; Shri Ramgopal Bajaj</p>
-      <div class="fam">
-        <div><b>Aarohi</b><small>D/o Smt. Nirmala &amp; Shri Sushil Goenka, Jaipur</small></div>
-        <i aria-hidden="true">✦</i>
-        <div><b>Vivaan</b><small>S/o Smt. Kavita &amp; Shri Anand Bajaj, Kolkata</small></div>
+  <section><div class="wrap">
+    <p class="caps eyebrow" data-anim="up">The muhurat</p>
+    <h2 data-anim="up">Save the Date</h2>
+    <p class="sub" data-anim="up">Scratch the gold to reveal our wedding date</p>
+    <div class="dates" data-reveal-group>
+      <div class="slot"><small>MONTH</small><div class="sc" data-scratch style="--r:-3deg"><b data-day="60" data-fmt="month" data-case="up"></b></div><p>↑ SCRATCH</p></div>
+      <div class="slot"><small>DAY</small><div class="sc" data-scratch style="--r:2deg"><b data-day="60" data-fmt="d2"></b></div><p>↑ SCRATCH</p></div>
+      <div class="slot yr"><small>YEAR</small><div class="sc" data-scratch style="--r:-1deg"><b data-day="60" data-fmt="year"></b></div><p>↑ SCRATCH</p></div>
+      <p class="after" style="grid-column:1/-1">At the auspicious muhurat, two souls begin one sacred journey.</p>
+    </div>
+  </div></section>
+
+  <section style="padding-top:0"><div class="wrap">
+    <div class="card" data-anim="up">
+      <p class="caps eyebrow">Counting down to</p>
+      <h2>The Phere</h2>
+      <p class="muhurat" data-day="60" data-fmt="num"></p>
+      <div class="count" data-countdown data-day="60" data-time="19:30">
+        <div><b data-u="d">00</b><span>DAYS</span></div><div><b data-u="h">00</b><span>HOURS</span></div><div><b data-u="m">00</b><span>MINS</span></div><div><b data-u="s">00</b><span>SECS</span></div>
       </div>
     </div>
   </div></section>
 
-  <section style="padding-top:0"><div class="wrap" data-reveal>
-    <span class="num">II · The muhurat</span>
-    <h2>Until we take the seven vows</h2>
-    <div class="count" data-countdown data-day="60" data-time="19:30">
-      <div><b data-u="d">0</b><span>Days</span></div><div><b data-u="h">00</b><span>Hours</span></div><div><b data-u="m">00</b><span>Minutes</span></div><div><b data-u="s">00</b><span>Seconds</span></div>
+  <section style="padding-top:0"><div class="wrap">
+    <p class="caps eyebrow" data-anim="up">Our journey</p>
+    <h2 data-anim="up">Our Story</h2>
+    <div class="story">
+      <figure class="pol" style="--r:-3deg" data-anim="left"><img src="https://oaosapkkzoynaqpnmvrj.supabase.co/storage/v1/object/public/site/demo-fort.jpg" alt="Illustration of the couple on a hill fort" loading="lazy" width="800" height="1000"><figcaption>Where it began<small>A cousin's sangeet · Jodhpur</small></figcaption></figure>
+      <figure class="pol" style="--r:2.5deg" data-anim="right"><img src="https://oaosapkkzoynaqpnmvrj.supabase.co/storage/v1/object/public/site/demo-lake.jpg" alt="Illustration of the couple in a boat by a lake palace" loading="lazy" width="800" height="1000"><figcaption>The question<small>Lake Pichola · Udaipur</small></figcaption></figure>
+      <figure class="pol" style="--r:-1.5deg" data-anim="left"><img src="https://oaosapkkzoynaqpnmvrj.supabase.co/storage/v1/object/public/site/demo-rings.jpg" alt="Illustration of mehendi hands holding a ring box" loading="lazy" width="800" height="1000"><figcaption>Forever<small>This winter · Jaipur</small></figcaption></figure>
     </div>
   </div></section>
 
-  <section style="background:#FFFBF3"><div class="wrap">
-    <span class="num" data-reveal>III · Utsav</span>
-    <h2 data-reveal>Five days of celebration</h2>
-    <ol class="events">
-      <li class="ev" data-reveal><div class="ev-date"><b data-day="56" data-fmt="day"></b><span data-day="56" data-fmt="month"></span></div>
-        <div><h3>Ganesh Sthapana</h3><p><span data-day="56" data-time="10:00" data-fmt="time"></span> · Goenka Niwas, C-Scheme, Jaipur</p><p class="dress">Family only · saffron &amp; yellow <i style="background:#F2A33A"></i><i style="background:#F5D04C"></i></p>
-          <div class="acts"><button data-ics="Ganesh Sthapana · Aarohi & Vivaan" data-day="56" data-time="10:00" data-place="C-Scheme, Jaipur">Add to calendar</button><a data-dir="C-Scheme, Jaipur">Directions</a></div></div></li>
-      <li class="ev" data-reveal><div class="ev-date"><b data-day="57" data-fmt="day"></b><span data-day="57" data-fmt="month"></span></div>
-        <div><h3>Mayra</h3><p><span data-day="57" data-time="11:00" data-fmt="time"></span> · Goenka Niwas, C-Scheme, Jaipur</p><p class="dress">Traditional · red &amp; gold <i style="background:#A51B2D"></i><i style="background:#C9A46A"></i></p>
-          <div class="acts"><button data-ics="Mayra · Aarohi & Vivaan" data-day="57" data-time="11:00" data-place="C-Scheme, Jaipur">Add to calendar</button><a data-dir="C-Scheme, Jaipur">Directions</a></div></div>
-        <img class="ev-img" src="https://oaosapkkzoynaqpnmvrj.supabase.co/storage/v1/object/public/site/ritual-mayra.jpg" alt="Miniature-style painting of the Mayra procession arriving with gifts" loading="lazy" width="1000" height="666"></li>
-      <li class="ev" data-reveal><div class="ev-date"><b data-day="58" data-fmt="day"></b><span data-day="58" data-fmt="month"></span></div>
-        <div><h3>Pithi &amp; Mehendi</h3><p><span data-day="58" data-time="15:00" data-fmt="time"></span> · The Courtyard Lawns, Malviya Nagar, Jaipur</p><p class="dress">Leheriya &amp; florals <i style="background:#F2C230"></i><i style="background:#3E9B5B"></i></p>
-          <div class="acts"><button data-ics="Pithi & Mehendi · Aarohi & Vivaan" data-day="58" data-time="15:00" data-place="Malviya Nagar, Jaipur">Add to calendar</button><a data-dir="Malviya Nagar, Jaipur">Directions</a></div></div></li>
-      <li class="ev" data-reveal><div class="ev-date"><b data-day="59" data-fmt="day"></b><span data-day="59" data-fmt="month"></span></div>
-        <div><h3>Mahila Sangeet</h3><p><span data-day="59" data-time="19:30" data-fmt="time"></span> · The Courtyard Lawns, Malviya Nagar, Jaipur</p><p class="dress">Indo-western glamour <i style="background:#C2477A"></i><i style="background:#6B3FA0"></i></p>
-          <div class="acts"><button data-ics="Mahila Sangeet · Aarohi & Vivaan" data-day="59" data-time="19:30" data-place="Malviya Nagar, Jaipur">Add to calendar</button><a data-dir="Malviya Nagar, Jaipur">Directions</a></div></div></li>
-      <li class="ev" data-reveal><div class="ev-date"><b data-day="60" data-fmt="day"></b><span data-day="60" data-fmt="month"></span></div>
-        <div><h3>Baraat, Varmala &amp; Phere</h3><p><span data-day="60" data-time="19:30" data-fmt="time"></span> · Rajmahal Gardens, Rambagh, Jaipur</p><p class="dress">Royal traditional · ivory &amp; maroon <i style="background:#F3E9D2"></i><i style="background:#5A202B"></i></p>
-          <div class="acts"><button data-ics="Wedding · Aarohi & Vivaan" data-day="60" data-time="19:30" data-hours="5" data-place="Rambagh, Jaipur">Add to calendar</button><a data-dir="Rambagh, Jaipur">Directions</a></div></div>
-        <img class="ev-img" src="https://oaosapkkzoynaqpnmvrj.supabase.co/storage/v1/object/public/site/ritual-phere.jpg" alt="Miniature-style painting of the couple taking phere around the sacred fire" loading="lazy" width="1000" height="666"></li>
-    </ol>
+  <section style="padding-top:0"><div class="wrap">
+    <div class="card venue" data-anim="tilt">
+      <p class="caps eyebrow">Where</p>
+      <h2>The Venue</h2>
+      <h3>Rajmahal Gardens</h3>
+      <p class="caps" style="margin-top:4px">Rambagh · Jaipur · Rajasthan</p>
+      <a class="btn" data-dir="Rambagh, Jaipur">View on maps</a>
+    </div>
   </div></section>
 
-  <section><div class="wrap" data-reveal>
-    <span class="num">IV · Sthal</span>
-    <h2>The wedding venue</h2>
-    <p style="margin-top:14px"><b>Rajmahal Gardens</b><br>Rambagh, Jaipur, Rajasthan</p>
-    <div class="map"><iframe data-map="Rambagh, Jaipur" title="Map of the wedding area" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe></div>
-    <p style="margin-top:14px;font-size:16px;font-style:italic">Rooms are held for outstation guests near Rambagh. Please message the family for details.</p>
+  <section style="padding-top:0"><div class="wrap">
+    <p class="caps eyebrow" data-anim="up">The celebrations unfold</p>
+    <h2 data-anim="up">Festivities</h2>
+    <article class="card ev" data-anim="up"><img src="https://oaosapkkzoynaqpnmvrj.supabase.co/storage/v1/object/public/site/ritual-mayra.jpg" alt="Miniature-style painting of the Mayra procession" loading="lazy" width="1000" height="666">
+      <div class="in"><h3>Mayra</h3><p class="when"><span data-day="58" data-fmt="wd"></span><i></i><span data-day="58" data-fmt="dm"></span><i></i><span data-day="58" data-time="11:00" data-fmt="time"></span></p>
+        <q>The mama's family arrives with gifts and blessings for the mother of the bride.</q>
+        <div class="row"><a class="btn line" data-dir="C-Scheme, Jaipur">Directions</a><button class="btn line" data-ics="Mayra · Aarohi & Vivaan" data-day="58" data-time="11:00" data-place="C-Scheme, Jaipur">Add to calendar</button></div></div></article>
+    <article class="card ev" data-anim="up"><img src="https://oaosapkkzoynaqpnmvrj.supabase.co/storage/v1/object/public/site/ritual-pithi.jpg" alt="Miniature-style painting of women applying pithi" loading="lazy" width="1000" height="666">
+      <div class="in"><h3>Pithi &amp; Sangeet</h3><p class="when"><span data-day="59" data-fmt="wd"></span><i></i><span data-day="59" data-fmt="dm"></span><i></i><span data-day="59" data-time="16:00" data-fmt="time"></span></p>
+        <q>Turmeric, folk songs, and an evening of dancing led by the women of the family.</q>
+        <div class="row"><a class="btn line" data-dir="Malviya Nagar, Jaipur">Directions</a><button class="btn line" data-ics="Pithi & Sangeet · Aarohi & Vivaan" data-day="59" data-time="16:00" data-hours="7" data-place="Malviya Nagar, Jaipur">Add to calendar</button></div></div></article>
+    <article class="card ev" data-anim="up"><img src="https://oaosapkkzoynaqpnmvrj.supabase.co/storage/v1/object/public/site/ritual-phere.jpg" alt="Miniature-style painting of the couple taking phere" loading="lazy" width="1000" height="666">
+      <div class="in"><h3>Phere</h3><p class="when"><span data-day="60" data-fmt="wd"></span><i></i><span data-day="60" data-fmt="dm"></span><i></i><span data-day="60" data-time="19:30" data-fmt="time"></span></p>
+        <q>Two souls united before the sacred fire, followed by dinner.</q>
+        <div class="row"><a class="btn line" data-dir="Rambagh, Jaipur">Directions</a><button class="btn line" data-ics="Phere · Aarohi & Vivaan" data-day="60" data-time="19:30" data-hours="5" data-place="Rambagh, Jaipur">Add to calendar</button></div></div></article>
   </div></section>
 
-  <section class="dark"><div class="wrap">
-    <span class="num">V · Uttar</span>
-    <h2>Will you grace us with your presence?</h2>
-    <form data-rsvp data-thanks="Dhanyavaad" novalidate>
-      <div class="rs-bar"><i></i></div>
-      <fieldset class="rs-step"><legend>Your name</legend>
-        <label for="n1">Full name</label><input id="n1" name="name" required autocomplete="name">
-        <div class="rs-row"><button class="btn" data-next>Continue</button></div></fieldset>
-      <fieldset class="rs-step" hidden><legend>Will you attend?</legend>
-        <div class="choice"><label><input type="radio" name="attending" value="yes" required><span>Joyfully accept</span></label><label><input type="radio" name="attending" value="no"><span>Regretfully decline</span></label></div>
-        <div class="if-yes"><label for="g1">Number of guests</label><select id="g1" name="guests"><option>1</option><option selected>2</option><option>3</option><option>4</option><option>5+</option></select></div>
-        <div class="rs-row"><button class="btn ghost" data-back>Back</button><button class="btn" data-next>Continue</button></div></fieldset>
-      <fieldset class="rs-step" hidden><legend>A blessing for the couple</legend>
-        <label for="w1">Your message (optional)</label><textarea id="w1" name="wish" rows="3"></textarea>
-        <div class="rs-row"><button class="btn ghost" data-back>Back</button><button class="btn" type="submit">Send reply</button></div></fieldset>
-    </form>
+  <section style="padding-top:0"><div class="wrap">
+    <div class="card" data-anim="up">
+      <p class="caps eyebrow">Kindly reply</p>
+      <h2>Will you join us?</h2>
+      <form data-rsvp data-thanks="Dhanyavaad" novalidate>
+        <label for="n1">Your name</label><input id="n1" name="name" required autocomplete="name">
+        <label for="g1">Guests</label><select id="g1" name="guests"><option>1</option><option selected>2</option><option>3</option><option>4</option><option>5+</option></select>
+        <div style="text-align:center"><button class="btn" type="submit">Send RSVP</button></div>
+      </form>
+    </div>
   </div></section>
 
-  <section><div class="wrap" data-reveal>
-    <span class="num">VI · Nimantran</span>
-    <h2>Share with family</h2>
-    <p style="margin-top:12px">One link for every relative, and a QR code for printed kankotri.</p>
-    <div class="share"><button class="btn" data-share>Share on WhatsApp</button><button class="btn" data-copy>Copy link</button></div>
-  </div></section>
-
-  <footer>
-    <p class="caps">Goenka &amp; Bajaj families</p>
-    <p style="margin-top:18px">A sample invitation designed by <a href="../">BFI Marwari Invitations</a>. Families, venues and photos are fictional.</p>
-    <p style="margin-top:22px"><a class="btn" href="../customize.html" style="color:var(--wine);text-decoration:none">Create yours</a></p>
-  </footer>
+  <footer class="close"><div class="wrap" style="text-align:center">
+    <p data-anim="up">Your presence and blessings will make our celebration complete.</p>
+    <p data-anim="up">Come, bless the couple, and share in our joy.</p>
+    <p class="fam" data-anim="up">With warm regards · Goenka &amp; Bajaj families</p>
+    <h2 data-anim="zoom">Aarohi &amp; Vivaan</h2>
+    <p class="deva" lang="hi">॥ शुभ विवाह ॥</p>
+    <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:22px"><button class="btn line" style="color:#F7DCC0;border-color:#F7DCC0" data-share>Share on WhatsApp</button><a class="btn line" style="color:#F7DCC0;border-color:#F7DCC0" href="../customize.html">Create yours</a></div>
+    <small>Sample invitation by <a href="../">BFI Marwari Invitations</a> · names, venues and photos are fictional</small>
+  </div></footer>
 </main>
-<button class="music" data-music aria-pressed="false" aria-label="Play music"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg></button>
-<script src="../live-demo-assets/ld.js?v=2"></script>
+<button data-music aria-pressed="false" aria-label="Play music"><svg class="m-on" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M11 5 6 9H2v6h4l5 4V5Z"/><path d="M15.5 8.5a5 5 0 0 1 0 7M19 5a10 10 0 0 1 0 14"/></svg><svg class="m-off" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M11 5 6 9H2v6h4l5 4V5Z"/><path d="m22 9-6 6M16 9l6 6"/></svg></button>
+<span hidden data-preload="https://oaosapkkzoynaqpnmvrj.supabase.co/storage/v1/object/public/site/demo-fort.jpg"></span>
+<script>
+window.LD = { burst: "swirl", burstMs: 2000, revealBurst: "bloom",
+  petals: { type: "leaf", colors: ["#D4AF37", "#E8C77A", "#C9A46A", "#F2D58A"], count: 26 },
+  /* shehnai in raag Yaman over a tanpura drone: an original phrase */
+  music: { inst: "shehnai", scale: "yaman", root: 261.63, tempo: 66, drone: true, tabla: 0,
+    melody: [[-1,1],[1,1],[2,2],[1,1],[0,1],[-1,1],[1,1],[0,2],[2,1],[3,1],[4,2],[5,1],[6,1],[7,2],[6,1],[5,1],[4,1],[3,1],[2,2],[1,1],[2,1],[3,2],[2,1],[1,1],[0,4],[null,2]] } };
+</script>
+<script src="../live-demo-assets/ld2.js?v=1"></script>
 </body>
 </html>

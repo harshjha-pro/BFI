@@ -4,193 +4,192 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>सान्वी &amp; राघव · Haldi Haveli sample invitation · BFI</title>
-<meta name="description" content="A sample Hindi-first Marwari wedding invitation website by BFI: marigold curtain opening, Hindi and English switch, ritual paintings, functions with maps, countdown and RSVP.">
+<meta name="description" content="A sample Hindi-first Marwari wedding invitation by BFI: a marigold curtain lifts, festive shehnai and dhol, slide to reveal the date, Hindi and English switch, ritual cards, countdown and RSVP.">
 <link rel="canonical" href="https://bfi-royal-heritage.vercel.app/live-demo-4/">
-<meta name="theme-color" content="#F5A623">
+<meta name="theme-color" content="#8E1B2C">
 <meta property="og:title" content="Saanvi & Raghav · Haldi Haveli sample invitation by BFI">
-<meta property="og:description" content="A festive Hindi-first Marwari wedding invitation website with a Hindi / English switch. Sample by BFI Marwari Invitations.">
+<meta property="og:description" content="Draw back the marigold curtain on a festive, Hindi-first wedding invitation. Sample by BFI Marwari Invitations.">
 <meta property="og:image" content="https://bfi-royal-heritage.vercel.app/img/live-demo/live-demo-4.jpg">
 <meta property="og:url" content="https://bfi-royal-heritage.vercel.app/live-demo-4/">
 <link rel="icon" href="../img/favicon.ico" sizes="any">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Yatra+One&family=Tiro+Devanagari+Hindi&family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="../live-demo-assets/ld.css?v=2">
+<link rel="stylesheet" href="../live-demo-assets/ld2.css?v=1">
 <style>
 :root{--mari:#F5A623;--haldi:#F7C948;--leaf:#2F6B3A;--cream:#FFF8E7;--kum:#8E1B2C;--ink:#3A2410}
 body{background:var(--cream);color:var(--ink);font:400 17px/1.8 "Poppins","Tiro Devanagari Hindi",system-ui,sans-serif}
-[lang=hi],html[data-lang=hi] body{font-family:"Tiro Devanagari Hindi","Poppins",serif}
+html[data-lang=hi] body{font-family:"Tiro Devanagari Hindi","Poppins",serif}
 h1,h2,h3{font-family:"Yatra One","Tiro Devanagari Hindi",serif;font-weight:400;margin:0;line-height:1.2}
-/* bandhani dots */
 .bandhani{background-color:var(--kum);background-image:radial-gradient(circle,rgba(255,248,231,.55) 1.6px,transparent 2.2px),radial-gradient(circle,rgba(255,248,231,.35) 1.6px,transparent 2.2px);background-size:22px 22px;background-position:0 0,11px 11px;color:var(--cream)}
+[data-pre]{background:var(--haldi);color:var(--kum)}
+.pre-mono{font:400 26px "Yatra One",serif}
+.pre-name{margin-top:18px;font:400 22px "Yatra One",serif}
 /* ---------- cover: marigold curtain ---------- */
-.cover{background:var(--kum);overflow:hidden;display:grid;place-items:center}
-.strings{position:absolute;inset:-10px 0 auto;display:flex;justify-content:space-around;height:110%;transition:transform 1.5s cubic-bezier(.7,0,.2,1)}
-.strings span{width:22px;background:radial-gradient(circle at 50% 50%,#FFB627 0 9px,#E8890C 10px,transparent 11.5px) 0 0/22px 22px repeat-y}
-.strings span:nth-child(even){background:radial-gradient(circle at 50% 50%,#FFD23F 0 9px,#F2A31A 10px,transparent 11.5px) 0 11px/22px 22px repeat-y}
-.cover-card{position:relative;z-index:2;background:var(--cream);color:var(--kum);padding:30px 34px;text-align:center;border:3px double var(--mari);max-width:88vw;transition:opacity .5s}
-.cover-card h1{font-size:clamp(34px,7vw,52px)}
+.cover{background:var(--kum);display:grid;place-items:center}
+.strings{position:absolute;inset:-10px 0 auto;height:112%;display:flex;justify-content:space-around;transition:transform 1.7s cubic-bezier(.7,0,.2,1)}
+.strings span{width:24px;background:radial-gradient(circle at 50% 50%,#FFB627 0 9px,#E8890C 10px,transparent 12px) 0 0/24px 24px repeat-y;animation:swing 3s ease-in-out infinite;transform-origin:top}
+.strings span:nth-child(even){background:radial-gradient(circle at 50% 50%,#FFD23F 0 9px,#F2A31A 10px,transparent 12px) 0 12px/24px 24px repeat-y;animation-delay:-1.5s}
+@keyframes swing{50%{transform:rotate(.8deg)}}
+.toran{position:absolute;left:0;right:0;top:0;height:46px;z-index:2;background:radial-gradient(circle at 50% 0,var(--mari) 0 15px,transparent 16px) 0 0/34px 46px repeat-x,linear-gradient(var(--leaf),var(--leaf)) 0 0/100% 6px no-repeat}
+.cover-card{position:relative;z-index:3;background:var(--cream);color:var(--kum);padding:28px 34px;text-align:center;border:3px double var(--mari);border-radius:18px;max-width:88vw;transition:opacity .5s,transform .5s}
+.cover-card h1{font-size:clamp(36px,8vw,52px)}
 .cover-card p{color:var(--ink)}
-.open{margin-top:16px;border:0;background:var(--kum);color:var(--cream);padding:13px 24px;font:500 15px "Poppins","Tiro Devanagari Hindi",sans-serif;cursor:pointer;border-radius:999px}
-.cover.is-open .strings{transform:translateY(-110%)}
-.cover.is-open .cover-card{opacity:0}
-.cover.is-open{transition:background-color .6s 1s,opacity .6s 1.2s;opacity:0}
-/* ---------- lang switch ---------- */
-.lang{position:fixed;top:46px;right:12px;z-index:70;display:flex;border:1px solid var(--kum);border-radius:999px;overflow:hidden;background:var(--cream)}
+.open{margin-top:14px;border:0;background:var(--kum);color:var(--cream);padding:13px 24px;font:500 15px "Poppins","Tiro Devanagari Hindi",sans-serif;cursor:pointer;border-radius:999px}
+.cover.is-open .strings{transform:translateY(-112%)}
+.cover.is-open .cover-card{opacity:0;transform:translateY(-30px)}
+.cover.is-open{transition:background-color .6s 1.2s,opacity .6s 1.4s;opacity:0}
+/* ---------- page ---------- */
+.lang{position:fixed;top:46px;right:12px;z-index:90;display:flex;border:1px solid var(--kum);border-radius:999px;overflow:hidden;background:var(--cream)}
 .lang button{border:0;background:transparent;padding:7px 14px;font:500 13px "Poppins","Tiro Devanagari Hindi",sans-serif;color:var(--kum);cursor:pointer}
 .lang button[aria-pressed=true]{background:var(--kum);color:var(--cream)}
-/* ---------- hero ---------- */
-.toran{height:46px;background:radial-gradient(circle at 50% 0,var(--mari) 0 15px,transparent 16px) 0 0/34px 46px repeat-x,linear-gradient(var(--leaf),var(--leaf)) 0 0/100% 6px no-repeat}
-.hero{text-align:center;padding:30px 20px 70px}
+main{position:relative;z-index:1}
+.ttoran{height:46px;background:radial-gradient(circle at 50% 0,var(--mari) 0 15px,transparent 16px) 0 0/34px 46px repeat-x,linear-gradient(var(--leaf),var(--leaf)) 0 0/100% 6px no-repeat}
+.hero{text-align:center;padding:34px 20px 64px}
 .ganesh{font-size:clamp(20px,3vw,24px);color:var(--kum)}
-.hero h1{font-size:clamp(52px,12vw,108px);color:var(--kum);margin:20px 0 6px}
+.hero h1{font-size:clamp(54px,13vw,108px);color:var(--kum);margin:18px 0 6px}
 .hero h1 small{display:block;font-size:.3em;color:var(--leaf);margin:8px 0}
-.hero .when{font-size:clamp(18px,2.6vw,22px)}
-.hero .hint{margin-top:10px;font-size:14px;color:var(--leaf)}
 .wrap{max-width:900px;margin:0 auto;padding:0 22px}
-section{padding:clamp(64px,10vw,110px) 0}
-.ttl{text-align:center}
+section{padding:clamp(60px,10vw,104px) 0;text-align:center}
 .ttl h2{font-size:clamp(32px,6vw,52px);color:var(--kum)}
-.ttl p{margin-top:8px}
 .bandhani .ttl h2{color:var(--cream)}
-.fam{display:grid;gap:18px;margin-top:36px}
+.fam{display:grid;gap:18px;margin-top:34px}
 @media(min-width:700px){.fam{grid-template-columns:1fr 1fr}}
-.fam div{background:var(--cream);color:var(--ink);padding:26px;text-align:center;border-radius:14px;border:2px solid var(--mari)}
+.fam div{background:var(--cream);color:var(--ink);padding:24px;border-radius:16px;border:2px solid var(--mari)}
 .fam b{display:block;font:400 40px "Yatra One",serif;color:var(--kum)}
+/* slide-to-reveal */
+.slider{max-width:440px;margin:30px auto 0}
+.slide-track{height:150px;border-radius:24px;background:#fff;border:2px solid var(--mari);display:grid;place-items:center}
+.slide-track .val{font:400 clamp(28px,8vw,40px)/1.2 "Yatra One",serif;color:var(--kum)}
+.slide-cover{border-radius:22px;background-color:var(--kum);background-image:radial-gradient(circle,rgba(255,248,231,.6) 1.6px,transparent 2.2px);background-size:18px 18px;display:grid;place-items:center;color:var(--cream);font-weight:500}
+.slide-handle{background:var(--haldi);color:var(--kum);box-shadow:0 6px 16px rgba(142,27,44,.35);font-size:22px}
+.slider p.hint{margin-top:10px;color:var(--leaf);font-size:14px}
+.slider.shown p.hint{visibility:hidden}
+.slider.shown .slide-handle{opacity:0;pointer-events:none}
+.after{opacity:0;transition:1s .4s;margin-top:20px;color:var(--kum)}
+.revealed .after{opacity:1}
 /* ritual cards */
-.rits{display:grid;gap:22px;margin-top:40px}
+.rits{display:grid;gap:22px;margin-top:36px;text-align:left}
 @media(min-width:760px){.rits{grid-template-columns:1fr 1fr}}
-.rit{background:#fff;border-radius:16px;overflow:hidden;box-shadow:0 10px 30px rgba(142,27,44,.12);border:1px solid rgba(142,27,44,.12)}
+.rit{background:#fff;border-radius:18px;overflow:hidden;box-shadow:0 12px 30px rgba(142,27,44,.12);border:1px solid rgba(142,27,44,.12)}
 .rit img{width:100%;aspect-ratio:3/2;object-fit:cover}
-.rit div{padding:20px 22px 24px}
-.rit .tag{display:inline-block;background:var(--haldi);color:var(--ink);border-radius:999px;padding:2px 12px;font-size:13px;font-weight:500}
+.rit div{padding:18px 22px 22px}
+.tag{display:inline-block;background:var(--haldi);border-radius:999px;padding:2px 12px;font-size:13px;font-weight:500}
 .rit h3{font-size:30px;color:var(--kum);margin:10px 0 4px}
-.rit .acts{display:flex;gap:10px;margin-top:14px;flex-wrap:wrap}
 .pill{display:inline-flex;align-items:center;min-height:42px;padding:0 18px;border-radius:999px;border:1.5px solid var(--leaf);color:var(--leaf);background:transparent;font:500 14px "Poppins","Tiro Devanagari Hindi",sans-serif;cursor:pointer;text-decoration:none}
 .pill.solid{background:var(--kum);border-color:var(--kum);color:var(--cream)}
-/* countdown */
-.count{display:flex;justify-content:center;gap:12px;flex-wrap:wrap;margin-top:28px}
-.count div{background:var(--cream);color:var(--kum);border-radius:16px;padding:16px 10px;min-width:84px;text-align:center;border:2px dashed var(--mari)}
+.acts{display:flex;gap:10px;margin-top:12px;flex-wrap:wrap}
+.count{display:flex;justify-content:center;gap:12px;flex-wrap:wrap;margin-top:26px}
+.count div{background:var(--cream);color:var(--kum);border-radius:16px;padding:14px 10px;min-width:84px;border:2px dashed var(--mari)}
 .count b{display:block;font:400 40px/1 "Yatra One",serif}
 .count span{font-size:13px;color:var(--ink)}
-/* rsvp */
-form{max-width:520px;margin:32px auto 0;background:#fff;padding:26px;border-radius:18px;border:2px solid var(--mari)}
-legend{font:400 26px "Yatra One",serif;color:var(--kum)}
-label{display:block;font-weight:500;margin:14px 0 6px}
-input,select,textarea{width:100%;padding:12px 14px;border:1.5px solid rgba(58,36,16,.25);border-radius:12px;background:var(--cream);font-size:17px}
-.yn{display:flex;gap:10px}
-.yn label{flex:1;margin:0;cursor:pointer}
-.yn input{position:absolute;opacity:0}
-.yn span{display:block;text-align:center;padding:13px;border-radius:12px;border:1.5px solid var(--leaf);color:var(--leaf);font-weight:500}
-.yn input:checked+span{background:var(--leaf);color:#fff}
-.yn input:focus-visible+span{outline:2px solid var(--kum);outline-offset:2px}
-.rs-bar{color:var(--mari)}
-.rs-done{background:#fff;border-radius:18px;padding:30px;margin:32px auto 0;max-width:520px;border:2px solid var(--mari)}
+form{max-width:480px;margin:28px auto 0;background:#fff;padding:24px;border-radius:18px;border:2px solid var(--mari);text-align:left}
+label{display:block;font-weight:500;margin:12px 0 6px}
+input,select{width:100%;padding:12px 14px;border:1.5px solid rgba(58,36,16,.25);border-radius:12px;background:var(--cream);font-size:17px}
+.rs-done{background:#fff;border-radius:18px;padding:30px;margin:28px auto 0;max-width:480px;border:2px solid var(--mari)}
 .rs-done-t{font-family:"Yatra One",serif;color:var(--kum)}
-.share{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:24px}
-footer{text-align:center;padding:50px 22px 80px;font-size:15px}
-footer a{color:var(--kum)}
-.music{position:fixed;left:14px;bottom:14px;z-index:70;width:52px;height:52px;border-radius:50%;border:0;background:var(--mari);color:var(--kum);font-size:22px;cursor:pointer;box-shadow:0 6px 16px rgba(142,27,44,.25)}
-.music[aria-pressed=true]{background:var(--kum);color:var(--haldi)}
+.close{text-align:center;padding:60px 22px 100px;position:relative;z-index:1}
+.close h2{font-size:clamp(40px,10vw,64px);color:var(--cream)}
+.close a{color:var(--haldi)}
+[data-music]{left:14px;right:auto;background:var(--mari);color:var(--kum);border:0}
 </style>
 </head>
 <body>
-<div class="cover" data-cover data-dur="1800" role="dialog" aria-label="Open the invitation">
-  <div class="strings" aria-hidden="true">
-    <span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span>
-  </div>
-  <div class="cover-card">
-    <p>शुभ विवाह</p>
-    <h1>सान्वी &amp; राघव</h1>
-    <p lang="en">Saanvi &amp; Raghav</p>
-    <button class="open" data-open>निमंत्रण खोलें · Open</button>
-  </div>
+<div data-pre aria-hidden="true"><div><div class="pre-mono">स ❀ र</div><p class="pre-name">सान्वी &amp; राघव</p><div class="pre-track"><i data-pre-bar></i></div><p class="pre-cap">Preparing your invitation</p></div></div>
+
+<div class="cover" data-cover data-dur="2100" data-burst-at="500" role="dialog" aria-label="Open the invitation">
+  <div class="strings" aria-hidden="true"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div>
+  <div class="toran" aria-hidden="true"></div>
+  <div class="cover-card"><p>शुभ विवाह</p><h1>सान्वी &amp; राघव</h1><p lang="en">Saanvi &amp; Raghav</p><button class="open" data-open>पर्दा हटाएँ · Open</button></div>
 </div>
 
 <div class="lang" role="group" aria-label="Language"><button data-lang-to="hi" aria-pressed="true">हिंदी</button><button data-lang-to="en" aria-pressed="false" lang="en">English</button></div>
 
 <main id="main" tabindex="-1">
-  <div class="toran" aria-hidden="true"></div>
-  <header class="hero">
+  <div class="ttoran" aria-hidden="true"></div>
+  <header class="hero" data-anim="zoom">
     <p class="ganesh">॥ श्री गणेशाय नमः ॥</p>
-    <h1><span data-l="hi">सान्वी</span><span data-l="en" lang="en">Saanvi</span>
-      <small><span data-l="hi">संग</span><span data-l="en" lang="en">weds</span></small>
-      <span data-l="hi">राघव</span><span data-l="en" lang="en">Raghav</span></h1>
-    <p class="when"><span data-day="50" data-fmt="long" data-loc="hi-IN" data-l="hi"></span><span data-day="50" data-fmt="long" data-l="en" lang="en"></span></p>
+    <h1><span data-l="hi">सान्वी</span><span data-l="en" lang="en">Saanvi</span><small><span data-l="hi">संग</span><span data-l="en" lang="en">weds</span></small><span data-l="hi">राघव</span><span data-l="en" lang="en">Raghav</span></h1>
     <p><span data-l="hi">बीकानेर, राजस्थान</span><span data-l="en" lang="en">Bikaner, Rajasthan</span></p>
-    <p class="hint"><span data-l="hi">ऊपर से अंग्रेज़ी चुनें</span><span data-l="en" lang="en">Prefer Hindi? Switch at the top.</span></p>
+    <p style="margin-top:10px;font-size:14px;color:var(--leaf)"><span data-l="hi">अंग्रेज़ी के लिए ऊपर English चुनें</span><span data-l="en" lang="en">Prefer Hindi? Switch at the top.</span></p>
   </header>
 
   <section class="bandhani"><div class="wrap">
-    <div class="ttl" data-reveal>
-      <h2><span data-l="hi">बड़ों का आशीर्वाद</span><span data-l="en" lang="en">With our elders' blessings</span></h2>
-      <p><span data-l="hi">श्रीमती गीता देवी एवं स्व. श्री भंवरलाल राठी<br>श्रीमती शांति देवी एवं श्री किशनलाल डागा</span><span data-l="en" lang="en">Smt. Geeta Devi &amp; Late Shri Bhanwarlal Rathi<br>Smt. Shanti Devi &amp; Shri Kishanlal Daga</span></p>
-    </div>
+    <div class="ttl" data-anim="up"><h2><span data-l="hi">बड़ों का आशीर्वाद</span><span data-l="en" lang="en">With our elders' blessings</span></h2>
+      <p><span data-l="hi">श्रीमती गीता देवी एवं स्व. श्री भंवरलाल राठी<br>श्रीमती शांति देवी एवं श्री किशनलाल डागा</span><span data-l="en" lang="en">Smt. Geeta Devi &amp; Late Shri Bhanwarlal Rathi<br>Smt. Shanti Devi &amp; Shri Kishanlal Daga</span></p></div>
     <div class="fam">
-      <div data-reveal><b><span data-l="hi">चि. सान्वी</span><span data-l="en" lang="en">Saanvi</span></b><span data-l="hi">सुपुत्री श्रीमती ममता एवं श्री दिनेश राठी, बीकानेर</span><span data-l="en" lang="en">Daughter of Smt. Mamta &amp; Shri Dinesh Rathi, Bikaner</span></div>
-      <div data-reveal><b><span data-l="hi">चि. राघव</span><span data-l="en" lang="en">Raghav</span></b><span data-l="hi">सुपुत्र श्रीमती सुमन एवं श्री महेश डागा, सूरत</span><span data-l="en" lang="en">Son of Smt. Suman &amp; Shri Mahesh Daga, Surat</span></div>
+      <div data-anim="left"><b><span data-l="hi">चि. सान्वी</span><span data-l="en" lang="en">Saanvi</span></b><span data-l="hi">सुपुत्री श्रीमती ममता एवं श्री दिनेश राठी, बीकानेर</span><span data-l="en" lang="en">Daughter of Smt. Mamta &amp; Shri Dinesh Rathi, Bikaner</span></div>
+      <div data-anim="right"><b><span data-l="hi">चि. राघव</span><span data-l="en" lang="en">Raghav</span></b><span data-l="hi">सुपुत्र श्रीमती सुमन एवं श्री महेश डागा, सूरत</span><span data-l="en" lang="en">Son of Smt. Suman &amp; Shri Mahesh Daga, Surat</span></div>
     </div>
   </div></section>
 
   <section><div class="wrap">
-    <div class="ttl" data-reveal><h2><span data-l="hi">मांगलिक कार्यक्रम</span><span data-l="en" lang="en">The ceremonies</span></h2>
-      <p><span data-l="hi">हर कार्यक्रम का समय, स्थान और रास्ता</span><span data-l="en" lang="en">Time, place and directions for every function</span></p></div>
+    <div class="ttl" data-anim="up"><h2><span data-l="hi">शुभ तिथि</span><span data-l="en" lang="en">The wedding date</span></h2>
+      <p><span data-l="hi">दीये को दाईं ओर खिसकाएँ</span><span data-l="en" lang="en">Slide the diya to draw back the curtain</span></p></div>
+    <div data-reveal-group>
+      <div class="slider" data-slide>
+        <div class="slide-track"><p class="val"><span data-day="50" data-fmt="long" data-loc="hi-IN" data-l="hi"></span><span data-day="50" data-fmt="long" data-l="en" lang="en"></span></p>
+          <div class="slide-cover" aria-hidden="true">❀ ❀ ❀</div>
+          <button class="slide-handle" aria-label="Slide to reveal the date">🪔</button></div>
+        <p class="hint"><span data-l="hi">→ खिसकाएँ</span><span data-l="en" lang="en">→ slide</span></p>
+      </div>
+      <p class="after"><span data-l="hi">शुभ घड़ी में आपका स्वागत है!</span><span data-l="en" lang="en">We await you at the auspicious hour!</span></p>
+    </div>
+  </div></section>
+
+  <section style="padding-top:0"><div class="wrap">
+    <div class="ttl" data-anim="up"><h2><span data-l="hi">मांगलिक कार्यक्रम</span><span data-l="en" lang="en">The ceremonies</span></h2></div>
     <div class="rits">
-      <article class="rit" data-reveal><img src="https://oaosapkkzoynaqpnmvrj.supabase.co/storage/v1/object/public/site/ritual-mayra.jpg" alt="Miniature-style painting of the Mayra procession" loading="lazy" width="1000" height="666">
+      <article class="rit" data-anim="up"><img src="https://oaosapkkzoynaqpnmvrj.supabase.co/storage/v1/object/public/site/ritual-mayra.jpg" alt="Miniature-style painting of the Mayra procession" loading="lazy" width="1000" height="666">
         <div><span class="tag"><span data-day="48" data-fmt="dm" data-loc="hi-IN" data-l="hi"></span><span data-day="48" data-fmt="dm" data-l="en" lang="en"></span> · <span data-day="48" data-time="11:00" data-fmt="time"></span></span>
-          <h3><span data-l="hi">मायरा</span><span data-l="en" lang="en">Mayra</span></h3>
-          <p><span data-l="hi">राठी निवास, रानी बाज़ार — मामा परिवार का स्वागत</span><span data-l="en" lang="en">Rathi Niwas, Rani Bazar: welcoming the maternal uncle's family</span></p>
-          <div class="acts"><button class="pill" data-ics="Mayra · Saanvi & Raghav" data-day="48" data-time="11:00" data-place="Rani Bazar, Bikaner"><span data-l="hi">कैलेंडर में जोड़ें</span><span data-l="en" lang="en">Add to calendar</span></button><a class="pill" data-dir="Rani Bazar, Bikaner"><span data-l="hi">रास्ता</span><span data-l="en" lang="en">Directions</span></a></div></div></article>
-      <article class="rit" data-reveal><img src="https://oaosapkkzoynaqpnmvrj.supabase.co/storage/v1/object/public/site/ritual-pithi.jpg" alt="Miniature-style painting of women applying pithi to the bride" loading="lazy" width="1000" height="666">
+          <h3><span data-l="hi">मायरा</span><span data-l="en" lang="en">Mayra</span></h3><p><span data-l="hi">राठी निवास, रानी बाज़ार</span><span data-l="en" lang="en">Rathi Niwas, Rani Bazar</span></p>
+          <div class="acts"><a class="pill" data-dir="Rani Bazar, Bikaner"><span data-l="hi">रास्ता</span><span data-l="en" lang="en">Directions</span></a><button class="pill" data-ics="Mayra · Saanvi & Raghav" data-day="48" data-time="11:00" data-place="Rani Bazar, Bikaner"><span data-l="hi">कैलेंडर</span><span data-l="en" lang="en">Calendar</span></button></div></div></article>
+      <article class="rit" data-anim="up"><img src="https://oaosapkkzoynaqpnmvrj.supabase.co/storage/v1/object/public/site/ritual-pithi.jpg" alt="Miniature-style painting of women applying pithi" loading="lazy" width="1000" height="666">
         <div><span class="tag"><span data-day="49" data-fmt="dm" data-loc="hi-IN" data-l="hi"></span><span data-day="49" data-fmt="dm" data-l="en" lang="en"></span> · <span data-day="49" data-time="10:00" data-fmt="time"></span></span>
-          <h3><span data-l="hi">पीठी व महिला संगीत</span><span data-l="en" lang="en">Pithi &amp; Mahila Sangeet</span></h3>
-          <p><span data-l="hi">हल्दी, लोकगीत और शाम को महिला संगीत — लहरिया पहनें</span><span data-l="en" lang="en">Turmeric, folk songs and an evening of Mahila Sangeet. Wear leheriya.</span></p>
-          <div class="acts"><button class="pill" data-ics="Pithi & Mahila Sangeet · Saanvi & Raghav" data-day="49" data-time="10:00" data-hours="10" data-place="Junagarh area, Bikaner"><span data-l="hi">कैलेंडर में जोड़ें</span><span data-l="en" lang="en">Add to calendar</span></button><a class="pill" data-dir="Junagarh Fort, Bikaner"><span data-l="hi">रास्ता</span><span data-l="en" lang="en">Directions</span></a></div></div></article>
-      <article class="rit" data-reveal><img src="https://oaosapkkzoynaqpnmvrj.supabase.co/storage/v1/object/public/site/ritual-baraat.jpg" alt="Miniature-style painting of the groom on a mare in the baraat" loading="lazy" width="1000" height="666">
+          <h3><span data-l="hi">पीठी व महिला संगीत</span><span data-l="en" lang="en">Pithi &amp; Mahila Sangeet</span></h3><p><span data-l="hi">हल्दी, लोकगीत और महिला संगीत — लहरिया पहनें</span><span data-l="en" lang="en">Turmeric, folk songs and Mahila Sangeet. Wear leheriya.</span></p>
+          <div class="acts"><a class="pill" data-dir="Junagarh Fort, Bikaner"><span data-l="hi">रास्ता</span><span data-l="en" lang="en">Directions</span></a><button class="pill" data-ics="Pithi & Mahila Sangeet · Saanvi & Raghav" data-day="49" data-time="10:00" data-hours="10" data-place="Junagarh area, Bikaner"><span data-l="hi">कैलेंडर</span><span data-l="en" lang="en">Calendar</span></button></div></div></article>
+      <article class="rit" data-anim="up"><img src="https://oaosapkkzoynaqpnmvrj.supabase.co/storage/v1/object/public/site/ritual-baraat.jpg" alt="Miniature-style painting of the baraat" loading="lazy" width="1000" height="666">
         <div><span class="tag"><span data-day="50" data-fmt="dm" data-loc="hi-IN" data-l="hi"></span><span data-day="50" data-fmt="dm" data-l="en" lang="en"></span> · <span data-day="50" data-time="17:00" data-fmt="time"></span></span>
-          <h3><span data-l="hi">निकासी व बारात</span><span data-l="en" lang="en">Nikasi &amp; Baraat</span></h3>
-          <p><span data-l="hi">लालगढ़ से विवाह स्थल तक, ढोल और शहनाई के साथ</span><span data-l="en" lang="en">From Lalgarh to the venue, with dhol and shehnai</span></p>
-          <div class="acts"><button class="pill" data-ics="Baraat · Saanvi & Raghav" data-day="50" data-time="17:00" data-place="Lalgarh, Bikaner"><span data-l="hi">कैलेंडर में जोड़ें</span><span data-l="en" lang="en">Add to calendar</span></button><a class="pill" data-dir="Lalgarh Palace, Bikaner"><span data-l="hi">रास्ता</span><span data-l="en" lang="en">Directions</span></a></div></div></article>
-      <article class="rit" data-reveal><img src="https://oaosapkkzoynaqpnmvrj.supabase.co/storage/v1/object/public/site/ritual-phere.jpg" alt="Miniature-style painting of the couple taking phere" loading="lazy" width="1000" height="666">
+          <h3><span data-l="hi">निकासी व बारात</span><span data-l="en" lang="en">Nikasi &amp; Baraat</span></h3><p><span data-l="hi">लालगढ़ से, ढोल और शहनाई के साथ</span><span data-l="en" lang="en">From Lalgarh, with dhol and shehnai</span></p>
+          <div class="acts"><a class="pill" data-dir="Lalgarh Palace, Bikaner"><span data-l="hi">रास्ता</span><span data-l="en" lang="en">Directions</span></a><button class="pill" data-ics="Baraat · Saanvi & Raghav" data-day="50" data-time="17:00" data-place="Lalgarh, Bikaner"><span data-l="hi">कैलेंडर</span><span data-l="en" lang="en">Calendar</span></button></div></div></article>
+      <article class="rit" data-anim="up"><img src="https://oaosapkkzoynaqpnmvrj.supabase.co/storage/v1/object/public/site/ritual-phere.jpg" alt="Miniature-style painting of the phere" loading="lazy" width="1000" height="666">
         <div><span class="tag"><span data-day="50" data-fmt="dm" data-loc="hi-IN" data-l="hi"></span><span data-day="50" data-fmt="dm" data-l="en" lang="en"></span> · <span data-day="50" data-time="21:00" data-fmt="time"></span></span>
-          <h3><span data-l="hi">तोरण, वरमाला व फेरे</span><span data-l="en" lang="en">Toran, Varmala &amp; Phere</span></h3>
-          <p><span data-l="hi">लक्ष्मी विलास बाग़, लालगढ़ — इसके बाद प्रीतिभोज</span><span data-l="en" lang="en">Laxmi Vilas Bagh, Lalgarh, followed by dinner</span></p>
-          <div class="acts"><button class="pill" data-ics="Phere · Saanvi & Raghav" data-day="50" data-time="21:00" data-hours="5" data-place="Lalgarh, Bikaner"><span data-l="hi">कैलेंडर में जोड़ें</span><span data-l="en" lang="en">Add to calendar</span></button><a class="pill" data-dir="Lalgarh, Bikaner"><span data-l="hi">रास्ता</span><span data-l="en" lang="en">Directions</span></a></div></div></article>
+          <h3><span data-l="hi">वरमाला व फेरे</span><span data-l="en" lang="en">Varmala &amp; Phere</span></h3><p><span data-l="hi">लक्ष्मी विलास बाग़, लालगढ़ — इसके बाद प्रीतिभोज</span><span data-l="en" lang="en">Laxmi Vilas Bagh, Lalgarh, followed by dinner</span></p>
+          <div class="acts"><a class="pill" data-dir="Lalgarh, Bikaner"><span data-l="hi">रास्ता</span><span data-l="en" lang="en">Directions</span></a><button class="pill" data-ics="Phere · Saanvi & Raghav" data-day="50" data-time="21:00" data-hours="5" data-place="Lalgarh, Bikaner"><span data-l="hi">कैलेंडर</span><span data-l="en" lang="en">Calendar</span></button></div></div></article>
     </div>
   </div></section>
 
-  <section class="bandhani"><div class="wrap" data-reveal>
+  <section class="bandhani"><div class="wrap" data-anim="zoom">
     <div class="ttl"><h2><span data-l="hi">शुभ घड़ी में बाकी</span><span data-l="en" lang="en">Until the auspicious hour</span></h2></div>
-    <div class="count" data-countdown data-day="50" data-time="21:00" data-done="शुभ घड़ी आ गई! आपके आशीर्वाद के लिए धन्यवाद।">
-      <div><b data-u="d">0</b><span><span data-l="hi">दिन</span><span data-l="en" lang="en">days</span></span></div>
-      <div><b data-u="h">00</b><span><span data-l="hi">घंटे</span><span data-l="en" lang="en">hours</span></span></div>
-      <div><b data-u="m">00</b><span><span data-l="hi">मिनट</span><span data-l="en" lang="en">minutes</span></span></div>
-      <div><b data-u="s">00</b><span><span data-l="hi">सेकंड</span><span data-l="en" lang="en">seconds</span></span></div>
+    <div class="count" data-countdown data-day="50" data-time="21:00">
+      <div><b data-u="d">00</b><span><span data-l="hi">दिन</span><span data-l="en" lang="en">days</span></span></div><div><b data-u="h">00</b><span><span data-l="hi">घंटे</span><span data-l="en" lang="en">hours</span></span></div>
+      <div><b data-u="m">00</b><span><span data-l="hi">मिनट</span><span data-l="en" lang="en">minutes</span></span></div><div><b data-u="s">00</b><span><span data-l="hi">सेकंड</span><span data-l="en" lang="en">seconds</span></span></div>
     </div>
   </div></section>
 
   <section><div class="wrap">
-    <div class="ttl"><h2><span data-l="hi">पधारो म्हारे देस</span><span data-l="en" lang="en">Do come!</span></h2>
-      <p><span data-l="hi">कृपया अपनी उपस्थिति की सूचना दें</span><span data-l="en" lang="en">Please let the family know if you can join</span></p></div>
+    <div class="ttl"><h2><span data-l="hi">पधारो म्हारे देस</span><span data-l="en" lang="en">Do come!</span></h2></div>
     <form data-rsvp data-thanks="धन्यवाद" novalidate>
-      <div class="rs-bar"><i></i></div>
-      <fieldset class="rs-step"><legend><span data-l="hi">आपका नाम</span><span data-l="en" lang="en">Your name</span></legend>
-        <label for="n4"><span data-l="hi">पूरा नाम</span><span data-l="en" lang="en">Full name</span></label><input id="n4" name="name" required autocomplete="name">
-        <div class="rs-row"><button class="pill solid" data-next><span data-l="hi">आगे</span><span data-l="en" lang="en">Next</span></button></div></fieldset>
-      <fieldset class="rs-step" hidden><legend><span data-l="hi">क्या आप आएँगे?</span><span data-l="en" lang="en">Will you come?</span></legend>
-        <div class="yn"><label><input type="radio" name="attending" value="yes" required><span><span data-l="hi">हाँ, ज़रूर</span><span data-l="en" lang="en">Yes, gladly</span></span></label><label><input type="radio" name="attending" value="no"><span><span data-l="hi">नहीं आ पाएँगे</span><span data-l="en" lang="en">Can't make it</span></span></label></div>
-        <div class="if-yes"><label for="g4"><span data-l="hi">कितने सदस्य</span><span data-l="en" lang="en">How many guests</span></label><select id="g4" name="guests"><option>1</option><option selected>2</option><option>3</option><option>4</option><option>5+</option></select></div>
-        <div class="rs-row"><button class="pill" data-back><span data-l="hi">पीछे</span><span data-l="en" lang="en">Back</span></button><button class="pill solid" type="submit"><span data-l="hi">भेजें</span><span data-l="en" lang="en">Send</span></button></div></fieldset>
+      <label for="n4"><span data-l="hi">आपका नाम</span><span data-l="en" lang="en">Your name</span></label><input id="n4" name="name" required autocomplete="name">
+      <label for="g4"><span data-l="hi">कितने सदस्य</span><span data-l="en" lang="en">How many guests</span></label><select id="g4" name="guests"><option>1</option><option selected>2</option><option>3</option><option>4</option><option>5+</option></select>
+      <p style="text-align:center;margin-top:18px"><button class="pill solid" type="submit"><span data-l="hi">भेजें</span><span data-l="en" lang="en">Send</span></button></p>
     </form>
-    <div class="share"><button class="pill solid" data-share>WhatsApp <span data-l="hi">पर भेजें</span><span data-l="en" lang="en">share</span></button><button class="pill" data-copy><span data-l="hi">लिंक कॉपी करें</span><span data-l="en" lang="en">Copy link</span></button></div>
   </div></section>
 
-  <div class="toran" aria-hidden="true" style="transform:scaleY(-1)"></div>
-  <footer>
+  <footer class="close bandhani">
     <p><span data-l="hi">राठी व डागा परिवार</span><span data-l="en" lang="en">Rathi &amp; Daga families</span></p>
-    <p style="margin-top:12px" lang="en">A sample invitation by <a href="../">BFI Marwari Invitations</a>. Families and venues are fictional. <a href="../customize.html">Create yours →</a></p>
+    <h2 data-anim="zoom"><span data-l="hi">सान्वी &amp; राघव</span><span data-l="en" lang="en">Saanvi &amp; Raghav</span></h2>
+    <p style="margin-top:18px;display:flex;gap:10px;justify-content:center;flex-wrap:wrap"><button class="pill solid" style="background:var(--haldi);color:var(--kum);border-color:var(--haldi)" data-share>WhatsApp</button><a class="pill" style="color:var(--cream);border-color:var(--cream)" href="../customize.html" lang="en">Create yours</a></p>
+    <p style="margin-top:22px;font-size:13px" lang="en">Sample invitation by <a href="../">BFI Marwari Invitations</a> · names, venues and photos are fictional</p>
   </footer>
 </main>
-<button class="music" data-music aria-pressed="false" aria-label="Play music">♪</button>
-<script src="../live-demo-assets/ld.js?v=2"></script>
+<button data-music aria-pressed="false" aria-label="Play music"><svg class="m-on" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M11 5 6 9H2v6h4l5 4V5Z"/><path d="M15.5 8.5a5 5 0 0 1 0 7M19 5a10 10 0 0 1 0 14"/></svg><svg class="m-off" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M11 5 6 9H2v6h4l5 4V5Z"/><path d="m22 9-6 6M16 9l6 6"/></svg></button>
+<script>
+window.LD = { burst: "marigold", burstMs: 1900, revealBurst: "marigold", burstColors: ["#FFB627", "#F2A31A", "#FFD23F", "#E8890C"],
+  petals: { type: "marigold", colors: ["#FFB627", "#F7A51C", "#FFD23F"], count: 18 },
+  /* festive shehnai with a dhol-like beat, in Bilawal: an original tune */
+  music: { inst: "shehnai", scale: "bilawal", root: 277.18, tempo: 104, drone: true, tabla: 2,
+    melody: [[4,1],[4,1],[5,1],[4,1],[2,2],[0,1],[2,1],[4,1],[5,1],[7,2],[5,1],[4,1],[2,1],[4,1],[5,1],[4,1],[2,1],[1,1],[0,2],[2,1],[4,1],[5,1],[7,1],[8,1],[7,1],[5,1],[4,1],[2,1],[1,1],[0,2]] } };
+</script>
+<script src="../live-demo-assets/ld2.js?v=1"></script>
 </body>
 </html>
