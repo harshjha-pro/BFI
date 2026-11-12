@@ -60,7 +60,7 @@ All URLs, design slugs, `?design=`, `?t=` and `?c=` links, forms, sign-in, Supab
 
 ## 4. Needs owner input
 
-1. **Chittorgarh engagement (resolved):** the owner asked for names and images to be hidden. The couple's names are removed site-wide and the screenshots are blurred. The live-invitation link is removed, the case study now lives at `work-chittorgarh-engagement.html`, and the old address forwards there (noindex).
+1. **Mahi & Ayush (resolved):** the case study briefly hid the names and blurred the images, then the owner asked for everything to be restored (12 Nov 2026). The couple's names are removed site-wide and the screenshots are blurred. The live-invitation link is removed, the case study now lives at `work-chittorgarh-engagement.html`, and the old address forwards there (noindex).
 2. **"We reply within an hour":** this appears on Contact, design pages and form confirmations. Keep it only if it is true in practice; otherwise we will change it to "the same day, 10am–8pm".
 3. **Link validity** (wedding + 6 months), **delivery times** (24/48/72 h) and **one change round:** confirm these are operationally guaranteed. They are shown as before.
 4. **Partner terms:** 15% / 20% commission, paid after the client completes payment.
@@ -92,3 +92,34 @@ All URLs, design slugs, `?design=`, `?t=` and `?c=` links, forms, sign-in, Supab
 - **Partner terms:** 15% / 20%, paid after the client completes payment. Confirmed by the owner.
 - **Founder details:** not needed for now. About stays as it is.
 - **Sign-up limit:** the 6 old test accounts were deleted. A re-test of 6 simultaneous sign-ups to the live function gave 5 × 200 and 1 × 429. The created accounts were confirmed, had profiles and could log in. All test accounts and attempt records were then deleted.
+
+## 7. Five live sample invitations (12 November 2026)
+
+Five standalone sample invitation websites live at `/live-demo-1/` to `/live-demo-5/`. They share one runtime (`site/live-demo-assets/ld.js` and `ld.css`), but each has its own layout, fonts, colours and opening.
+
+| # | Name | Concept | Opening |
+|---|---|---|---|
+| 1 | Rajmahal | Royal editorial, Jaipur. Cormorant, Marcellus SC and Pinyon Script. | Wax-sealed envelope |
+| 2 | Gulabi Nagri | Pink City magazine, Jaipur. Sticky side panel, story timeline, mood boards, travel tips and FAQs. | Jharokha doors |
+| 3 | Thar ki Raat | Desert night, Jaisalmer. Starfield, moon and dunes, constellation timeline. | Light the diya |
+| 4 | Haldi Haveli | Hindi-first festive, Bikaner. हिंदी / English switch, bandhani pattern, ritual cards. | Marigold curtain |
+| 5 | Line & Light | Modern minimal, Mumbai. Swiss grid, schedule table, photo strip, FAQs, food preferences. | Self-drawing monogram |
+
+**Shared behaviour:**
+- Every date is calculated as "N days from today", so the sample never shows a past date. The countdown shows a message if it ever runs out.
+- Directions open the real locality, because the venues are fictional.
+- Each function has an add-to-calendar (.ics) button.
+- The RSVP is multi-step with validation. It says that a sample sends nothing.
+- Music is generated in the browser and starts only when tapped.
+- WhatsApp share and copy link.
+- A fixed "Sample invitation" ribbon links to customize.
+- Reduced motion is respected, and the opening works by keyboard.
+
+**Research:** the ideas come from patterns common across current invitation sites and templates (cinematic openings, reveals as you scroll, story timelines, multi-step RSVPs, dress-code boards, editorial layouts, travel and FAQ sections). All artwork, code and copy are original.
+
+**Tests:**
+- All 5 at 390 and 1440 px: no overflow and no script errors.
+- Opening by keyboard works; every date is filled in.
+- Directions resolve to Google Maps searches; the .ics file downloads.
+- The RSVP blocks empty steps and completes once filled in.
+- The language switch (demo 4) works; music starts only on a tap.
