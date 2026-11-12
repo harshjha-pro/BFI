@@ -43,6 +43,9 @@
 
 ## 2. Design tokens
 
+> **November 2026 redesign:** the palette, type scale, spacing and button shapes in `docs/08-luxury-redesign.md` replace the colour values below (burgundy `#5A202B`, ivory `#F7F3EB`, gold `#B18C58` as an accent only, charcoal `#292522`, sand `#E9DED0`, sage `#657460`). The older token names still exist in `site/css/site.css` and map onto the new values.
+
+
 Use these names in **Figma Variables** (collection `BFI/Tokens`) and in **CSS custom properties**: one source of truth.
 
 ### 2.1 Colour
