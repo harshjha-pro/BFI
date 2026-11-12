@@ -162,12 +162,12 @@ function renderAuthSlot() {
   $$("[data-auth-slot]").forEach((el) => {
     el.innerHTML = user()
       ? `<a class="avatar" href="account.html" title="My account" aria-label="My account">${esc((displayName()[0] || "B").toUpperCase())}</a>`
-      : `<a class="btn btn-outline btn-sm login-link" href="login.html">Login</a><a class="icon-btn menu-login" href="login.html" aria-label="Login"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg></a>`;
+      : `<a class="util-link" href="login.html">Sign in</a>`;
   });
   $$("[data-auth-menu]").forEach((el) => {
     el.innerHTML = user()
-      ? `<a class="btn btn-ghost btn-block" href="account.html">My account</a>`
-      : `<a class="btn btn-ghost btn-block" href="login.html">Login or create account</a>`;
+      ? `<a class="btn btn-outline btn-block" href="account.html">My account</a>`
+      : `<a class="btn btn-outline btn-block" href="login.html">Sign in</a>`;
   });
 }
 function initChrome() {
@@ -180,9 +180,24 @@ function initChrome() {
   $$("[data-mailto]").forEach((a) => (a.href = "mailto:" + CFG.email));
   $$("[data-year]").forEach((el) => (el.textContent = new Date().getFullYear()));
   const sheet = $("#menu");
-  $$("[data-menu-open]").forEach((b) => b.addEventListener("click", () => { sheet.classList.add("open"); $("a", sheet)?.focus(); }));
-  sheet?.addEventListener("click", (e) => { if (e.target.closest("[data-menu-close]") || e.target.classList.contains("sheet-bg")) sheet.classList.remove("open"); });
-  document.addEventListener("keydown", (e) => e.key === "Escape" && sheet?.classList.remove("open"));
+  // one accessible menu: opens as a dialog, keeps focus inside, closes on Escape, backdrop or any link
+  const opener = $("[data-menu-open]");
+  const setMenu = (on) => {
+    if (!sheet) return;
+    sheet.hidden = !on; sheet.classList.toggle("open", on); opener?.setAttribute("aria-expanded", on);
+    document.documentElement.classList.toggle("menu-open", on);
+    if (on) $("a", sheet)?.focus(); else opener?.focus();
+  };
+  opener?.addEventListener("click", () => setMenu(true));
+  sheet?.addEventListener("click", (e) => { if (e.target.closest("[data-menu-close]") || e.target.classList.contains("sheet-bg") || e.target.closest("a")) setMenu(false); });
+  document.addEventListener("keydown", (e) => {
+    if (!sheet || sheet.hidden) return;
+    if (e.key === "Escape") return setMenu(false);
+    if (e.key === "Tab") {
+      const f = $$("a[href], button", sheet).filter((x) => x.offsetParent); const first = f[0], last = f[f.length - 1];
+      if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); } else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+    }
+  });
   const groups = [".sec-head", ".grid-inv > .card", ".pkgs > .pkg", ".steps > .step", ".hrow", ".values > .value", ".timeline > .tl", ".next3 > div",
     ".occasions > div", ".policy > div", ".reviews > .review", ".ritual-list > li", ".why-list > div", ".trust-row > div", ".wording > .word-card",
     ".cinfo > *", ".strip-item", ".tiles > .tile", "details.acc", ".tbl-wrap", ".about-hero > *", ".split > *", ".panel", ".phead .wrap > *"];
@@ -219,7 +234,7 @@ function card(inv) {
       <h3><a href="design-${encodeURIComponent(inv.slug)}.html">${esc(inv.name)}</a></h3>
       <p class="card-desc">${esc(inv.tagline)}</p>${BEST[inv.slug] ? `<p class="card-best">Best for: ${esc(BEST[inv.slug])}</p>` : ""}
       <div class="card-meta"><span>${esc(inv.tier)}</span><span>from <b>${inr(inv.price_from)}</b></span></div>
-      <div class="card-acts"><a class="btn btn-sm btn-ghost" href="demo.html?design=${encodeURIComponent(inv.slug)}">${ic("eye")} Live demo</a><a class="btn btn-sm btn-primary" href="customize.html?design=${encodeURIComponent(inv.slug)}">Customize</a></div>
+      <div class="card-acts"><a class="btn btn-sm btn-outline" href="demo.html?design=${encodeURIComponent(inv.slug)}">View live demo</a><a class="btn btn-sm btn-primary" href="design-${encodeURIComponent(inv.slug)}.html">View design</a></div>
     </div></article>`;
 }
 function bindFavs(root) {
@@ -254,6 +269,7 @@ pages.invitations = async () => {
   let col = FILT.includes(params.get("c")) ? params.get("c") : "all";
   const all = await invitations();
   const tierSel = $("#tier"), sortSel = $("#sort");
+  if (["Basic", "Premium", "Luxury"].includes(params.get("tier"))) tierSel.value = params.get("tier");
   function draw() {
     let list = all.filter((i) => (col === "all" || tagsOf(i).split(" ").includes(col)) && (!tierSel.value || i.tier === tierSel.value));
     if (sortSel.value === "low") list = [...list].sort((a, b) => a.price_from - b.price_from);
@@ -770,6 +786,7 @@ const DEMO_CONTENT = {
 pages.demo = async () => {
   const all = await invitations();
   const inv = all.find((i) => i.slug === params.get("design")) || all.find((i) => i.slug === "rajwada-royale") || all[0];
+  const mapsLink = (place) => `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(place + ", India")}`;
   const day = (n) => { const d = new Date(); d.setHours(0, 0, 0, 0); d.setDate(d.getDate() + n); return d; };
   const wedding = day(60); wedding.setHours(19, 30);
   const fmt = (d) => d.toLocaleDateString("en-IN", { weekday: "long", day: "numeric", month: "long", year: "numeric" });
@@ -814,6 +831,7 @@ pages.demo = async () => {
   $("#dv-story-list").innerHTML = C.story.map(([when, title, text], k) => `<figure><img src="${IMG(pics[order[k]][0])}" alt="${pics[order[k]][1]}" loading="lazy"><figcaption><small>${esc(when)}</small><b>${esc(title)}</b><p>${esc(text)}</p></figcaption></figure>`).join("");
   $("#dv-venue").innerHTML = `<b>${esc(C.venue[0])}</b><br>${esc(C.venue[1])}`;
   $("#dv-map-frame").src = `https://maps.google.com/maps?q=${encodeURIComponent(C.venue[2] + ", India")}&z=14&hl=en&output=embed`;
+  $("#dv-dir").href = mapsLink(C.venue[2]);
   try {
     if (window.qrcode) { const q = qrcode(0, "M"); q.addData(location.origin + location.pathname + "?design=" + inv.slug); q.make();
       $("#dv-qr").innerHTML = q.createSvgTag({ cellSize: 5, margin: 2, scalable: true }); }
@@ -879,12 +897,14 @@ pages.demo = async () => {
     });
   };
 
+  let timer;
   const tick = () => {
-    let t = Math.max(0, wedding - new Date());
+    let t = wedding - new Date();
+    if (t <= 0) { clearInterval(timer); $("#count").outerHTML = `<p class="count-done">The celebrations have begun. Thank you for your blessings.</p>`; return; }
     const u = { d: 864e5, h: 36e5, m: 6e4, s: 1e3 };
     for (const k of ["d", "h", "m", "s"]) { const v = Math.floor(t / u[k]); t -= v * u[k]; $(`[data-u=${k}]`).textContent = v; }
   };
-  tick(); setInterval(tick, 1000);
+  tick(); timer = setInterval(tick, 1000);
 
   const ev = C.events;
   const ics = (name, d, time, venue) => {
@@ -897,7 +917,7 @@ pages.demo = async () => {
     return `<div class="dv-ev"><div class="d"><b>${d.getDate()}</b><span>${d.toLocaleDateString("en-IN", { month: "short" })}</span></div>
     <div><h3>${name}</h3><p>${d.toLocaleDateString("en-IN", { weekday: "long" })} · ${t.toLocaleTimeString("en-IN", { hour: "numeric", minute: "2-digit" })}<br>${venue}</p>
     <div class="dress">Dress code: ${dress} ${cols.map(([c, l]) => `<i style="background:${c}" title="${l}"></i>`).join("")}</div>
-    <div class="acts"><a href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(venue)}" target="_blank" rel="noopener">Directions</a><button type="button" data-ics="${k}">Add to calendar</button></div></div></div>`; }).join("");
+    <div class="acts"><a href="${mapsLink(venue.split(",").slice(1).join(",").trim() || venue)}" target="_blank" rel="noopener">Directions</a><button type="button" data-ics="${k}">Add to calendar</button></div></div></div>`; }).join("");
   $("#dv-events").addEventListener("click", (e) => { const b = e.target.closest("[data-ics]"); if (b) { const [n, name, time, venue] = ev[+b.dataset.ics]; ics(name, day(n), time, venue); } });
 
   $("#dv-designs").innerHTML = all.map((i) => `<a href="demo.html?design=${i.slug}" aria-current="${i.slug === inv.slug}"><img src="${IMG(i.image)}" alt="" loading="lazy">${esc(i.name)}</a>`).join("");

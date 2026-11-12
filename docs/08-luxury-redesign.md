@@ -1,0 +1,69 @@
+# Luxury editorial redesign (November 2026)
+
+Branch: `redesign-luxury`. Production (`main`) is untouched until the owner approves the preview.
+
+## 1. Design system (one token set)
+
+| Token | Hex | Use |
+|---|---|---|
+| Royal Burgundy `--burgundy` | `#5A202B` | Primary buttons, active states, the closing panel |
+| Warm Ivory `--ivory-bg` | `#F7F3EB` | Main background |
+| Antique Gold `--gold-accent` | `#B18C58` | Fine accents only (never body text) |
+| Soft Charcoal `--charcoal` | `#292522` | Body text and headings |
+| Warm Sand `--sand` | `#E9DED0` | Footer, alternating sections (as a lighter mix), borders |
+| Muted Sage `--sage` | `#657460` | Check marks only |
+| White | `#FFFFFF` | Cards, price panels, forms |
+
+- Text colours that need contrast are derived, not new: secondary text `#5E5650` (6.4:1 on ivory), gold labels `#7A5C2E` (5.6:1).
+- The older names used across the stylesheet (`--maroon`, `--gold`, `--ivory`, `--brown`…) now point at these tokens, so every older component follows the new palette.
+- **Type:** Cormorant Garamond (regular/medium, italic for emphasis) for headings; DM Sans for everything functional. Script fonts appear only inside invitation artwork and the demos.
+- **Shape:** buttons are rectangular with a 3 px radius, uppercase 11–12 px labels. Cards have no shadows: thin hairlines instead.
+- **Spacing:** sections are 64–120 px tall depending on screen width; the content is at most 1240 px wide, with side padding of 20–88 px.
+- **Motion:** gentle reveal on scroll and a slight image zoom on hover. Spinning, floating, pulsing and typing loops have been removed (mandala, seal ring, feature orbit, WhatsApp pulse, chat dot, typing caret, free-card shuffle, home petals, the marquee). Everything respects reduced-motion settings.
+
+## 2. Page-by-page change log
+
+| Page | Changes |
+|---|---|
+| All pages | **Header:** logo, five links (Invitations, Our Work, How It Works, Pricing, About), one "Start your invitation" button and a quiet "Sign in" link. The duplicate WhatsApp and login buttons are gone.<br>**Menu:** one accessible menu dialog with `aria-expanded`, focus kept inside, Escape and backdrop to close, and it closes after you pick a link.<br>**Footer:** sand background, brand line, Explore / Resources / Contact columns, privacy and terms.<br>**Phones:** one fixed action bar; the floating WhatsApp bubble is removed. |
+| Home | Rebuilt to the brief's 14-section order:<br>• editorial split hero with one large real invitation<br>• the four verified facts<br>• "Rooted in tradition. Made for today."<br>• 4 featured designs<br>• the guest experience, labelled fictional<br>• eight rituals, with a note that customs vary<br>• Mahi & Ayush<br>• four steps<br>• the three packages, with the delivery-clock note<br>• terms<br>• FAQ<br>• burgundy closing panel. The free card maker is now a single line. |
+| Invitations | Now opens with "The Invitation Collection". The filters are restyled, and a `?tier=` link pre-selects a package. "Need help choosing?" (WhatsApp) and "Something only yours" (bespoke) sit side by side. |
+| Cards (everywhere) | Large image with a hairline frame, quiet text, prices aligned, and two clear actions: "View live demo" and "View design". |
+| Design pages (8) | "Sample wording: names, date and venue are fictional" under the gallery. Calmer gallery frame and price. |
+| Pricing | The "Most chosen" badge is removed (no data supports it), and the Premium blurb is reworded. Each package now says "Ready in X after complete details and the 50% advance". Package buttons open the collection filtered to that tier. |
+| How It Works | New "Keep the printed kankotri for elders" section, linking to the digital vs printed guide. |
+| Our Work | Heading is now "Selected Celebrations", with client projects and design demos clearly separated. The case study ends with "Create an invitation in this spirit". |
+| Contact | The Jaipur city map is removed (no public studio address). Replaced by a short "Working with us" note. |
+| Live demo | **Directions** now open the real area (e.g. "C-Scheme, Jaipur") instead of a fictional venue name, plus a new "Get directions" link under the map.<br>**Countdown:** once the date passes it shows a message instead of zeros.<br>Music still starts only when tapped. |
+| Inner-page heroes | Same compositions, on a calm ivory stage with no looping animation. |
+
+All URLs, design slugs, `?design=`, `?t=` and `?c=` links, forms, sign-in, Supabase tables and storage are unchanged.
+
+## 3. QA (Section 10 of the brief)
+
+| Check | Result |
+|---|---|
+| 37 pages × 8 widths (360–1440 px): horizontal overflow | **Pass.** One 1 px case on a design page at 360 px was fixed (gallery arrows). |
+| Broken internal links | **Pass** (none) |
+| Console / script errors | **Pass** (none) |
+| Menu: opens, focus stays inside, Escape closes, focus returns, `aria-expanded` updates | **Pass** (automated) |
+| Filters: collection chips, package select, `?tier=` | **Pass** (`?tier=Premium` shows 3 designs) |
+| Demo directions resolve to real localities | **Pass** (link format checked; opening on a real phone is still to do) |
+| Countdown handles a past date | **Pass** (code path added; demo dates are always 60 days ahead) |
+| Prices match package data (₹3,999 / ₹6,999 / ₹11,999; Sheesh Mahal ₹14,999) | **Pass** (one source in the generator) |
+| Sample demos labelled fictional | **Pass** (demo ribbon, design pages, home experience block) |
+| Contrast: body text, secondary text and gold labels on ivory | **Pass** (≥ 4.5:1 by token choice) |
+| Enquiry and partner forms | Unchanged code. They send to the `enquiries` table, which this test environment cannot reach. |
+| Demo RSVP | The demo RSVP is labelled as not sent. Real RSVPs live on each client's own invitation site. |
+| Google sign-in, email sending | Waiting on owner setup (Google OAuth client, Gmail SMTP) |
+| Real-phone test of maps, `tel:` and `wa.me` links | To do on the preview |
+
+## 4. Needs owner input
+
+1. **Mahi & Ayush:** confirm the family's permission to show their names, photos, place and month. It is still labelled a client project.
+2. **"We reply within an hour":** this appears on Contact, design pages and form confirmations. Keep it only if it is true in practice; otherwise we will change it to "the same day, 10am–8pm".
+3. **Link validity** (wedding + 6 months), **delivery times** (24/48/72 h) and **one change round:** confirm these are operationally guaranteed. They are shown as before.
+4. **Partner terms:** 15% / 20% commission, paid after the client completes payment.
+5. **Founder or studio details for About:** nothing has been invented.
+6. **Final logo / name:** the current heritage logo and "BFI Marwari Invitations" are kept. "BfiLuxe" is not used.
+7. **Legal review** of Privacy and Terms: the text is unchanged.
