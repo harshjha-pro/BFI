@@ -161,3 +161,16 @@ The previous engine (`ld.js` and `ld.css`) is removed.
 - the reveal game completes and triggers its burst;
 - no overflow and no script errors;
 - the main site's 38 pages still pass.
+
+## 9. "Our Work" removed (13 November 2026)
+
+At the owner's request, Our Work was removed everywhere:
+- the header and phone-menu link;
+- the footer link;
+- the home page's client-work section;
+- the About page teaser;
+- the Our Work page and the Mahi & Ayush case study, with their screenshots (`img/work/`).
+
+The old addresses (`work.html`, `work-mahi-ayush.html`, `work-chittorgarh-engagement.html`) now forward to `invitations.html` and are marked noindex. They have been taken out of the sitemap and `llms.txt`.
+
+The five live sample invitations moved to a new section on the Invitations page (`invitations.html#live`), and the home page links there.
