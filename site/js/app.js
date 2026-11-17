@@ -1,4 +1,4 @@
-/* BFI · Marwari Invitations — website script (no build step).
+/* Bfiluxe — website script (no build step).
    One file: shared helpers, auth, and a small init function per page (body[data-page]). */
 const CFG = window.BFI_CONFIG;
 const $ = (s, el = document) => el.querySelector(s);
@@ -41,7 +41,7 @@ function toast(msg, ms = 3200) {
   setTimeout(() => t.remove(), ms);
 }
 const waHref = (text) => `https://wa.me/${CFG.whatsapp}?text=${encodeURIComponent(text)}`;
-const waText = (design, date) => `Namaste BFI 🙏 I'd like to know more about ${design ? `the ${design} invitation` : "your digital wedding invitations"}${date ? ` for our wedding on ${date}` : ""}.`;
+const waText = (design, date) => `Namaste Bfiluxe 🙏 I'd like to know more about ${design ? `the ${design} invitation` : "your digital wedding invitations"}${date ? ` for our wedding on ${date}` : ""}.`;
 function openModal(html) {
   const m = document.createElement("div");
   m.className = "modal open";
@@ -440,7 +440,7 @@ pages.customize = async () => {
       <div class="form" style="margin-top:18px"><div class="f2">${f("contact_name", "Your name <span class='req'>*</span>", 'required autocomplete="name"', D.contact_name || displayName())}${f("phone", "WhatsApp number <span class='req'>*</span>", 'type="tel" required inputmode="tel" autocomplete="tel"')}</div>
         ${f("email", "Email", 'type="email" autocomplete="email"', D.email || user()?.email)}
         <label class="check"><input type="checkbox" name="verified" required ${D.verified ? "checked" : ""}> I have checked every name, date and venue above.</label></div>
-      <div class="d-actions" style="margin-top:16px"><button type="button" class="btn btn-primary" id="submit-cz">Confirm &amp; send to BFI ${ic("arrow")}</button>
+      <div class="d-actions" style="margin-top:16px"><button type="button" class="btn btn-primary" id="submit-cz">Confirm &amp; send to Bfiluxe ${ic("arrow")}</button>
       <a class="btn btn-wa" id="wa-cz">${WA_SVG} Send on WhatsApp instead</a></div>
       <p style="margin-top:12px"><button type="button" class="linkbtn" id="save-cz">${user() ? "Save draft to my account" : "Login to save this draft"}</button> <span class="muted" style="font-size:13px">· Your progress is also saved on this device.</span></p>`;
     }
@@ -463,7 +463,7 @@ pages.customize = async () => {
     preview();
     if (n === 4) {
       const i = inv();
-      $("#wa-cz").href = waHref(`Namaste BFI 🙏 We'd like the ${i.name} invitation (${D.package}).\nCouple: ${D.bride || "?"} & ${D.groom || "?"}\nWedding date: ${fmtDate(D.wedding_date) || "?"}\nFunctions: ${D.events.map((e) => `${evName(e)} ${e.date || ""} ${e.venue || ""}`.trim()).join("; ")}\nLanguage: ${D.language}.`);
+      $("#wa-cz").href = waHref(`Namaste Bfiluxe 🙏 We'd like the ${i.name} invitation (${D.package}).\nCouple: ${D.bride || "?"} & ${D.groom || "?"}\nWedding date: ${fmtDate(D.wedding_date) || "?"}\nFunctions: ${D.events.map((e) => `${evName(e)} ${e.date || ""} ${e.venue || ""}`.trim()).join("; ")}\nLanguage: ${D.language}.`);
       $("#wa-cz").target = "_blank";
       $("#submit-cz").onclick = submit;
       $("#save-cz").onclick = () => saveRemote();
@@ -484,7 +484,7 @@ pages.customize = async () => {
     for (const [k, s] of [["bride", 1], ["groom", 1], ["wedding_date", 1]]) if (!D[k]) { st.step = s; draw(); validate(form); return toast("Please fill in the required details"); }
     if (D.events.some((x) => !x.date)) { st.step = 2; draw(); validate(form); return toast("Please add a date for every function"); }
     if (!validate(form)) return toast(D.verified ? "Please add your name and WhatsApp number" : "Please confirm you've checked the details");
-    if (!confirm(`Send ${D.bride} & ${D.groom}'s invitation details to BFI?\n\nWe'll message you on WhatsApp to confirm the price and the 50% advance. Nothing is charged now.`)) return;
+    if (!confirm(`Send ${D.bride} & ${D.groom}'s invitation details to Bfiluxe?\n\nWe'll message you on WhatsApp to confirm the price and the 50% advance. Nothing is charged now.`)) return;
     setBusy(btn, true, "Sending…");
     const pr = price();
     try {
@@ -538,7 +538,7 @@ pages.contact = async () => {
     try {
       await sendEnquiry({ name: d.name, phone: d.phone, email: d.email || null, wedding_date: d.wedding_date || null, city: d.city || null, package: d.package || "Not sure", design_slug: d.design || null, message: d.message || null, source: "contact" });
       track("contact_submit", { package: d.package || "Not sure" });
-      const waMsg = `Namaste BFI 🙏 I just sent an enquiry on your website.\nName: ${d.name}\nWedding date: ${d.wedding_date || "not fixed"}\nCity: ${d.city || "-"}\nPackage: ${d.package || "Not sure"}\n${d.message || ""}`;
+      const waMsg = `Namaste Bfiluxe 🙏 I just sent an enquiry on your website.\nName: ${d.name}\nWedding date: ${d.wedding_date || "not fixed"}\nCity: ${d.city || "-"}\nPackage: ${d.package || "Not sure"}\n${d.message || ""}`;
       form.outerHTML = `<div class="notice ok" style="font-size:16px"><b>Dhanyavaad, ${esc(d.name)}!</b> Your enquiry has reached us. We'll reply on WhatsApp within an hour (${esc(CFG.hours)}).</div>
         <p style="margin-top:14px">Want a faster reply? Send the same details on WhatsApp:</p><a class="btn btn-wa" style="margin-top:10px" target="_blank" rel="noopener" href="${waHref(waMsg)}">${WA_SVG} Send on WhatsApp</a>`;
     } catch { setBusy(btn, false); $("#c-status").innerHTML = `<div class="notice bad">Couldn't send your message. Please try again, or message us on WhatsApp.</div>`; }
@@ -571,7 +571,7 @@ pages.login = async () => {
   const redirectTo = new URL(next, location.href).href;
   const status = $("#auth-status");
   const say = (cls, msg) => (status.innerHTML = `<div class="notice ${cls}">${msg}</div>`);
-  const waHelp = `<a href="${waHref("Namaste BFI 🙏 I need help logging in to my account.")}" target="_blank" rel="noopener">message us on WhatsApp</a>`;
+  const waHelp = `<a href="${waHref("Namaste Bfiluxe 🙏 I need help logging in to my account.")}" target="_blank" rel="noopener">message us on WhatsApp</a>`;
   // Email links (magic link, password reset) need the studio's email sender to be set up in Supabase.
   if (!CFG.authEmails) { $("#magic").hidden = true; }
   let mode = "signin";
@@ -839,7 +839,7 @@ pages.demo = async () => {
   $("#dv-stay").textContent = C.stay;
   $("#dv-rsvp-note").textContent = C.rsvp;
   $("#wishes").innerHTML = C.wishes.map(([n, w]) => `<div class="wish"><b>${esc(n)}</b><p>${esc(w)}</p></div>`).join("");
-  document.title = `Live Demo: ${C.a} & ${C.b} in ${inv.name} · BFI`;
+  document.title = `Live Demo: ${C.a} & ${C.b} in ${inv.name} · Bfiluxe`;
   $("#dv-card").innerHTML = `<img src="${IMG(inv.image)}" alt="${esc(inv.name)} invitation cover">` + inviteText(inv.slug, { a: C.a, b: C.b, blessing: C.coverLine, date: fmt(wedding), venue: C.venue[0] + ", " + C.city });
   document.body.dataset.theme = inv.slug;
   const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -1047,7 +1047,7 @@ pages["free-cards"] = () => {
       if (ln.rule) { g.globalAlpha = .6; g.fillRect(cx - 150, y + ln.size / 2, 300, 2); g.save(); g.translate(cx, y + ln.size / 2 + 1); g.rotate(Math.PI / 4); g.fillRect(-9, -9, 18, 18); g.restore(); g.globalAlpha = 1; y += ln.size + ln.gap; continue; }
       g.font = ln.font; g.fillText(ln.l, cx, y); y += ln.size * 1.15 + ln.gap;
     }
-    g.shadowBlur = 0; g.globalAlpha = .7; g.font = "500 22px 'DM Sans'"; g.fillStyle = t.dark ? "#fff" : "#392820"; g.fillText("Made free with BFI · bfi-royal-heritage.vercel.app", W / 2, H - 40); g.globalAlpha = 1;
+    g.shadowBlur = 0; g.globalAlpha = .7; g.font = "500 22px 'DM Sans'"; g.fillStyle = t.dark ? "#fff" : "#392820"; g.fillText("Made free with Bfiluxe · bfi-royal-heritage.vercel.app", W / 2, H - 40); g.globalAlpha = 1;
     return c;
   }
   // 2) place it on the chosen canvas size (status/square get a soft blurred backdrop)

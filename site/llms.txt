@@ -1,4 +1,4 @@
-# BFI · Marwari Invitations
+# Bfiluxe
 
 > Studio in Jaipur, Rajasthan, India that designs premium digital wedding invitations only for Marwari families. Each invitation is a mobile website with the couple's and families' names, every function (Ganesh puja, Mayra, Pithi/Haldi, Mehendi, Mahila Sangeet, Baraat, Phere, Reception) with date, time and Google Maps, music, photo gallery, RSVP and a QR code, shared on WhatsApp.
 
@@ -12,6 +12,7 @@
 ## Pages
 - [Invitation designs](https://bfi-royal-heritage.vercel.app/invitations.html): Royal, Traditional, Elegant and Modern collections
 - [Pricing](https://bfi-royal-heritage.vercel.app/pricing.html): packages and feature comparison
+- [Invitation videos](https://bfi-royal-heritage.vercel.app/videos.html): animated video invites for WhatsApp, Basic ₹1,499 (30 s, 2 days), Premium ₹2,499 (60 s, 3 days), Luxury ₹3,999 (90 s, 4 days)
 - [How it works](https://bfi-royal-heritage.vercel.app/how-it-works.html): choose, share details, preview and approve, share
 - [Live demo](https://bfi-royal-heritage.vercel.app/demo.html): a sample invitation as guests see it
 - [Marwari wedding guide](https://bfi-royal-heritage.vercel.app/guide.html): rituals in order, invitation wording in Hindi and English, send-out checklist
