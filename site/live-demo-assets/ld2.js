@@ -1,4 +1,4 @@
-/* BFI cinematic invitation engine, shared by /live-demo-1 … /live-demo-5.
+/* Bfiluxe cinematic invitation engine, shared by /live-demo-1 … /live-demo-5.
    Flow: preloader → cover ("tap to open") → burst transition + music → the invitation, with falling petals,
    a "reveal the date" game, countdown, story, venue, festivities and closing.
    Each page sets window.LD = { burst, petals, music, ... }. Everything is a sample: dates are always in the
@@ -26,7 +26,7 @@
 
   /* ---------- sample ribbon ---------- */
   const rib = document.createElement("div"); rib.className = "ld-ribbon";
-  rib.innerHTML = `<span class="l"><b>Sample invitation by BFI</b> · names, venues and photos are fictional</span><span class="s"><b>Sample</b> · fictional names</span><a href="../customize.html">Create yours</a>`;
+  rib.innerHTML = `<span class="l"><b>Sample invitation by Bfiluxe</b> · names, venues and photos are fictional</span><span class="s"><b>Sample</b> · fictional names</span><a href="../customize.html">Create yours</a>`;
   document.body.prepend(rib);
 
   /* ---------- full-screen effects canvas (petals + bursts) ---------- */
@@ -218,7 +218,7 @@
   let toastT; function toast(msg) { let t = $(".ld-toast"); if (!t) { t = document.createElement("div"); t.className = "ld-toast"; t.setAttribute("role", "status"); document.body.append(t); } t.textContent = msg; t.classList.add("on"); clearTimeout(toastT); toastT = setTimeout(() => t.classList.remove("on"), 2400); }
   $$("form[data-rsvp]").forEach((form) => form.addEventListener("submit", (e) => { e.preventDefault(); const bad = $$("[required]", form).find((x) => !x.checkValidity()); if (bad) { bad.reportValidity(); return; }
     const name = (new FormData(form).get("name") || "").toString().trim().split(" ")[0].replace(/[<>&"]/g, "");
-    form.outerHTML = `<div class="rs-done" role="status"><p class="rs-done-t">${form.dataset.thanks || "Thank you"}${name ? ", " + name : ""}!</p><p>On a real BFI invitation your reply reaches the family's private guest list instantly. This is a sample, so nothing was sent.</p></div>`;
+    form.outerHTML = `<div class="rs-done" role="status"><p class="rs-done-t">${form.dataset.thanks || "Thank you"}${name ? ", " + name : ""}!</p><p>On a real Bfiluxe invitation your reply reaches the family's private guest list instantly. This is a sample, so nothing was sent.</p></div>`;
     burst(C.revealBurst || "bloom", 1400); }));
   $$("[data-share]").forEach((b) => b.addEventListener("click", () => window.open(`https://wa.me/?text=${encodeURIComponent(document.title.split(" · ")[0] + "\n" + location.href.split("?")[0])}`, "_blank", "noopener")));
   $$("[data-copy]").forEach((b) => b.addEventListener("click", async () => { try { await navigator.clipboard.writeText(location.href.split("?")[0]); toast("Link copied"); } catch { toast(location.href.split("?")[0]); } }));

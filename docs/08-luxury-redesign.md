@@ -174,3 +174,26 @@ At the owner's request, Our Work was removed everywhere:
 The old addresses (`work.html`, `work-mahi-ayush.html`, `work-chittorgarh-engagement.html`) now forward to `invitations.html` and are marked noindex. They have been taken out of the sitemap and `llms.txt`.
 
 The five live sample invitations moved to a new section on the Invitations page (`invitations.html#live`), and the home page links there.
+
+## 10. Renamed to Bfiluxe, and invitation videos added (17 November 2026)
+
+- **Name:** "BFI Marwari Invitations" / "BFI" is now **Bfiluxe** in every page title, the header and footer text, structured data, `llms.txt`, the vCard, the app manifest, WhatsApp messages and the five live demos. The footer line is now "Invitations made extraordinary…".
+- **Logo:** the logo image is unchanged; the owner will supply a new one later. The domain is unchanged.
+- **New page `videos.html`:** animated invitation videos.
+
+  | Package | Price | Length | Delivery |
+  |---|---|---|---|
+  | Basic | ₹1,499 | 30 s | 2 days |
+  | Premium | ₹2,499 | 60 s | 3 days |
+  | Luxury | ₹3,999 | 90 s | 4 days |
+
+  - Prices and delivery times were approved by the owner. Delivery counts from complete details and the 50% advance.
+  - The page also has a "what's inside" section, a video-plus-website explainer, an FAQ and Offer schema.
+  - The hero shows a looping phone preview labelled "Preview animation · sample names".
+- **Menu, footer, home, pricing:**
+  - "Videos" is in the menu and footer.
+  - The home pricing section has a video strip.
+  - The Pricing page has a video packages section.
+- **Not changed yet:**
+  - Instagram isn't linked (owner's choice).
+  - The email stays myselfhkjha@gmail.com until a Bfiluxe Gmail is created.
