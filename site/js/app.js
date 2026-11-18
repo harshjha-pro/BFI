@@ -1121,3 +1121,43 @@ var WA_SVG = '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><p
   }, { capture: true });
   try { page.startsWith("design-") ? initDesignPage() : await pages[page]?.(); } catch (e) { console.error(e); }
 })();
+
+/* ---------- Home v2: parallax hero, interactive phone, sticky steps, word reveal ---------- */
+(() => {
+  if (!document.querySelector(".h-hero")) return;
+  const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  // hero parallax (pointer)
+  const stage = document.querySelector("[data-parallax]");
+  if (stage && !reduce && matchMedia("(pointer:fine)").matches) {
+    const items = [...stage.querySelectorAll("[data-depth]")]; let raf = 0;
+    addEventListener("pointermove", (e) => { cancelAnimationFrame(raf); raf = requestAnimationFrame(() => {
+      const x = e.clientX / innerWidth - .5, y = e.clientY / innerHeight - .5;
+      items.forEach((el) => { const d = +el.dataset.depth; el.style.translate = `${-x * d}px ${-y * d}px`; }); }); }, { passive: true });
+  }
+  // inside your invitation: tabs switch the phone screen, auto-advance until the visitor interacts
+  const tabs = [...document.querySelectorAll(".h-tabs [data-screen]")], imgs = [...document.querySelectorAll(".h-inside-phone img[data-s]")];
+  if (tabs.length) {
+    let i = 0, timer = 0, user = false;
+    const show = (n) => { i = (n + tabs.length) % tabs.length; tabs.forEach((t, k) => t.setAttribute("aria-selected", k === i)); imgs.forEach((im) => im.classList.toggle("on", im.dataset.s === tabs[i].dataset.screen)); };
+    tabs.forEach((t, k) => { t.addEventListener("click", () => { user = true; clearInterval(timer); show(k); }); t.addEventListener("mouseenter", () => { if (matchMedia("(pointer:fine)").matches) { user = true; clearInterval(timer); show(k); } }); });
+    const start = () => { if (!reduce && !user) timer = setInterval(() => show(i + 1), 3200); };
+    if ("IntersectionObserver" in window) new IntersectionObserver(([e]) => { clearInterval(timer); if (e.isIntersecting) start(); }, { threshold: .35 }).observe(document.querySelector(".h-inside"));
+  }
+  // how it works: the step nearest the middle of the screen drives the sticky phone
+  const steps = [...document.querySelectorAll(".h-how-steps li")], scr = [...document.querySelectorAll(".h-how-scr")];
+  if (steps.length && "IntersectionObserver" in window) {
+    const io = new IntersectionObserver((es) => es.forEach((e) => { if (!e.isIntersecting) return; const n = +e.target.dataset.step;
+      steps.forEach((s, k) => s.classList.toggle("on", k === n)); scr.forEach((s, k) => s.classList.toggle("on", k === n)); }), { rootMargin: "-45% 0px -45% 0px" });
+    steps.forEach((s) => io.observe(s)); steps[0].classList.add("on");
+  }
+  // quote: words light up as it scrolls through the screen
+  const q = document.querySelector("[data-words]");
+  if (q) {
+    q.innerHTML = q.textContent.split(" ").map((w) => `<span class="w">${w}</span>`).join(" ");
+    const ws = [...q.querySelectorAll(".w")];
+    if (reduce) ws.forEach((w) => w.classList.add("on"));
+    else { const upd = () => { const r = q.getBoundingClientRect(); const p = Math.min(1, Math.max(0, (innerHeight * .85 - r.top) / (r.height + innerHeight * .35)));
+      const n = Math.round(p * ws.length); ws.forEach((w, k) => w.classList.toggle("on", k < n)); };
+      addEventListener("scroll", upd, { passive: true }); upd(); }
+  }
+})();

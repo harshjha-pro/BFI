@@ -12,7 +12,7 @@ from html import escape
 from pathlib import Path
 
 OUT = Path(__file__).resolve().parent.parent / "site"
-V = "20261117a"  # bump to bust browser caches for css/js
+V = "20261118a"  # bump to bust browser caches for css/js
 BASE = "https://bfi-royal-heritage.vercel.app"
 IMGBASE = "https://oaosapkkzoynaqpnmvrj.supabase.co/storage/v1/object/public/site/"
 BIZ = {
@@ -503,79 +503,173 @@ RITUAL_STRIP = [("Ganesh Sthapana", "The first invitation goes to Ganpati ji"), 
 FEATURED = ["rajwada-royale", "gulmohar-classic", "neel-mahal", "chhatri"]
 HERO_INV = next(i for i in CATALOG if i["slug"] == "rajwada-royale")
 XP_INV = next(i for i in CATALOG if i["slug"] == "neel-mahal")
+SAMPLE = dict(names=("Aarohi", "Vivaan"), date="Sunday · 17 January 2027", venue="Rajmahal Gardens, Jaipur")
+PROD_BADGE = {"rajwada-royale": "Royal", "gulmohar-classic": "Floral", "gulabi-bagh": "Pink City", "mor-pankh": "Modern",
+              "neel-mahal": "Night", "gajraj-swagat": "Grand", "sheesh-mahal": "Luxury", "chhatri": "Minimal"}
+
+
+def mini_phone(inv, cls="h-phone"):
+    return (f'<span class="{cls}"><span class="phone-screen inv-wrap"><img src="{IMGBASE}{inv["image"]}" alt="" loading="lazy" width="360" height="540">'
+            f'{invite_text(inv, full=False)}</span></span>')
+
+
+def prod_card(inv):
+    return f"""<article class="h-prod">
+  <a class="h-prod-stage" href="design-{inv["slug"]}.html" aria-label="{inv["name"]}: view design">
+    <span class="h-badge">{PROD_BADGE[inv["slug"]]}</span>
+    <span class="h-print"><img src="{IMGBASE}{inv["image"]}" alt="" loading="lazy" width="360" height="540"></span>
+    {mini_phone(inv)}
+  </a>
+  <button class="fav" data-fav="{inv["slug"]}" aria-pressed="false" aria-label="Save {inv["name"]} to favourites">{icon(I["heart"])}</button>
+  <h3><a href="design-{inv["slug"]}.html">{inv["name"]}</a></h3>
+  <p class="h-prod-desc">{inv["tagline"]}</p>
+  <p class="h-prod-meta"><span>From <b>{inr(inv["price"])}</b></span><a href="demo.html?design={inv["slug"]}">Live demo</a></p>
+</article>"""
+
+
+def plan_cards():
+    out = []
+    for n, pr, d, bl, feats in PACKAGES:
+        rec = n == "Premium"
+        checks = "".join(f"<li>{icon(I['check'])}{f}</li>" for f in feats[:5])
+        out.append(f'<div class="h-plan{" rec" if rec else ""}">{"<span class=h-rec>Recommended</span>" if rec else ""}'
+                   f'<p class="h-plan-name">{n}</p><p class="h-plan-price">{inr(pr)}<small>from · ready in {d}</small></p>'
+                   f'<p class="h-plan-blurb">{bl}</p><ul class="checks">{checks}</ul>'
+                   f'<a class="btn {"btn-primary" if rec else "btn-outline"} btn-block" href="invitations.html?tier={n}">See {n} designs</a></div>')
+    return '<div class="h-plan-grid">' + "".join(out) + "</div>"
+
+
+INSIDE = [("cover", "Cover & wax seal", "Guests tap the seal and the invitation opens, with your music."),
+          ("names", "Blessings & family names", "॥ श्री गणेशाय नमः ॥, elders first, in Hindi, English or both."),
+          ("date", "Scratch to reveal the date", "A little game: guests scratch the gold to see the muhurat."),
+          ("countdown", "Countdown to the phere", "Days, hours and minutes, live on every phone."),
+          ("functions", "Every function", "Mayra, Pithi, Sangeet, Baraat… each with its time and directions."),
+          ("venue", "Venue & maps", "One tap opens Google Maps to the right gate."),
+          ("rsvp", "RSVP with guest count", "Plan rooms and catering without fifty phone calls.")]
+HOW2 = [("cover", "Choose a design", "Browse the collection and open any live demo on your phone."),
+        ("names", "Share your details", "Names, functions and venues, online or on WhatsApp, in Hindi or English."),
+        ("date", "Preview and approve", "We set every name by hand. You check a private preview; one round of changes is included."),
+        ("wa", "Send one link", "A ready WhatsApp message, your private link and a QR code for printed cards.")]
+QUOTE = "Long before the shehnai plays, your family's blessing travels to every home. Let it arrive beautifully."
+FACTS = [("8", "invitation designs"), ("5", "live openings to try"), ('<span lang="hi">हिं</span> · En', "Hindi, English or both"), ("24–72<small>h</small>", "from details to your link")]
+CHIPS = ["Ganesh Sthapana", "Mayra", "Pithi", "Mehendi", "Mahila Sangeet", "Baraat", "Phere", "Reception", "+ any family ritual"]
+
+
+def wa_screen():
+    return ('<span class="h-wa"><span class="h-wa-top"><b>Mausi ji</b><small>online</small></span>'
+            '<span class="h-wa-msg in">Beta, card bhej do 🙏</span>'
+            '<span class="h-wa-msg out"><span class="h-wa-link"><img src="img/screens/cover.webp" alt="" width="540" height="1041" loading="lazy">'
+            '<b>Aarohi weds Vivaan</b><small>Tap to open the invitation</small></span>Our invitation 💌 Please bless us!</span>'
+            '<span class="h-wa-msg in">Kitna sundar hai! ❤️ Hum zaroor aayenge</span></span>')
+
+
+def how_screens():
+    out = []
+    for n, (k, t, d) in enumerate(HOW2):
+        inner = wa_screen() if k == "wa" else f'<img src="img/screens/{k}.webp" alt="" width="540" height="1041" loading="lazy">'
+        out.append(f'<span data-step="{n}" class="h-how-scr{" on" if n == 0 else ""}">{inner}</span>')
+    return "".join(out)
+
+
+def inside_tabs():
+    return "".join(f'<li><button type="button" role="tab" aria-selected="{"true" if n == 0 else "false"}" data-screen="{k}"><span>{n + 1:02d}</span><b>{t}</b><small>{d}</small></button></li>'
+                   for n, (k, t, d) in enumerate(INSIDE))
+
+
+def inside_imgs():
+    return "".join(f'<img data-s="{k}"{" class=on" if n == 0 else ""} src="img/screens/{k}.webp" alt="{t} screen of a sample invitation" width="540" height="1041" loading="lazy">'
+                   for n, (k, t, d) in enumerate(INSIDE))
+
+
 HOME = f'''
-<section class="lx-hero"><div class="wrap lx-hero-grid">
-  <div class="lx-hero-copy">
-    <p class="eyebrow">Digital Marwari Wedding Invitations</p>
-    <h1><span>Every ritual.</span> <span>Every name.</span> <em>Every blessing.</em></h1>
-    <p class="lx-sub">Thoughtfully designed digital kankotri for Marwari families, bringing your family's blessings, ceremonies and celebration together in one beautifully crafted experience.</p>
-    <div class="row lx-ctas"><a class="btn btn-primary" href="invitations.html" data-track="hero_explore">Explore invitations</a><a class="btn btn-outline" href="demo.html" data-track="hero_demo">View a live invitation</a></div>
-    <p class="lx-note">From {inr(3999)} · ready in 24–72 hours after your details · balance paid after you approve</p>
+<section class="h-hero"><div class="wrap h-hero-grid">
+  <div class="h-hero-copy">
+    <p class="eyebrow">Digital Marwari wedding invitations</p>
+    <h1>Every ritual. Every name. <em>Every blessing.</em></h1>
+    <p class="h-sub">Your wedding invitation as one beautiful link. It opens like a real card, with every function, a map for each venue, music and RSVP. Set by hand, ready in 24–72 hours.</p>
+    <div class="row h-ctas"><a class="btn btn-primary" href="invitations.html" data-track="hero_explore">Explore designs</a><a class="btn btn-outline" href="live-demo-1/" target="_blank" rel="noopener" data-track="hero_demo">Open a live invitation</a></div>
+    <p class="h-note">From {inr(3999)} · Hindi &amp; English · balance paid after you approve</p>
   </div>
-  <figure class="lx-hero-art">
-    <div class="inv-wrap"><img src="{IMGBASE}{HERO_INV["image"]}" alt="Rajwada Royale digital wedding invitation with sample wording" width="720" height="1080" fetchpriority="high">{invite_text(HERO_INV)}</div>
-    <figcaption><span>Rajwada Royale</span><span>Sample wording · from {inr(HERO_INV["price"])}</span></figcaption>
-  </figure>
+  <div class="h-stage" data-parallax aria-hidden="true">
+    <span class="h-glow"></span>
+    <img class="h-obj h-kalash" data-depth="18" src="img/art/obj-kalash.webp" alt="" width="809" height="660">
+    <span class="h-hero-phone" data-depth="6"><span class="phone-screen">
+      <img src="img/art/cover-rajwada-royale.webp" alt="" width="720" height="1290" fetchpriority="high">
+      <span class="h-names"><span class="it-deva" lang="hi">॥ श्री गणेशाय नमः ॥</span><span class="it-caps">Together with their families</span>
+        <span class="it-script">{SAMPLE["names"][0]}<small>weds</small>{SAMPLE["names"][1]}</span><span class="it-rule"></span><span class="it-date">{SAMPLE["date"]}</span></span>
+    </span></span>
+    <img class="h-obj h-seal" data-depth="26" src="img/art/obj-wax-seal.webp" alt="" width="900" height="579">
+    {"".join(f'<span class="h-petal p{n}" data-depth="{10 + n * 4}"></span>' for n in range(1, 7))}
+  </div>
+</div>
+<p class="wrap h-sample">Sample invitation · names are fictional</p></section>
+
+<section class="h-fan-sec" aria-label="The collection"><div class="wrap">
+  <div class="h-rule"><span>The collection</span><span>8 designs · 5 live openings</span></div>
+  <h2 class="h-display">8 designs. <em>Every one set by hand.</em></h2></div>
+  <div class="h-fan" aria-hidden="true"><div class="h-fan-track">{"".join(f'<a class="h-fan-item" href="design-{i["slug"]}.html" tabindex="-1">{mini_phone(i, "h-fan-phone")}<span class="h-fan-name">{i["name"]}</span></a>' for i in CATALOG * 2)}</div></div>
+  <div class="wrap"><ul class="h-facts">{"".join(f"<li><b>{b}</b><span>{t}</span></li>" for b, t in FACTS)}</ul></div>
+</section>
+
+<section class="sec h-shop"><div class="wrap">
+  <div class="h-rule"><span>Collection</span><span>Every design is personalised for your family by our team</span></div>
+  <div class="h-shop-head"><h2 class="h-display">Wedding invitations <span class="h-count">8</span></h2><a class="btn btn-outline" href="invitations.html">View all designs</a></div>
+  <div class="h-prods">{"".join(prod_card(i) for i in CATALOG)}</div>
+  <a class="h-custom" href="customize.html"><span><b>Want something made only for you?</b>Luxury includes a bespoke design around your story.</span><span class="tlink">Start your invitation</span></a>
 </div></section>
 
-<section class="lx-trust" aria-label="At a glance"><div class="wrap"><ul>
-  <li>Made for Marwari celebrations</li><li>Hindi &amp; English</li><li>Personalised family details</li><li>Link + QR code</li>
-</ul></div></section>
+<section class="sec h-inside"><div class="wrap h-inside-grid">
+  <div>
+    <div class="h-rule"><span>Inside your invitation</span><span>Real screens from a live demo</span></div>
+    <h2 class="h-display">Everything your guests need. <em>Nothing they don't.</em></h2>
+    <p class="h-lead">One link holds it all, in the order your family follows. Tap a section to see it.</p>
+    <ol class="h-tabs" role="tablist" aria-label="Sections of the invitation">{inside_tabs()}</ol>
+    <p class="h-chips-label">Your functions, in your order</p>
+    <ul class="h-chips">{"".join(f"<li>{x}</li>" for x in CHIPS)}</ul>
+    <a class="btn btn-primary" href="customize.html">Start my invitation</a>
+  </div>
+  <div class="h-inside-phone"><span class="h-bigphone"><span class="phone-screen">{inside_imgs()}</span></span></div>
+</div></section>
 
-<section class="sec"><div class="wrap lx-statement">
-  <div><p class="eyebrow">Our approach</p><h2>Rooted in tradition. Made for today.</h2></div>
-  <div><p class="lead">A Marwari invitation carries more than a date. It carries the blessing that opens it, the elders whose names come first, and every function your family celebrates, from Ganesh Sthapana to Phere.</p>
-    <p>We set each name in the order your family follows, write in Hindi, English or both, and check every detail by hand before you see a preview. The result opens on any phone, in one tap, from WhatsApp.</p>
-    <p><a class="tlink" href="about.html">About Bfiluxe</a></p></div>
+<section class="sec h-how"><div class="wrap">
+  <div class="h-rule"><span>How it works</span><span>Four steps, all on your phone</span></div>
+  <div class="h-how-grid">
+    <div class="h-how-sticky"><span class="h-bigphone"><span class="phone-screen">{how_screens()}</span></span></div>
+    <ol class="h-how-steps">{"".join(f'<li data-step="{n}"><span>{n + 1:02d}</span><h3>{t}</h3><p>{d}</p></li>' for n, (k, t, d) in enumerate(HOW2))}</ol>
+  </div>
+</div></section>
+
+<section class="h-quote" aria-label="Our promise"><div class="wrap">
+  <p class="deva" lang="hi">॥ शुभ विवाह ॥</p>
+  <p class="h-quote-text" data-words>{QUOTE}</p>
+</div></section>
+
+<section class="sec"><div class="wrap">
+  <div class="h-atelier">
+    <figure><img src="img/art/cover-rajwada-royale.webp" alt="Rajwada Royale invitation artwork: a golden palace at dusk" width="720" height="1290" loading="lazy"></figure>
+    <div><p class="eyebrow">Made by people, not a template</p><h2>Set by hand, <em>checked twice.</em></h2>
+      <p>We are a small team in Jaipur. Every invitation is set by a person who knows that the elders come first, that चि. and सौ. कां. matter, and that Mayra has its own place.</p>
+      <ol><li><span>01</span>Names in the order your family follows</li><li><span>02</span>Hindi spellings and honorifics checked by hand</li><li><span>03</span>A private preview before you pay the balance</li></ol></div>
+  </div>
 </div></section>
 
 <section class="sec sec-tint"><div class="wrap">
-  <div class="lx-head"><div><p class="eyebrow">The collection</p><h2>Featured invitations</h2></div>
-    <a class="tlink" href="invitations.html">View all 8 designs</a></div>
-  <div class="grid-inv grid-4" id="featured">{"".join(card(next(i for i in CATALOG if i["slug"] == s_)) for s_ in FEATURED)}</div>
-</div></section>
-
-<section class="sec"><div class="wrap lx-split">
-  <figure class="lx-phone"><div class="phone"><div class="phone-screen inv-wrap"><img src="{IMGBASE}{XP_INV["image"]}" alt="Neel Mahal invitation open on a phone" width="720" height="1080" loading="lazy">{invite_text(XP_INV, names=("Diya", "Kabir"), date="Saturday, 6 December", venue="The Palace Lawns, Jodhpur")}</div></div>
-    <figcaption>Sample invitation · names and venue are fictional</figcaption></figure>
-  <div><p class="eyebrow">The experience</p><h2>An invitation your guests open, not just a picture</h2>
-    <ul class="lx-list">
-      <li><b>Blessings and family names</b>In Hindi, English or both, in the order your family follows.</li>
-      <li><b>Every function</b>Date, time and one-tap directions for each ceremony.</li>
-      <li><b>Music, gallery and countdown</b>On Premium and Luxury.</li>
-      <li><b>RSVP with guest count</b>On Premium and Luxury, so you can plan rooms and catering.</li>
-      <li><b>One private link and a QR code</b>For WhatsApp and for printed cards.</li>
-    </ul>
-    <div class="row"><a class="btn btn-primary" href="demo.html">View live demo</a><a class="tlink" href="invitations.html#live">5 complete sample invitations</a></div></div>
-</div></section>
-
-<section class="sec sec-tint"><div class="wrap">
-  <div class="lx-head"><div><p class="eyebrow">Marwari heritage</p><h2>Every ritual has its place</h2></div>
-    <p class="lx-head-note">Customs differ between families and regions. You choose which functions appear, in your order and your wording.</p></div>
+  <div class="h-rule"><span>Marwari heritage</span><span>Your rituals, your order</span></div>
+  <h2 class="h-display">Every ritual <em>has its place.</em></h2>
   <ol class="lx-rituals">{"".join(f'<li><span>{n + 1:02d}</span><b>{t}</b><p>{d}</p></li>' for n, (t, d) in enumerate(RITUAL_STRIP))}</ol>
   <p style="margin-top:28px"><a class="tlink" href="guide.html">Read the Marwari wedding guide</a></p>
 </div></section>
 
-
-<section class="sec sec-tint"><div class="wrap">
-  <div class="lx-head"><div><p class="eyebrow">How it works</p><h2>Four steps, all on your phone</h2></div><a class="tlink" href="how-it-works.html">The full process</a></div>
-  <ol class="lx-steps">
-    <li><span>01</span><b>Choose a design</b><p>Browse the collection and open any live demo.</p></li>
-    <li><span>02</span><b>Share your details</b><p>Names, functions and venues, online or on WhatsApp.</p></li>
-    <li><span>03</span><b>Preview and approve</b><p>Check it on your phone. One round of changes is included.</p></li>
-    <li><span>04</span><b>Share with everyone</b><p>Your private link, QR code and a ready WhatsApp message.</p></li>
-  </ol>
-</div></section>
-
-<section class="sec"><div class="wrap">
-  <div class="lx-head"><div><p class="eyebrow">Pricing</p><h2>Three clear packages</h2></div><a class="tlink" href="pricing.html">Compare packages</a></div>
-  <div class="lx-prices">{"".join(f'<a href="pricing.html" class="lx-price"><span>{n}</span><b>from {inr(pr)}</b><small>Ready in {d}</small><p>{bl}</p></a>' for n, pr, d, bl, _f in PACKAGES)}</div>
-  <p class="lx-fine">Delivery times start once we have your complete details and the 50% advance. Sheesh Mahal starts at {inr(14999)}.</p>
+<section class="sec h-plans"><div class="wrap">
+  <div class="h-rule"><span>Pricing</span><span>One payment per wedding · 50% now, 50% after you approve</span></div>
+  <h2 class="h-display center">Choose <em>your package.</em></h2>
+  {plan_cards()}
+  <p class="lx-fine center">Delivery times start once we have your complete details and the 50% advance. Sheesh Mahal starts at {inr(14999)}.</p>
   <a class="lx-video" href="videos.html"><span><b>Invitation videos</b> for WhatsApp, Reels and Status</span><span>{" · ".join(f"{n} {inr(pr)}" for n, pr, *_ in VIDEO_PACKAGES)}</span><span class="tlink">See videos</span></a>
 </div></section>
 
 <section class="sec sec-tint"><div class="wrap">
-  <div class="lx-head"><div><p class="eyebrow">Reassurance</p><h2>Clear terms, before you begin</h2></div></div>
+  <div class="h-rule"><span>Reassurance</span><span>Clear terms, before you begin</span></div>
   <dl class="lx-terms">
     <div><dt>Payment in two parts</dt><dd>50% to begin, 50% after you approve the preview.</dd></div>
     <div><dt>One round of changes</dt><dd>Send all changes together after the first preview.</dd></div>
@@ -596,14 +690,17 @@ HOME = f'''
   <div>{faq_html(HOME_FAQ)}</div>
 </div></section>
 
-<section class="lx-close"><div class="wrap">
+<section class="h-close"><div class="wrap">
+  <img class="h-obj h-close-k" src="img/art/obj-kalash.webp" alt="" width="809" height="660" loading="lazy">
+  <img class="h-obj h-close-s" src="img/art/obj-wax-seal.webp" alt="" width="900" height="579" loading="lazy">
   <p class="deva" lang="hi">॥ शुभ विवाह ॥</p>
-  <h2>Your celebration deserves a beautiful beginning.</h2>
+  <h2>Your celebration deserves <em>a beautiful beginning.</em></h2>
   <p>Tell us your names and wedding date. We'll suggest designs and confirm the price before you pay anything.</p>
-  <div class="row"><a class="btn btn-ivory" href="customize.html">Start your invitation</a><a class="btn btn-line" data-wa>{WA} Enquire on WhatsApp</a></div>
-  <p class="lx-close-note">Looking for a birthday or puja card? Try the <a href="free-cards.html">free card maker</a>.</p>
+  <div class="row"><a class="btn btn-primary" href="customize.html">Start your invitation</a><a class="btn btn-outline" data-wa>{WA} Enquire on WhatsApp</a></div>
+  <p class="h-close-note">Looking for a birthday or puja card? Try the <a href="free-cards.html">free card maker</a>.</p>
 </div></section>
 '''
+
 
 OCC = [("wedding", "Wedding"), ("save-the-date", "Save the Date"), ("sagai", "Sagai"), ("birthday-kids", "Kids' Birthday"),
        ("birthday-gold", "Birthday"), ("anniversary", "Anniversary"), ("griha-pravesh", "Griha Pravesh"), ("godh-bharai", "Godh Bharai"),
