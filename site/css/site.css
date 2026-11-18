@@ -1692,3 +1692,14 @@ details.acc p{margin:0 0 18px;font-size:15.5px}
 .h-display+.lx-rituals{margin-top:clamp(28px,4vw,44px)}
 
 .h-facts b{white-space:nowrap}
+/* more floating objects */
+.h-rings{width:30%;left:4%;bottom:8%;z-index:4;animation:hFloat 9s ease-in-out -4s infinite}
+.h-diya{width:24%;right:2%;top:4%;z-index:1;animation:hFloat 7.5s ease-in-out -1s infinite}
+.h-toran{display:block;height:auto;width:min(340px,64vw);margin:0 auto 6px;filter:drop-shadow(0 14px 14px rgba(41,37,34,.18))}
+.h-atelier{position:relative}
+.h-at-cone{width:clamp(110px,14vw,190px);right:-2%;top:-8%;z-index:2;transform:rotate(-10deg);animation:hFloat 8s ease-in-out infinite}
+.h-close .h-close-p{left:14%;bottom:8%;top:auto;width:clamp(90px,10vw,140px);animation:hFloat 9s ease-in-out -2s infinite}
+.h-close .h-close-b{right:14%;top:10%;width:clamp(90px,10vw,140px);animation:hFloat 8.5s ease-in-out -5s infinite}
+.h-close .h-close-sc{right:22%;bottom:4%;width:clamp(100px,11vw,160px);animation:hFloat 10s ease-in-out -6s infinite}
+@media(max-width:899px){.h-rings{width:28%;left:2%}.h-diya{width:22%}}
+@media(max-width:700px){.h-close .h-close-p,.h-close .h-close-b,.h-close .h-close-sc{display:none}.h-at-cone{width:90px;top:-30px}}

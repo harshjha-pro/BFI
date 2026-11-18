@@ -599,6 +599,8 @@ HOME = f'''
         <span class="it-script">{SAMPLE["names"][0]}<small>weds</small>{SAMPLE["names"][1]}</span><span class="it-rule"></span><span class="it-date">{SAMPLE["date"]}</span></span>
     </span></span>
     <img class="h-obj h-seal" data-depth="26" src="img/art/obj-wax-seal.webp" alt="" width="900" height="579">
+    <img class="h-obj h-rings" data-depth="30" src="img/art/obj-rings.webp" alt="" width="747" height="323">
+    <img class="h-obj h-diya" data-depth="14" src="img/art/obj-diya.webp" alt="" width="661" height="540">
     {"".join(f'<span class="h-petal p{n}" data-depth="{10 + n * 4}"></span>' for n in range(1, 7))}
   </div>
 </div>
@@ -640,12 +642,14 @@ HOME = f'''
 </div></section>
 
 <section class="h-quote" aria-label="Our promise"><div class="wrap">
+  <img class="h-toran" src="img/art/obj-toran.webp" alt="" width="831" height="546" loading="lazy">
   <p class="deva" lang="hi">॥ शुभ विवाह ॥</p>
   <p class="h-quote-text" data-words>{QUOTE}</p>
 </div></section>
 
 <section class="sec"><div class="wrap">
   <div class="h-atelier">
+    <img class="h-obj h-at-cone" src="img/art/obj-mehendi-cone.webp" alt="" width="721" height="575" loading="lazy">
     <figure><img src="img/art/cover-rajwada-royale.webp" alt="Rajwada Royale invitation artwork: a golden palace at dusk" width="720" height="1290" loading="lazy"></figure>
     <div><p class="eyebrow">Made by people, not a template</p><h2>Set by hand, <em>checked twice.</em></h2>
       <p>We are a small team in Jaipur. Every invitation is set by a person who knows that the elders come first, that चि. and सौ. कां. matter, and that Mayra has its own place.</p>
@@ -693,6 +697,9 @@ HOME = f'''
 <section class="h-close"><div class="wrap">
   <img class="h-obj h-close-k" src="img/art/obj-kalash.webp" alt="" width="809" height="660" loading="lazy">
   <img class="h-obj h-close-s" src="img/art/obj-wax-seal.webp" alt="" width="900" height="579" loading="lazy">
+  <img class="h-obj h-close-p" src="img/art/obj-potli.webp" alt="" width="515" height="625" loading="lazy">
+  <img class="h-obj h-close-b" src="img/art/obj-bangles.webp" alt="" width="656" height="602" loading="lazy">
+  <img class="h-obj h-close-sc" src="img/art/obj-scroll.webp" alt="" width="791" height="681" loading="lazy">
   <p class="deva" lang="hi">॥ शुभ विवाह ॥</p>
   <h2>Your celebration deserves <em>a beautiful beginning.</em></h2>
   <p>Tell us your names and wedding date. We'll suggest designs and confirm the price before you pay anything.</p>
