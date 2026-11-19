@@ -12,7 +12,7 @@ from html import escape
 from pathlib import Path
 
 OUT = Path(__file__).resolve().parent.parent / "site"
-V = "20261119a"  # bump to bust browser caches for css/js
+V = "20261119b"  # bump to bust browser caches for css/js
 BASE = "https://bfi-royal-heritage.vercel.app"
 ART = "img/art/"
 IMGBASE = "https://oaosapkkzoynaqpnmvrj.supabase.co/storage/v1/object/public/site/"
@@ -355,7 +355,7 @@ def with_hero(slug, body):
         return body
     variant, extra, art, style = hero_parts(slug)
     objs = PAGE_OBJS[sum(map(ord, slug)) % len(PAGE_OBJS)]
-    deco = "".join(f'<img class="ph-obj {c}" src="{ART}obj-{o}.webp" alt="" width="400" height="400" loading="lazy">' for c, o in zip("ab", objs))
+    deco = ""
     hero = f'<section class="phero h-{variant}"{style}>{deco}<div class="wrap phero-grid"><div class="phero-copy">{m.group(1)}{extra}</div>{art}</div></section>'
     return body[:m.start()] + hero + body[m.end():]
 
@@ -390,8 +390,13 @@ for _k, _v in {**TITLES, **DESCS}.items():
 PAGE_TYPE = {"about": "AboutPage", "contact": "ContactPage", "resources": "CollectionPage"}
 
 
+NO_CTA = {"index", "404", "contact", "customize", "login", "account", "privacy", "terms", "demo", "free-cards", "invitation"}
+
+
 def page(slug, title, desc, body, active=None, bar=True, ld=None, index=True, og_image=None, chrome=True, path=None):
     body = with_hero(slug, body)
+    if index and slug not in NO_CTA and "cta-min" not in body and "{cta" not in body:
+        body += cta()  # every marketing page ends on the same minimal call to action
     title, desc = TITLES.get(slug, title), DESCS.get(slug, desc)
     url = f"{BASE}/{path if path is not None else (slug + '.html' if slug != 'index' else '')}"
     ld = list(ld or [])
@@ -586,6 +591,44 @@ def inside_imgs():
     return "".join(f'<img data-s="{k}"{" class=on" if n == 0 else ""} src="img/screens/{k}.webp" alt="{t} screen of a sample invitation" width="540" height="1041" loading="lazy">'
                    for n, (k, t, d) in enumerate(INSIDE))
 
+RIT_ICON = {"Ganesh Sthapana": "lotus", "Mayra": "users", "Pithi": "diamond", "Mehendi": "edit", "Mahila Sangeet": "music",
+            "Baraat & Nikasi": "crown", "Toran & Varmala": "heart", "Phere": "refresh"}
+
+
+def journey(items):
+    lis = "".join(f'<li style="--i:{n}"><span class="rj-dot">{icon(I[ic])}</span><span class="rj-n">{n + 1:02d}</span><b>{t}</b><p>{d}</p></li>'
+                  for n, (ic, t, d) in enumerate(items))
+    return f'<div class="rj" data-progress><span class="rj-line"><i></i></span><ol>{lis}</ol></div>'
+
+
+def ritual_journey(items):
+    lis = "".join(f'<li style="--i:{n}"><span class="rj-dot">{icon(I[RIT_ICON.get(t, "lotus")])}</span><span class="rj-n">{n + 1:02d}</span><b>{t}</b><p>{d}</p></li>'
+                  for n, (t, d) in enumerate(items))
+    return f'<div class="rj" data-progress><span class="rj-line"><i></i></span><ol>{lis}</ol></div>'
+
+
+PROMISES = [("Payment in two parts", "50% to begin, 50% only after you approve the preview."),
+            ("One round of changes", "Send all your changes together after the first preview."),
+            ("Spelling corrections, always free", "Names and spellings are fixed at no cost, any time."),
+            ("Live long after the wedding", "Your link stays live through the wedding and at least six months after."),
+            ("Private by default", "Only people you share the link with can open it.")]
+CHECK = '<svg class="pr-check" viewBox="0 0 32 32" aria-hidden="true"><circle cx="16" cy="16" r="14"/><path d="M10 16.5l4 4 8-9"/></svg>'
+
+
+def promises(title="Clear terms, <em>before you begin.</em>", eyebrow="Our promise"):
+    rows = "".join(f'<li style="--i:{n}">{CHECK}<div><b>{t}</b><p>{d}</p></div></li>' for n, (t, d) in enumerate(PROMISES))
+    return (f'<section class="sec"><div class="wrap pr-grid"><div class="pr-head"><p class="eyebrow">{eyebrow}</p><h2 class="h-display">{title}</h2>'
+            f'<p class="h-lead">No surprises: what you see in the preview is what your guests get.</p></div><ol class="pr-list">{rows}</ol></div></section>')
+
+
+def cta(title="Your celebration deserves <em>a beautiful beginning.</em>", text="Tell us your names and wedding date. We'll suggest designs and confirm the price before you pay anything.",
+        primary=("customize.html", "Start your invitation")):
+    return (f'<section class="cta-min"><div class="wrap"><div class="cta-min-in"><p class="deva" lang="hi">॥ शुभ विवाह ॥</p><h2>{title}</h2><p>{text}</p>'
+            f'<div class="row"><a class="btn btn-primary" href="{primary[0]}">{primary[1]}</a><a class="btn btn-outline" data-wa>{WA} WhatsApp us</a></div></div></div></section>')
+
+
+CTA_HOME = cta()
+
 
 HOME = f'''
 <section class="h-hero"><div class="wrap h-hero-grid">
@@ -616,7 +659,6 @@ HOME = f'''
   <div class="h-rule"><span>The collection</span><span>8 designs · 5 live openings</span></div>
   <h2 class="h-display">8 designs. <em>Every one set by hand.</em></h2></div>
   <div class="h-fan" aria-hidden="true"><div class="h-fan-track">{"".join(f'<a class="h-fan-item" href="design-{i["slug"]}.html" tabindex="-1">{mini_phone(i, "h-fan-phone")}<span class="h-fan-name">{i["name"]}</span></a>' for i in CATALOG * 2)}</div></div>
-  <div class="wrap"><ul class="h-facts">{"".join(f"<li><b>{b}</b><span>{t}</span></li>" for b, t in FACTS)}</ul></div>
 </section>
 
 <section class="sec h-shop"><div class="wrap">
@@ -636,7 +678,7 @@ HOME = f'''
     <ul class="h-chips">{"".join(f"<li>{x}</li>" for x in CHIPS)}</ul>
     <a class="btn btn-primary" href="customize.html">Start my invitation</a>
   </div>
-  <div class="h-inside-phone"><img class="h-obj h-env" src="img/art/obj-envelope.webp" alt="" width="831" height="627" loading="lazy"><span class="h-bigphone"><span class="phone-screen">{inside_imgs()}</span></span></div>
+  <div class="h-inside-phone"><span class="h-bigphone"><span class="phone-screen">{inside_imgs()}</span></span></div>
 </div></section>
 
 <section class="sec h-how"><div class="wrap">
@@ -648,14 +690,12 @@ HOME = f'''
 </div></section>
 
 <section class="h-quote" aria-label="Our promise"><div class="wrap">
-  <img class="h-toran" src="img/art/obj-toran.webp" alt="" width="831" height="546" loading="lazy">
   <p class="deva" lang="hi">॥ शुभ विवाह ॥</p>
   <p class="h-quote-text" data-words>{QUOTE}</p>
 </div></section>
 
 <section class="sec"><div class="wrap">
   <div class="h-atelier">
-    <img class="h-obj h-at-cone" src="img/art/obj-mehendi-cone.webp" alt="" width="721" height="575" loading="lazy">
     <figure><img src="img/art/cover-rajwada-royale.webp" alt="Rajwada Royale invitation artwork: a golden palace at dusk" width="720" height="1290" loading="lazy"></figure>
     <div><p class="eyebrow">Made by people, not a template</p><h2>Set by hand, <em>checked twice.</em></h2>
       <p>We are a small team in Jaipur. Every invitation is set by a person who knows that the elders come first, that चि. and सौ. कां. matter, and that Mayra has its own place.</p>
@@ -666,7 +706,7 @@ HOME = f'''
 <section class="sec sec-tint"><div class="wrap">
   <div class="h-rule"><span>Marwari heritage</span><span>Your rituals, your order</span></div>
   <h2 class="h-display">Every ritual <em>has its place.</em></h2>
-  <ol class="lx-rituals">{"".join(f'<li><span>{n + 1:02d}</span><b>{t}</b><p>{d}</p></li>' for n, (t, d) in enumerate(RITUAL_STRIP))}</ol>
+  {ritual_journey(RITUAL_STRIP)}
   <p style="margin-top:28px"><a class="tlink" href="guide.html">Read the Marwari wedding guide</a></p>
 </div></section>
 
@@ -678,16 +718,7 @@ HOME = f'''
   <a class="lx-video" href="videos.html"><span><b>Invitation videos</b> for WhatsApp, Reels and Status</span><span>{" · ".join(f"{n} {inr(pr)}" for n, pr, *_ in VIDEO_PACKAGES)}</span><span class="tlink">See videos</span></a>
 </div></section>
 
-<section class="sec sec-tint"><div class="wrap">
-  <div class="h-rule"><span>Reassurance</span><span>Clear terms, before you begin</span></div>
-  <dl class="lx-terms">
-    <div><dt>Payment in two parts</dt><dd>50% to begin, 50% after you approve the preview.</dd></div>
-    <div><dt>One round of changes</dt><dd>Send all changes together after the first preview.</dd></div>
-    <div><dt>Spelling corrections</dt><dd>Name and spelling fixes are always free.</dd></div>
-    <div><dt>Link validity</dt><dd>Live through the wedding and at least six months after.</dd></div>
-    <div><dt>Privacy</dt><dd>Only people you share the link with can open it.</dd></div>
-  </dl>
-</div></section>
+{promises()}
 
 <section class="sec" id="reviews-sec" hidden><div class="wrap">
   <div class="lx-head"><div><p class="eyebrow">Kind words</p><h2>From families we have worked with</h2></div></div>
@@ -700,14 +731,7 @@ HOME = f'''
   <div>{faq_html(HOME_FAQ)}</div>
 </div></section>
 
-<section class="h-close"><div class="wrap">
-  <img class="h-couple" src="img/art/stk-couple.webp" alt="Illustration of a Marwari bride and groom holding hands" width="559" height="809" loading="lazy">
-  <p class="deva" lang="hi">॥ शुभ विवाह ॥</p>
-  <h2>Your celebration deserves <em>a beautiful beginning.</em></h2>
-  <p>Tell us your names and wedding date. We'll suggest designs and confirm the price before you pay anything.</p>
-  <div class="row"><a class="btn btn-primary" href="customize.html">Start your invitation</a><a class="btn btn-outline" data-wa>{WA} Enquire on WhatsApp</a></div>
-  <p class="h-close-note">Looking for a birthday or puja card? Try the <a href="free-cards.html">free card maker</a>.</p>
-</div></section>
+{CTA_HOME}
 '''
 
 
@@ -951,8 +975,7 @@ HOW = f'''
   <div><h2>Questions</h2><p class="lead" style="margin-top:12px">Anything else? A designer answers on WhatsApp within an hour.</p><div class="row" style="margin-top:18px"><a class="btn btn-wa" data-wa>{WA} Ask on WhatsApp</a></div></div>
   <div>{faq_html(HOW_FAQ)}</div>
 </div></section>
-<section class="cta-band"><div class="wrap center"><h2>Ready to Begin?</h2><p>Pick a design today and share your invitation this week.</p>
-  <div class="row" style="justify-content:center;margin-top:20px"><a class="btn btn-gold" href="customize.html">Create Your Invitation</a><a class="btn btn-outline-light" href="demo.html">See the Live Demo</a></div></div></section>'''
+{cta()}'''
 page("how-it-works", "How It Works: Digital Wedding Invitation in 4 Steps | Bfiluxe",
      "Choose a design, share your details, preview and approve, then share on WhatsApp. Ready in 24–72 hours; pay 50% after approval.", HOW, "how-it-works",
      ld=[faq_ld(HOW_FAQ), {"@context": "https://schema.org", "@type": "HowTo", "name": "How to get a digital Marwari wedding invitation from Bfiluxe",
@@ -1125,7 +1148,7 @@ ABOUT = f'''
     <div class="value">{icon(I["shield"])}<h3>Privacy &amp; trust</h3><p>Private links, no ads, and you pay the balance only after approval.</p></div>
   </div>
 </div></section>
-<section class="cta-band"><div class="wrap center"><h2>Rooted in Rajasthan, crafted for today</h2><div class="row" style="justify-content:center;margin-top:18px"><a class="btn btn-gold" href="demo.html">See a live demo</a><a class="btn btn-wa" data-wa>{WA} Chat with us</a></div></div></section>'''
+{cta()}'''
 # About page removed (19 Nov 2026): about.html now forwards to the homepage (see redirects below)
 
 # ---------------- Contact ----------------
@@ -1305,20 +1328,45 @@ VIDEO_FAQ = [
     ("Can I have a video and an invitation website?", "Yes. Many families send the video first and the website link for maps, RSVP and details. Ask on WhatsApp for both together."),
     ("How do I pay?", "50% to start and 50% after you approve the video. One round of changes is included."),
 ]
+VP_SCENES = [("cover", "The seal breaks"), ("names", "Blessing and family names"), ("date", "The date is revealed"), ("countdown", "Countdown to the phere"), ("functions", "Every function"), ("venue", "Venue and maps"), ("rsvp", "Please join us")]
+VP_MOODS = [("Shehnai", "Classic and auspicious"), ("Santoor", "Soft and romantic"), ("Bansuri", "Calm, for evenings"), ("Dhol", "Festive, for the baraat"), ("Piano", "Modern and minimal")]
 VIDEO_BODY = f"""
 <section class="phead"><div class="wrap"><p class="eyebrow">Invitation videos</p><h1>Wedding Invitation Videos</h1>
   <p class="lead">A short animated video invitation with your blessing, names and every function, set to music and ready to forward on WhatsApp. From {inr(1499)}.</p>
   <div class="row hero-mini"><a class="btn btn-primary" href="#video-prices">See video prices</a><a class="btn btn-outline" data-wa="Namaste Bfiluxe 🙏 I'd like an invitation video.">Ask on WhatsApp</a></div></div></section>
 
+<section class="sec vp-sec"><div class="wrap vp-grid">
+  <div><div class="h-rule"><span>Watch it play</span><span>Scenes from a sample invitation</span></div>
+    <h2 class="h-display">Thirty seconds, <em>every name in its place.</em></h2>
+    <p class="h-lead">Each scene holds long enough for elders to read, then moves on with the music.</p>
+    <ol class="vp-scenes">{"".join(f'<li data-scene="{n}"{" class=on" if n == 0 else ""}><span>{n + 1:02d}</span>{t}</li>' for n, (k, t) in enumerate(VP_SCENES))}</ol></div>
+  <div class="vp-player" data-player aria-hidden="true"><span class="h-bigphone"><span class="phone-screen">
+    <span class="vp-bars">{"".join('<i><b></b></i>' for _ in VP_SCENES)}</span>
+    {"".join(f'<img data-scene="{n}"{" class=on" if n == 0 else ""} src="img/screens/{k}.webp" alt="" width="540" height="1041" loading="lazy">' for n, (k, t) in enumerate(VP_SCENES))}
+    <span class="vp-eq"><i></i><i></i><i></i><i></i><i></i></span></span></span></div>
+</div></section>
+
+<section class="sec sec-tint"><div class="wrap">
+  <div class="h-rule"><span>What's inside</span><span>Short enough to watch in one go</span></div>
+  <h2 class="h-display">Made for WhatsApp, <em>Reels and Status.</em></h2>
+  {journey([("lotus", "The blessing", "॥ श्री गणेशाय नमः ॥ or your family's line, to open the video."), ("users", "Names and families", "The couple, parents and elders, in Hindi, English or both."), ("clock", "Every function", "Dates, times and venues, from Mayra to the reception (Premium and Luxury)."), ("music", "Music and photos", "Shehnai or instrumental music, with your photos on Premium and Luxury.")])}
+</div></section>
+
 <section class="sec"><div class="wrap">
-  <div class="lx-head"><div><p class="eyebrow">What's inside</p><h2>Made for WhatsApp, Reels and Status</h2></div>
-    <p class="lx-head-note">Short enough to watch in one go, clear enough that elders can read every name.</p></div>
-  <ol class="lx-steps">
-    <li><span>01</span><b>The blessing</b><p>॥ श्री गणेशाय नमः ॥ or your family's line, to open the video.</p></li>
-    <li><span>02</span><b>Names and families</b><p>The couple, parents and elders, in Hindi, English or both.</p></li>
-    <li><span>03</span><b>Every function</b><p>Dates, times and venues, from Mayra to the reception (Premium and Luxury).</p></li>
-    <li><span>04</span><b>Music and photos</b><p>Shehnai or instrumental music, with your photos on Premium and Luxury.</p></li>
-  </ol>
+  <div class="h-rule"><span>One video, every screen</span><span>Sized for where it will be watched</span></div>
+  <h2 class="h-display">Status, chats <em>and the big screen.</em></h2>
+  <div class="vp-formats">
+    <figure class="vf vf-916"><span class="vf-frame"><img src="img/art/cover-gulabi-bagh.webp" alt="" width="720" height="1290" loading="lazy"><i class="vf-play"></i></span><figcaption><b>9:16</b>WhatsApp Status &amp; Reels</figcaption></figure>
+    <figure class="vf vf-11"><span class="vf-frame"><img src="img/art/cover-neel-mahal.webp" alt="" width="720" height="1290" loading="lazy"><i class="vf-play"></i></span><figcaption><b>1:1</b>WhatsApp chats &amp; posts</figcaption></figure>
+    <figure class="vf vf-169"><span class="vf-frame"><img src="img/art/bg-flatlay.webp" alt="" width="1264" height="848" loading="lazy"><i class="vf-play"></i></span><figcaption><b>16:9</b>TV at the venue &amp; YouTube</figcaption></figure>
+  </div>
+  <p class="lx-fine center">9:16 comes with every package. Ask us for 1:1 or 16:9 versions.</p>
+</div></section>
+
+<section class="sec sec-tint"><div class="wrap">
+  <div class="h-rule"><span>The music</span><span>Choose the mood</span></div>
+  <h2 class="h-display">Set it to <em>your family's sound.</em></h2>
+  <div class="vp-moods">{"".join(f'<div class="vm" style="--i:{n}"><span class="vm-eq"><i></i><i></i><i></i><i></i></span><b>{t}</b><small>{d}</small></div>' for n, (t, d) in enumerate(VP_MOODS))}</div>
 </div></section>
 
 <section class="sec sec-tint" id="video-prices"><div class="wrap">

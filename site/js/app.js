@@ -199,7 +199,7 @@ function initChrome() {
   });
   const groups = [".sec-head", ".grid-inv > .card", ".pkgs > .pkg", ".steps > .step", ".hrow", ".values > .value", ".timeline > .tl", ".next3 > div",
     ".occasions > div", ".policy > div", ".reviews > .review", ".ritual-list > li", ".why-list > div", ".trust-row > div", ".wording > .word-card",
-    ".cinfo > *", ".strip-item", ".tiles > .tile", "details.acc", ".tbl-wrap", ".about-hero > *", ".split > *", ".panel", ".phead .wrap > *"];
+    ".cinfo > *", ".strip-item", ".tiles > .tile", "details.acc", ".rj li", ".pr-list li", ".h-plan", ".h-prod", ".vf", ".vm", ".cta-min-in", ".h-display", ".h-rule", ".tbl-wrap", ".about-hero > *", ".split > *", ".panel", ".phead .wrap > *"];
   for (const sel of groups) $$(sel).forEach((el) => { if (el.closest(".hero, .dv, .modal, .sheet") || el.classList.contains("reveal")) return;
     const sib = [...el.parentElement.children].filter((x) => x.matches(sel.split(" > ").pop()));
     el.classList.add("reveal"); el.style.setProperty("--d", Math.min(sib.indexOf(el), 6) * 0.08 + "s"); });
@@ -1159,5 +1159,33 @@ var WA_SVG = '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><p
     else { const upd = () => { const r = q.getBoundingClientRect(); const p = Math.min(1, Math.max(0, (innerHeight * .85 - r.top) / (r.height + innerHeight * .35)));
       const n = Math.round(p * ws.length); ws.forEach((w, k) => w.classList.toggle("on", k < n)); };
       addEventListener("scroll", upd, { passive: true }); upd(); }
+  }
+})();
+
+/* ---------- Lively layer: count-up prices, story player ---------- */
+(() => {
+  const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  // prices count up the first time they scroll into view
+  const fmt = (n) => "₹" + n.toLocaleString("en-IN");
+  const prices = [...document.querySelectorAll(".h-plan-price, .pkg-price")];
+  if (prices.length && !reduce && "IntersectionObserver" in window) {
+    const io = new IntersectionObserver((es) => es.forEach((e) => { if (!e.isIntersecting) return; io.unobserve(e.target);
+      const node = [...e.target.childNodes].find((x) => x.nodeType === 3 && /\d/.test(x.textContent)); if (!node) return;
+      const m = node.textContent.match(/₹([\d,]+)/); if (!m) return; const end = +m[1].replace(/,/g, ""), pre = node.textContent.slice(0, m.index), post = node.textContent.slice(m.index + m[0].length);
+      const t0 = performance.now(), dur = 1200; const step = (t) => { const k = Math.min(1, (t - t0) / dur), v = Math.round(end * (1 - Math.pow(1 - k, 3)) / 10) * 10;
+        node.textContent = pre + fmt(k < 1 ? v : end) + post; if (k < 1) requestAnimationFrame(step); }; requestAnimationFrame(step); }), { threshold: .6 });
+    prices.forEach((p) => io.observe(p));
+  }
+  // video page: story-style player cycles the scenes and syncs the list
+  const pl = document.querySelector("[data-player]");
+  if (pl) {
+    const imgs = [...pl.querySelectorAll("img[data-scene]")], bars = [...pl.querySelectorAll(".vp-bars i")], items = [...document.querySelectorAll(".vp-scenes li")];
+    let i = 0, timer = 0;
+    const show = (n) => { i = n % imgs.length;
+      imgs.forEach((im, k) => { im.classList.toggle("on", k === i); if (k === i) { im.style.animation = "none"; void im.offsetWidth; im.style.animation = ""; } });
+      bars.forEach((b, k) => { b.classList.toggle("done", k < i); b.classList.remove("run"); }); void bars[i].offsetWidth; bars[i].classList.add("run");
+      items.forEach((li, k) => li.classList.toggle("on", k === i)); };
+    items.forEach((li, k) => li.addEventListener("click", () => { show(k); clearInterval(timer); timer = setInterval(() => show(i + 1), 3000); }));
+    if (!reduce && "IntersectionObserver" in window) new IntersectionObserver(([e]) => { clearInterval(timer); if (e.isIntersecting) { show(i); timer = setInterval(() => show(i + 1), 3000); } }, { threshold: .3 }).observe(pl);
   }
 })();
