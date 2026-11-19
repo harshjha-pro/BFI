@@ -199,7 +199,7 @@ function initChrome() {
   });
   const groups = [".sec-head", ".grid-inv > .card", ".pkgs > .pkg", ".steps > .step", ".hrow", ".values > .value", ".timeline > .tl", ".next3 > div",
     ".occasions > div", ".policy > div", ".reviews > .review", ".ritual-list > li", ".why-list > div", ".trust-row > div", ".wording > .word-card",
-    ".cinfo > *", ".strip-item", ".tiles > .tile", "details.acc", ".rj li", ".pr-list li", ".h-plan", ".h-prod", ".vf", ".vm", ".cta-min-in", ".h-display", ".h-rule", ".tbl-wrap", ".about-hero > *", ".split > *", ".panel", ".phead .wrap > *"];
+    ".cinfo > *", ".strip-item", ".tiles > .tile", "details.acc", ".rj li", ".pr-list li", ".feat-grid > .feat-card", ".steps > .step", ".timeline > .tl", ".res-card", ".vp-scenes li", ".h-plan", ".h-prod", ".vf", ".vm", ".cta-min-in", ".h-display", ".h-rule", ".tbl-wrap", ".about-hero > *", ".split > *", ".panel", ".phead .wrap > *"];
   for (const sel of groups) $$(sel).forEach((el) => { if (el.closest(".hero, .dv, .modal, .sheet") || el.classList.contains("reveal")) return;
     const sib = [...el.parentElement.children].filter((x) => x.matches(sel.split(" > ").pop()));
     el.classList.add("reveal"); el.style.setProperty("--d", Math.min(sib.indexOf(el), 6) * 0.08 + "s"); });
