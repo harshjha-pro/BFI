@@ -22,7 +22,7 @@
 - Five sample invitation websites (fictional couples): [Rajmahal](https://bfi-royal-heritage.vercel.app/live-demo-1/) (Royal · shehnai · Jaipur), [Gulabi Nagri](https://bfi-royal-heritage.vercel.app/live-demo-2/) (Pink City · santoor · Jaipur), [Thar ki Raat](https://bfi-royal-heritage.vercel.app/live-demo-3/) (Desert night · bansuri · Jaisalmer), [Haldi Haveli](https://bfi-royal-heritage.vercel.app/live-demo-4/) (Hindi-first · shehnai & dhol · Bikaner), [Line & Light](https://bfi-royal-heritage.vercel.app/live-demo-5/) (Modern minimal · piano · Mumbai)
 - [FAQ](https://bfi-royal-heritage.vercel.app/faq.html): kankotri, Mayra and Pithi, Hindi wording, RSVP, WhatsApp sharing, delivery, link validity, payment and revisions
 - [Free card maker](https://bfi-royal-heritage.vercel.app/free-cards.html): 16 free templates (wedding, save the date, Sagai, anniversary, birthdays, Godh Bharai, Naamkaran, Mundan, Griha Pravesh, puja, Diwali, Holi, Teej/Gangaur, retirement, prayer meet); download PNG, JPG or PDF
-- [About](https://bfi-royal-heritage.vercel.app/about.html) · [Contact](https://bfi-royal-heritage.vercel.app/contact.html)
+- [Contact](https://bfi-royal-heritage.vercel.app/contact.html)
 - [Rajwada Royale](https://bfi-royal-heritage.vercel.app/design-rajwada-royale.html): Royal collection, from ₹11,999
 - [Gulmohar Classic](https://bfi-royal-heritage.vercel.app/design-gulmohar-classic.html): Traditional collection, from ₹6,999
 - [Gulabi Bagh](https://bfi-royal-heritage.vercel.app/design-gulabi-bagh.html): Elegant collection, from ₹6,999

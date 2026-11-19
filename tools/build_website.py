@@ -12,7 +12,7 @@ from html import escape
 from pathlib import Path
 
 OUT = Path(__file__).resolve().parent.parent / "site"
-V = "20261118a"  # bump to bust browser caches for css/js
+V = "20261119a"  # bump to bust browser caches for css/js
 BASE = "https://bfi-royal-heritage.vercel.app"
 ART = "img/art/"
 IMGBASE = "https://oaosapkkzoynaqpnmvrj.supabase.co/storage/v1/object/public/site/"
@@ -172,7 +172,7 @@ I = {
 }
 ORN = f'<div class="orn" aria-hidden="true">{icon(I["lotus"])}</div>'
 
-NAV = [("invitations", "Invitations"), ("videos", "Videos"), ("free-cards", "Free Card Maker"), ("how-it-works", "How It Works"), ("pricing", "Pricing"), ("about", "About")]
+NAV = [("invitations", "Invitations"), ("videos", "Videos"), ("free-cards", "Free Card Maker"), ("how-it-works", "How It Works"), ("pricing", "Pricing")]
 MORE = [("features", "Features"), ("customize", "Start your invitation"), ("demo", "Live demo"), ("resources", "Guides"), ("faq", "FAQ"),
         ("partners", "Partner with us"), ("contact", "Contact")]
 
@@ -229,7 +229,7 @@ def footer():
   <div class="ftr-grid">
     <div class="ftr-brand"><a href="index.html" class="ftr-logo"><img src="img/logo-sm.webp" alt="Bfiluxe" width="200" height="174" loading="lazy"></a>
       <p>Invitations made extraordinary. Digital Marwari wedding invitations, invitation websites and videos, rooted in family tradition.</p></div>
-    <div><h4>Explore</h4><ul><li><a href="invitations.html">Invitations</a></li><li><a href="videos.html">Invitation videos</a></li><li><a href="how-it-works.html">How It Works</a></li><li><a href="pricing.html">Pricing</a></li><li><a href="about.html">About</a></li><li><a href="contact.html">Contact</a></li></ul></div>
+    <div><h4>Explore</h4><ul><li><a href="invitations.html">Invitations</a></li><li><a href="videos.html">Invitation videos</a></li><li><a href="how-it-works.html">How It Works</a></li><li><a href="pricing.html">Pricing</a></li><li><a href="contact.html">Contact</a></li></ul></div>
     <div><h4>Resources</h4><ul><li><a href="features.html">Features</a></li><li><a href="resources.html">Guides</a></li><li><a href="faq.html">FAQ</a></li><li><a href="free-cards.html">Free card maker</a></li><li><a href="partners.html">Partner with us</a></li><li><a href="login.html">My account</a></li></ul></div>
     <div><h4>Contact</h4><ul><li><a data-wa>WhatsApp {BIZ["phone"]}</a></li><li><a href="tel:{BIZ["tel"]}">Call {BIZ["phone"]}</a></li><li><a href="mailto:{BIZ["email"]}">{BIZ["email"]}</a></li><li>{BIZ["city"]}, {BIZ["region"]}, India</li><li>{BIZ["hours"]}</li><li><a href="bfi-contact.vcf" download>Save our contact card</a></li></ul></div>
   </div>
@@ -265,7 +265,7 @@ def hero_parts(slug):
     I_ = lambda n: (ART + n) if n.startswith("cover-") else (IMGBASE + n)
     if slug == "invitations":
         art = ('<div class="fan">' + "".join(f'<img class="f{k}" src="{I_(n)}" alt="{a}" width="360" height="645">' for k, (n, a) in enumerate(
-            [("inv-mor-pankh.jpg", "Mor Pankh invitation"), ("inv-rajwada-royale.jpg", "Rajwada Royale invitation"), ("inv-gulabi-bagh.jpg", "Gulabi Bagh invitation")]))
+            [("cover-mor-pankh.webp", "Mor Pankh invitation"), ("cover-rajwada-royale.webp", "Rajwada Royale invitation"), ("cover-gulabi-bagh.webp", "Gulabi Bagh invitation")]))
             + f'<span class="fan-badge"><b>8</b> designs<br>from {inr(3999)}</span></div>')
         extra = '<div class="row hero-mini"><a class="btn btn-primary" href="#grid">Browse designs</a><a class="btn btn-ghost" href="demo.html">Open a live demo</a></div>'
         return "fan", extra, art, ""
@@ -313,7 +313,7 @@ def hero_parts(slug):
         return "postcard", "", art, ""
     if slug == "features":
         ics = ["pin", "music", "rsvp", "qr", "globe", "image", "clock", "share"]
-        art = ('<div class="orbit"><div class="phone orbit-phone"><div class="phone-screen inv-wrap">' + f'<img src="{I_("inv-rajwada-royale.jpg")}" alt="Invitation on a phone" width="720" height="1290">' + invite_text(CATALOG[0]) + '</div></div>'
+        art = ('<div class="orbit"><div class="phone orbit-phone"><div class="phone-screen inv-wrap">' + f'<img src="{I_("cover-rajwada-royale.webp")}" alt="Invitation on a phone" width="720" height="1290">' + invite_text(CATALOG[0]) + '</div></div>'
                '<div class="ring">' + "".join(f'<span style="--a:{k * 45}deg">{icon(I[c])}</span>' for k, c in enumerate(ics)) + '</div></div>')
         return "orbit", "", art, ""
     if slug == "resources":
@@ -332,9 +332,9 @@ def hero_parts(slug):
         extra = '<div class="row hero-mini"><a class="btn btn-primary" href="invitations.html">See designs</a><a class="btn btn-ghost" href="demo.html">Open live demo</a></div>'
         return "landing", extra, art, ""
     if slug == "digital-vs-printed-kankotri":
-        art = (f'<div class="versus"><figure class="vs-card"><img src="{I_("inv-chhatri.jpg")}" alt="A printed card" width="360" height="645"><figcaption>Printed</figcaption></figure>'
+        art = (f'<div class="versus"><figure class="vs-card"><img src="{I_("cover-chhatri.webp")}" alt="A printed card" width="360" height="645"><figcaption>Printed</figcaption></figure>'
                '<span class="vs">VS</span>'
-               f'<figure class="vs-phone"><div class="phone"><div class="phone-screen inv-wrap"><img src="{I_("inv-gulmohar-classic.jpg")}" alt="A digital invitation on a phone" width="720" height="1290">' + invite_text(CATALOG[1]) + '</div></div><figcaption>Digital</figcaption></figure></div>')
+               f'<figure class="vs-phone"><div class="phone"><div class="phone-screen inv-wrap"><img src="{I_("cover-gulmohar-classic.webp")}" alt="A digital invitation on a phone" width="720" height="1290">' + invite_text(CATALOG[1]) + '</div></div><figcaption>Digital</figcaption></figure></div>')
         return "versus", "", art, ""
     if slug == "inviting-guests-mayra-pithi-phere":
         art = (f'<div class="ritpic"><img src="{I_("ritual-baraat.jpg")}" alt="Miniature-style painting of a baraat procession" width="1000" height="666">'
@@ -346,12 +346,17 @@ def hero_parts(slug):
     return "seal", "", art, ""
 
 
+PAGE_OBJS = [("kalash", "wax-seal"), ("diya", "rings"), ("potli", "envelope"), ("bangles", "scroll"), ("mehendi-cone", "toran"), ("rings", "kalash"), ("envelope", "diya")]
+
+
 def with_hero(slug, body):
     m = re.search(r'<section class="phead"[^>]*><div class="wrap">(.*?)</div></section>', body, re.S)
     if not m:
         return body
     variant, extra, art, style = hero_parts(slug)
-    hero = f'<section class="phero h-{variant}"{style}><div class="wrap phero-grid"><div class="phero-copy">{m.group(1)}{extra}</div>{art}</div></section>'
+    objs = PAGE_OBJS[sum(map(ord, slug)) % len(PAGE_OBJS)]
+    deco = "".join(f'<img class="ph-obj {c}" src="{ART}obj-{o}.webp" alt="" width="400" height="400" loading="lazy">' for c, o in zip("ab", objs))
+    hero = f'<section class="phero h-{variant}"{style}>{deco}<div class="wrap phero-grid"><div class="phero-copy">{m.group(1)}{extra}</div>{art}</div></section>'
     return body[:m.start()] + hero + body[m.end():]
 
 
@@ -466,11 +471,13 @@ def card(inv):
     tone = "pv-dark" if inv["slug"] in DARK else "pv-light"
     return f'''<article class="card" data-tags="{TAGS[inv["slug"]]}">
     <button class="fav" data-fav="{inv["slug"]}" aria-pressed="false" aria-label="Save {inv["name"]} to favourites">{icon(I["heart"])}</button>
-    <a class="card-img" href="design-{inv["slug"]}.html"><img src="{ART}{inv["image"]}" alt="{inv["name"]} invitation: {inv["tagline"]}" loading="lazy" width="360" height="645">{invite_text(inv, full=False)}</a>
-    <div class="card-body"><span class="tag">{COLL[inv["collection"]]}</span><h3><a href="design-{inv["slug"]}.html">{inv["name"]}</a></h3>
+    <a class="card-img card-stage" href="design-{inv["slug"]}.html" aria-label="{inv["name"]}: view design"><span class="h-badge">{COLL[inv["collection"]]}</span>
+      <span class="h-print"><img src="{ART}{inv["image"]}" alt="" loading="lazy" width="360" height="645"></span>
+      <span class="h-phone"><span class="phone-screen inv-wrap"><img src="{ART}{inv["image"]}" alt="{inv["name"]} invitation: {inv["tagline"]}" loading="lazy" width="360" height="645">{invite_text(inv, full=False)}</span></span></a>
+    <div class="card-body"><h3><a href="design-{inv["slug"]}.html">{inv["name"]}</a></h3>
       <p class="card-desc">{inv["tagline"]}</p><p class="card-best">Best for: {BEST[inv["slug"]]}</p>
       <div class="card-meta"><span>{inv["tier"]}</span><span>from <b>{inr(inv["price"])}</b></span></div>
-      <div class="card-acts"><a class="btn btn-sm btn-outline" href="demo.html?design={inv["slug"]}">View live demo</a><a class="btn btn-sm btn-primary" href="design-{inv["slug"]}.html">View design</a></div></div></article>'''
+      <div class="card-acts"><a class="btn btn-sm btn-outline" href="demo.html?design={inv["slug"]}">Live demo</a><a class="btn btn-sm btn-primary" href="design-{inv["slug"]}.html">View design</a></div></div></article>'''
 
 
 def package_cards(compact=False):
@@ -1119,7 +1126,7 @@ ABOUT = f'''
   </div>
 </div></section>
 <section class="cta-band"><div class="wrap center"><h2>Rooted in Rajasthan, crafted for today</h2><div class="row" style="justify-content:center;margin-top:18px"><a class="btn btn-gold" href="demo.html">See a live demo</a><a class="btn btn-wa" data-wa>{WA} Chat with us</a></div></div></section>'''
-page("about", "About Bfiluxe, Jaipur", "Bfiluxe is a Jaipur studio making premium digital wedding invitations only for Marwari families: correct rituals, elders' names and royal Rajasthani design.", ABOUT, "about", ld=[ORG_LD])
+# About page removed (19 Nov 2026): about.html now forwards to the homepage (see redirects below)
 
 # ---------------- Contact ----------------
 CONTACT_FAQ = [
@@ -1277,6 +1284,10 @@ page("faq", "FAQ: Digital Marwari Wedding Invitations, Kankotri, RSVP & Pricing 
 
 
 # ---------------- Our Work was removed (13 Nov 2026): old addresses forward to the invitations ----------------
+(OUT / "about.html").write_text(f'''<!doctype html><html lang="en-IN"><head><meta charset="utf-8"><meta name="robots" content="noindex">
+<meta http-equiv="refresh" content="0; url=index.html"><link rel="canonical" href="{BASE}/"><title>Bfiluxe</title></head>
+<body><p><a href="index.html">Go to Bfiluxe</a></p></body></html>
+''')
 for _old in ("work", "work-mahi-ayush", "work-chittorgarh-engagement"):
     (OUT / f"{_old}.html").write_text(f'''<!doctype html><html lang="en-IN"><head><meta charset="utf-8"><meta name="robots" content="noindex">
 <meta http-equiv="refresh" content="0; url=invitations.html"><link rel="canonical" href="{BASE}/invitations.html"><title>Invitations · Bfiluxe</title></head>
@@ -1612,7 +1623,7 @@ page("resources", "Marwari Wedding Invitation Guides & Resources | Bfiluxe", "Fr
 
 LIVE_LLMS = ", ".join(f"[{t}]({BASE}/live-demo-{n}/) ({m})" for n, t, c, m, d in LIVE)
 # ---------------- robots, sitemap, llms.txt, vCard ----------------
-PUBLIC = ["", "invitations.html", "pricing.html", "how-it-works.html", "demo.html", "features.html", "live-demo-1/", "live-demo-2/", "live-demo-3/", "live-demo-4/", "live-demo-5/", "guide.html", "resources.html", "digital-vs-printed-kankotri.html", "inviting-guests-mayra-pithi-phere.html", "marwari-wedding-invitation-website.html", "marwari-kankotri-online.html", "hindi-wedding-invitation.html", "wedding-invitation-website-rsvp.html", "rajasthani-digital-wedding-invitation.html", "partners.html", "videos.html", "free-cards.html", "faq.html", "about.html", "contact.html", "customize.html",
+PUBLIC = ["", "invitations.html", "pricing.html", "how-it-works.html", "demo.html", "features.html", "live-demo-1/", "live-demo-2/", "live-demo-3/", "live-demo-4/", "live-demo-5/", "guide.html", "resources.html", "digital-vs-printed-kankotri.html", "inviting-guests-mayra-pithi-phere.html", "marwari-wedding-invitation-website.html", "marwari-kankotri-online.html", "hindi-wedding-invitation.html", "wedding-invitation-website-rsvp.html", "rajasthani-digital-wedding-invitation.html", "partners.html", "videos.html", "free-cards.html", "faq.html", "contact.html", "customize.html",
           "privacy.html", "terms.html"] + [f"design-{i['slug']}.html" for i in CATALOG]
 (OUT / "robots.txt").write_text(f"User-agent: *\nAllow: /\nDisallow: /account.html\nDisallow: /login.html\n\nSitemap: {BASE}/sitemap.xml\n")
 (OUT / "sitemap.xml").write_text('<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n' +
@@ -1641,7 +1652,7 @@ PUBLIC = ["", "invitations.html", "pricing.html", "how-it-works.html", "demo.htm
 - Five sample invitation websites (fictional couples): {LIVE_LLMS}
 - [FAQ]({BASE}/faq.html): kankotri, Mayra and Pithi, Hindi wording, RSVP, WhatsApp sharing, delivery, link validity, payment and revisions
 - [Free card maker]({BASE}/free-cards.html): 16 free templates (wedding, save the date, Sagai, anniversary, birthdays, Godh Bharai, Naamkaran, Mundan, Griha Pravesh, puja, Diwali, Holi, Teej/Gangaur, retirement, prayer meet); download PNG, JPG or PDF
-- [About]({BASE}/about.html) · [Contact]({BASE}/contact.html)
+- [Contact]({BASE}/contact.html)
 """ + "".join(f"- [{i['name']}]({BASE}/design-{i['slug']}.html): {COLL[i['collection']]} collection, from ₹{i['price']:,}\n" for i in CATALOG))
 (OUT / "bfi-contact.vcf").write_text(f"""BEGIN:VCARD\r\nVERSION:3.0\r\nFN:Bfiluxe\r\nORG:Bfiluxe\r\nTITLE:Digital wedding invitations\r\nTEL;TYPE=CELL,VOICE:{BIZ['tel']}\r\nEMAIL;TYPE=INTERNET:{BIZ['email']}\r\nURL:{BASE}/\r\nADR;TYPE=WORK:;;;{BIZ['city']};{BIZ['region']};;India\r\nNOTE:WhatsApp us for wedding invitations. {BIZ['hours']}.\r\nEND:VCARD\r\n""")
 

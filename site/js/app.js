@@ -227,13 +227,14 @@ function card(inv) {
   const on = favs.has(inv.slug);
   return `<article class="card" data-tags="${esc(tagsOf(inv))}">
     <button class="fav" data-fav="${esc(inv.slug)}" aria-pressed="${on}" aria-label="Save ${esc(inv.name)} to favourites">${ic("heart")}</button>
-    <a class="card-img" href="design-${encodeURIComponent(inv.slug)}.html"><img src="${ART(inv.image)}" alt="${esc(inv.name)} invitation: ${esc(inv.tagline)}" loading="lazy" width="360" height="540">${inviteText(inv.slug, { mini: true })}</a>
+    <a class="card-img card-stage" href="design-${encodeURIComponent(inv.slug)}.html" aria-label="${esc(inv.name)}: view design"><span class="h-badge">${COLLECTIONS[inv.collection] || ""}</span>
+      <span class="h-print"><img src="${ART(inv.image)}" alt="" loading="lazy" width="360" height="645"></span>
+      <span class="h-phone"><span class="phone-screen inv-wrap"><img src="${ART(inv.image)}" alt="${esc(inv.name)} invitation: ${esc(inv.tagline)}" loading="lazy" width="360" height="645">${inviteText(inv.slug, { mini: true })}</span></span></a>
     <div class="card-body">
-      <span class="tag">${COLLECTIONS[inv.collection]}</span>
       <h3><a href="design-${encodeURIComponent(inv.slug)}.html">${esc(inv.name)}</a></h3>
       <p class="card-desc">${esc(inv.tagline)}</p>${BEST[inv.slug] ? `<p class="card-best">Best for: ${esc(BEST[inv.slug])}</p>` : ""}
       <div class="card-meta"><span>${esc(inv.tier)}</span><span>from <b>${inr(inv.price_from)}</b></span></div>
-      <div class="card-acts"><a class="btn btn-sm btn-outline" href="demo.html?design=${encodeURIComponent(inv.slug)}">View live demo</a><a class="btn btn-sm btn-primary" href="design-${encodeURIComponent(inv.slug)}.html">View design</a></div>
+      <div class="card-acts"><a class="btn btn-sm btn-outline" href="demo.html?design=${encodeURIComponent(inv.slug)}">Live demo</a><a class="btn btn-sm btn-primary" href="design-${encodeURIComponent(inv.slug)}.html">View design</a></div>
     </div></article>`;
 }
 function bindFavs(root) {
