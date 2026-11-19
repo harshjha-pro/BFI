@@ -6,6 +6,7 @@ const $$ = (s, el = document) => [...el.querySelectorAll(s)];
 const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
 const params = new URLSearchParams(location.search);
 const IMG = (name) => CFG.imageBase + name;
+const ART = (name) => "img/art/cover-" + String(name).replace(/^(inv-|cover-)/, "").replace(/\.(jpg|webp)$/, "") + ".webp";
 const inr = (n) => "₹" + Number(n).toLocaleString("en-IN");
 
 /* ---------- icons (24px line icons) ---------- */
@@ -115,9 +116,7 @@ const BEST = { "rajwada-royale": "Grand traditional weddings", "gulmohar-classic
   "sheesh-mahal": "Palace & destination weddings", "chhatri": "Intimate, minimal weddings" };
 const tagsOf = (inv) => `${inv.collection} ${TAGS[inv.slug] || ""}`;
 const COLLECTIONS = { royal: "Royal", traditional: "Traditional", elegant: "Elegant", modern: "Modern" };
-const INSET = { "rajwada-royale": "24% 20% 37% 20%", "gulmohar-classic": "15% 17% 15% 17%", "gulabi-bagh": "17% 19% 17% 19%",
-  "mor-pankh": "14% 24% 30% 16%", "neel-mahal": "13% 16% 40% 16%", "gajraj-swagat": "12% 15% 43% 15%",
-  "sheesh-mahal": "23% 22% 47% 22%", "chhatri": "14% 17% 30% 17%" };
+const INSET = {"rajwada-royale": "47% 14% 18% 14%", "gulmohar-classic": "40% 16% 22% 16%", "gulabi-bagh": "41% 14% 22% 14%", "mor-pankh": "16% 38% 32% 10%", "neel-mahal": "44% 14% 23% 14%", "gajraj-swagat": "15% 14% 50% 14%", "sheesh-mahal": "49% 14% 17% 14%", "chhatri": "36% 14% 12% 14%"};
 function inviteText(slug, o = {}) {
   const tone = DARK.has(slug) ? "pv-dark" : "pv-light";
   const [a, b] = [o.a || "Priya", o.b || "Rohan"];
@@ -228,7 +227,7 @@ function card(inv) {
   const on = favs.has(inv.slug);
   return `<article class="card" data-tags="${esc(tagsOf(inv))}">
     <button class="fav" data-fav="${esc(inv.slug)}" aria-pressed="${on}" aria-label="Save ${esc(inv.name)} to favourites">${ic("heart")}</button>
-    <a class="card-img" href="design-${encodeURIComponent(inv.slug)}.html"><img src="${IMG(inv.image)}" alt="${esc(inv.name)} invitation: ${esc(inv.tagline)}" loading="lazy" width="360" height="540">${inviteText(inv.slug, { mini: true })}</a>
+    <a class="card-img" href="design-${encodeURIComponent(inv.slug)}.html"><img src="${ART(inv.image)}" alt="${esc(inv.name)} invitation: ${esc(inv.tagline)}" loading="lazy" width="360" height="540">${inviteText(inv.slug, { mini: true })}</a>
     <div class="card-body">
       <span class="tag">${COLLECTIONS[inv.collection]}</span>
       <h3><a href="design-${encodeURIComponent(inv.slug)}.html">${esc(inv.name)}</a></h3>
@@ -370,7 +369,7 @@ pages.customize = async () => {
     const i = inv(), main = mainEv();
     const [a, b] = D.order === "groom" ? [D.groom, D.bride] : [D.bride, D.groom];
     const pv = $("#pv"); pv.classList.add("inv-wrap"); pv.style.backgroundImage = "";
-    pv.innerHTML = `<img src="${IMG(i.image)}" alt="">` + inviteText(i.slug, { a: a || "Bride", b: b || "Groom", blessing: D.blessing, date: fmtDate(main.date || D.wedding_date) || "Wedding date", venue: main.venue || "Venue" });
+    pv.innerHTML = `<img src="${ART(i.image)}" alt="">` + inviteText(i.slug, { a: a || "Bride", b: b || "Groom", blessing: D.blessing, date: fmtDate(main.date || D.wedding_date) || "Wedding date", venue: main.venue || "Venue" });
     $("#pv-name").textContent = `${i.name} · ${D.package}`;
     $("#pv-events").textContent = `${D.events.length} event${D.events.length === 1 ? "" : "s"} · ${D.language} · est. ${inr(price())}`;
   }
@@ -382,7 +381,7 @@ pages.customize = async () => {
 
   function body(n) {
     if (n === 0) return `<p class="muted" style="margin-bottom:12px">1. Pick a design</p>
-      <div class="opt-grid">${all.map((i) => `<label class="opt"><input type="radio" name="design" value="${i.slug}" ${i.slug === D.design ? "checked" : ""}><img src="${IMG(i.image)}" alt="" loading="lazy"><span>${esc(i.name)}<small style="display:block;font-weight:400;color:var(--muted)">${i.tier} · from ${inr(i.price_from)}</small></span></label>`).join("")}</div>
+      <div class="opt-grid">${all.map((i) => `<label class="opt"><input type="radio" name="design" value="${i.slug}" ${i.slug === D.design ? "checked" : ""}><img src="${ART(i.image)}" alt="" loading="lazy"><span>${esc(i.name)}<small style="display:block;font-weight:400;color:var(--muted)">${i.tier} · from ${inr(i.price_from)}</small></span></label>`).join("")}</div>
       <p class="muted" style="margin:22px 0 12px">2. Choose a package</p>
       <div class="pkg-pick">${TIERS.map((t) => { const p = PKG[t], off = TIERS.indexOf(t) < TIERS.indexOf(minTier());
         return `<label class="pp${off ? " off" : ""}"><input type="radio" name="package" value="${t}" ${D.package === t ? "checked" : ""} ${off ? "disabled" : ""}>
@@ -650,7 +649,7 @@ pages.account = async () => {
   ]);
   await loadFavs();
   const when = (s) => new Date(s).toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" });
-  const thumb = (slug) => (bySlug[slug] ? `<img src="${IMG(bySlug[slug].image)}" alt="">` : "");
+  const thumb = (slug) => (bySlug[slug] ? `<img src="${ART(bySlug[slug].image)}" alt="">` : "");
   root.innerHTML = `
   <aside class="panel">
     <div style="display:flex;gap:14px;align-items:center"><span class="avatar" style="width:56px;height:56px;font-size:24px">${esc((displayName()[0] || "B").toUpperCase())}</span>
@@ -840,7 +839,7 @@ pages.demo = async () => {
   $("#dv-rsvp-note").textContent = C.rsvp;
   $("#wishes").innerHTML = C.wishes.map(([n, w]) => `<div class="wish"><b>${esc(n)}</b><p>${esc(w)}</p></div>`).join("");
   document.title = `Live Demo: ${C.a} & ${C.b} in ${inv.name} · Bfiluxe`;
-  $("#dv-card").innerHTML = `<img src="${IMG(inv.image)}" alt="${esc(inv.name)} invitation cover">` + inviteText(inv.slug, { a: C.a, b: C.b, blessing: C.coverLine, date: fmt(wedding), venue: C.venue[0] + ", " + C.city });
+  $("#dv-card").innerHTML = `<img src="${ART(inv.image)}" alt="${esc(inv.name)} invitation cover">` + inviteText(inv.slug, { a: C.a, b: C.b, blessing: C.coverLine, date: fmt(wedding), venue: C.venue[0] + ", " + C.city });
   document.body.dataset.theme = inv.slug;
   const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
   const fxBox = $("#petals");
@@ -858,7 +857,7 @@ pages.demo = async () => {
   const ambient = () => { spawn(th.fx === "stars" ? 30 : 26, true); if (!reduce) setInterval(() => !document.hidden && spawn(3), 2600); };
   const names = `<p class="in-names">${esc(C.a)} <span>&amp;</span> ${esc(C.b)}</p>`;
   const btn = `<button class="in-btn" type="button">${th.btn}</button>`;
-  const img = `url("${IMG(inv.image)}")`;
+  const img = `url("${ART(inv.image)}")`;
   const markup = {
     doors: `<div class="in-doors"><div class="door l" style="background-image:${img}"></div><div class="door r" style="background-image:${img}"></div><div class="in-mid">${names}${btn}</div></div>`,
     envelope: `<div class="env"><div class="env-box"><p class="env-names">${esc(C.a)} &amp; ${esc(C.b)}</p><div class="env-body"></div><div class="env-card" style="background-image:${img}"></div><div class="env-flap"></div><button class="env-seal in-btn" aria-label="Open the invitation">${esc(C.a[0])}&amp;${esc(C.b[0])}</button><p class="env-hint">Tap the seal to open</p></div></div>`,
@@ -920,7 +919,7 @@ pages.demo = async () => {
     <div class="acts"><a href="${mapsLink(venue.split(",").slice(1).join(",").trim() || venue)}" target="_blank" rel="noopener">Directions</a><button type="button" data-ics="${k}">Add to calendar</button></div></div></div>`; }).join("");
   $("#dv-events").addEventListener("click", (e) => { const b = e.target.closest("[data-ics]"); if (b) { const [n, name, time, venue] = ev[+b.dataset.ics]; ics(name, day(n), time, venue); } });
 
-  $("#dv-designs").innerHTML = all.map((i) => `<a href="demo.html?design=${i.slug}" aria-current="${i.slug === inv.slug}"><img src="${IMG(i.image)}" alt="" loading="lazy">${esc(i.name)}</a>`).join("");
+  $("#dv-designs").innerHTML = all.map((i) => `<a href="demo.html?design=${i.slug}" aria-current="${i.slug === inv.slug}"><img src="${ART(i.image)}" alt="" loading="lazy">${esc(i.name)}</a>`).join("");
   $("#dv-rsvp").addEventListener("submit", (e) => {
     e.preventDefault(); if (!validate(e.target)) return;
     e.target.outerHTML = `<div class="notice ok">Thank you! (This is a demo, so nothing was sent. On your real invitation, RSVPs reach you instantly with the guest count.)</div>`;

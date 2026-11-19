@@ -14,6 +14,7 @@ from pathlib import Path
 OUT = Path(__file__).resolve().parent.parent / "site"
 V = "20261118a"  # bump to bust browser caches for css/js
 BASE = "https://bfi-royal-heritage.vercel.app"
+ART = "img/art/"
 IMGBASE = "https://oaosapkkzoynaqpnmvrj.supabase.co/storage/v1/object/public/site/"
 BIZ = {
     "name": "Bfiluxe",
@@ -50,7 +51,7 @@ CATALOG = [
      "Minimal and refined: one gold-line chhatri pavilion and plenty of ivory space for your words.",
      ["Customizable names, dates and text", "Hindi, English or bilingual", "Shareable link and QR code"]),
 ]
-CATALOG = [dict(slug=s, name=n, collection=c, tier=t, price=p, tagline=tg, desc=d, features=f, image=f"inv-{s}.jpg")
+CATALOG = [dict(slug=s, name=n, collection=c, tier=t, price=p, tagline=tg, desc=d, features=f, image=f"cover-{s}.webp")
            for s, n, c, t, p, tg, d, f in CATALOG]
 COLL = {"royal": "Royal", "traditional": "Traditional", "elegant": "Elegant", "modern": "Modern"}
 TAGS = {"rajwada-royale": "royal luxury rajasthani", "gulmohar-classic": "traditional floral rajasthani", "gulabi-bagh": "elegant floral",
@@ -62,9 +63,7 @@ BEST = {"rajwada-royale": "Grand traditional weddings", "gulmohar-classic": "Cla
 FILTERS = [("all", "All"), ("royal", "Royal"), ("traditional", "Traditional"), ("elegant", "Elegant"), ("modern", "Modern"),
            ("floral", "Floral"), ("minimal", "Minimal"), ("luxury", "Luxury"), ("rajasthani", "Rajasthani")]
 DARK = {"rajwada-royale", "mor-pankh", "neel-mahal", "sheesh-mahal"}
-INSET = {"rajwada-royale": "24% 20% 37% 20%", "gulmohar-classic": "15% 17% 15% 17%", "gulabi-bagh": "17% 19% 17% 19%",
-         "mor-pankh": "14% 24% 30% 16%", "neel-mahal": "13% 16% 40% 16%", "gajraj-swagat": "12% 15% 43% 15%",
-         "sheesh-mahal": "23% 22% 47% 22%", "chhatri": "14% 17% 30% 17%"}
+INSET = {"rajwada-royale": "47% 14% 18% 14%", "gulmohar-classic": "40% 16% 22% 16%", "gulabi-bagh": "41% 14% 22% 14%", "mor-pankh": "16% 38% 32% 10%", "neel-mahal": "44% 14% 23% 14%", "gajraj-swagat": "15% 14% 50% 14%", "sheesh-mahal": "49% 14% 17% 14%", "chhatri": "36% 14% 12% 14%"}
 
 
 def invite_text(inv, full=True, names=("Priya", "Rohan"), date="Saturday, 14 February", venue="Rambagh Gardens, Jaipur"):
@@ -263,9 +262,9 @@ LANDING_DESIGN = {"marwari-wedding-invitation-website": "sheesh-mahal", "marwari
 
 def hero_parts(slug):
     """Each page gets its own hero design: (variant, extra copy, art html, section style)."""
-    I_ = lambda n: IMGBASE + n
+    I_ = lambda n: (ART + n) if n.startswith("cover-") else (IMGBASE + n)
     if slug == "invitations":
-        art = ('<div class="fan">' + "".join(f'<img class="f{k}" src="{I_(n)}" alt="{a}" width="360" height="540">' for k, (n, a) in enumerate(
+        art = ('<div class="fan">' + "".join(f'<img class="f{k}" src="{I_(n)}" alt="{a}" width="360" height="645">' for k, (n, a) in enumerate(
             [("inv-mor-pankh.jpg", "Mor Pankh invitation"), ("inv-rajwada-royale.jpg", "Rajwada Royale invitation"), ("inv-gulabi-bagh.jpg", "Gulabi Bagh invitation")]))
             + f'<span class="fan-badge"><b>8</b> designs<br>from {inr(3999)}</span></div>')
         extra = '<div class="row hero-mini"><a class="btn btn-primary" href="#grid">Browse designs</a><a class="btn btn-ghost" href="demo.html">Open a live demo</a></div>'
@@ -282,7 +281,7 @@ def hero_parts(slug):
     if slug == "videos":
         inv = next(i for i in CATALOG if i["slug"] == "gulmohar-classic")
         art = (f'<div class="vid"><div class="phone vid-phone"><div class="phone-screen vid-screen">'
-               f'<img class="vid-bg" src="{I_(inv["image"])}" alt="" width="720" height="1080">'
+               f'<img class="vid-bg" src="{I_(inv["image"])}" alt="" width="720" height="1290">'
                '<p class="vs1" lang="hi">॥ श्री गणेशाय नमः ॥</p><p class="vs2">Priya <small>weds</small> Rohan</p>'
                '<p class="vs3">Mayra · Pithi · Sangeet · Phere</p><p class="vs4">Saturday, 14 February<br><small>Rambagh Gardens, Jaipur</small></p>'
                '<span class="vid-bar"><i></i></span><span class="vid-play" aria-hidden="true">▶</span></div></div>'
@@ -303,7 +302,7 @@ def hero_parts(slug):
         return "scroll", "", "", f' style="--bg:url({I_("hero-guide.jpg")})"'
     if slug == "free-cards":
         cards = ["birthday-kids", "diwali", "griha-pravesh", "godh-bharai", "holi", "wedding"]
-        art = ('<div class="stack" data-stack>' + "".join(f'<img class="s{k} p{k}" src="{I_("tpl-" + c + ".jpg")}" alt="{c.replace("-", " ").title()} card template" width="360" height="540" loading="{"eager" if k < 3 else "lazy"}">' for k, c in enumerate(cards))
+        art = ('<div class="stack" data-stack>' + "".join(f'<img class="s{k} p{k}" src="{I_("tpl-" + c + ".jpg")}" alt="{c.replace("-", " ").title()} card template" width="360" height="645" loading="{"eager" if k < 3 else "lazy"}">' for k, c in enumerate(cards))
                + '</div>')
         extra = '<ul class="hero-chips"><li>16 templates</li><li>PNG · JPG · PDF</li><li>No sign-up</li></ul><div class="row hero-mini"><a class="btn btn-primary" href="#tpl-grid">Start making a card</a></div>'
         return "stack", extra, art, ""
@@ -314,7 +313,7 @@ def hero_parts(slug):
         return "postcard", "", art, ""
     if slug == "features":
         ics = ["pin", "music", "rsvp", "qr", "globe", "image", "clock", "share"]
-        art = ('<div class="orbit"><div class="phone orbit-phone"><div class="phone-screen inv-wrap">' + f'<img src="{I_("inv-rajwada-royale.jpg")}" alt="Invitation on a phone" width="720" height="1080">' + invite_text(CATALOG[0]) + '</div></div>'
+        art = ('<div class="orbit"><div class="phone orbit-phone"><div class="phone-screen inv-wrap">' + f'<img src="{I_("inv-rajwada-royale.jpg")}" alt="Invitation on a phone" width="720" height="1290">' + invite_text(CATALOG[0]) + '</div></div>'
                '<div class="ring">' + "".join(f'<span style="--a:{k * 45}deg">{icon(I[c])}</span>' for k, c in enumerate(ics)) + '</div></div>')
         return "orbit", "", art, ""
     if slug == "resources":
@@ -328,14 +327,14 @@ def hero_parts(slug):
         return "roles", "", art, ""
     if slug in LANDING_DESIGN:
         inv = next(i for i in CATALOG if i["slug"] == LANDING_DESIGN[slug])
-        art = (f'<div class="land"><div class="phone land-phone"><div class="phone-screen inv-wrap"><img src="{I_(inv["image"])}" alt="{inv["name"]} invitation" width="720" height="1080">{invite_text(inv)}</div></div>'
+        art = (f'<div class="land"><div class="phone land-phone"><div class="phone-screen inv-wrap"><img src="{I_(inv["image"])}" alt="{inv["name"]} invitation" width="720" height="1290">{invite_text(inv)}</div></div>'
                f'<a class="land-tag" href="design-{inv["slug"]}.html">Shown: {inv["name"]} →</a></div>')
         extra = '<div class="row hero-mini"><a class="btn btn-primary" href="invitations.html">See designs</a><a class="btn btn-ghost" href="demo.html">Open live demo</a></div>'
         return "landing", extra, art, ""
     if slug == "digital-vs-printed-kankotri":
-        art = (f'<div class="versus"><figure class="vs-card"><img src="{I_("inv-chhatri.jpg")}" alt="A printed card" width="360" height="540"><figcaption>Printed</figcaption></figure>'
+        art = (f'<div class="versus"><figure class="vs-card"><img src="{I_("inv-chhatri.jpg")}" alt="A printed card" width="360" height="645"><figcaption>Printed</figcaption></figure>'
                '<span class="vs">VS</span>'
-               f'<figure class="vs-phone"><div class="phone"><div class="phone-screen inv-wrap"><img src="{I_("inv-gulmohar-classic.jpg")}" alt="A digital invitation on a phone" width="720" height="1080">' + invite_text(CATALOG[1]) + '</div></div><figcaption>Digital</figcaption></figure></div>')
+               f'<figure class="vs-phone"><div class="phone"><div class="phone-screen inv-wrap"><img src="{I_("inv-gulmohar-classic.jpg")}" alt="A digital invitation on a phone" width="720" height="1290">' + invite_text(CATALOG[1]) + '</div></div><figcaption>Digital</figcaption></figure></div>')
         return "versus", "", art, ""
     if slug == "inviting-guests-mayra-pithi-phere":
         art = (f'<div class="ritpic"><img src="{I_("ritual-baraat.jpg")}" alt="Miniature-style painting of a baraat procession" width="1000" height="666">'
@@ -467,7 +466,7 @@ def card(inv):
     tone = "pv-dark" if inv["slug"] in DARK else "pv-light"
     return f'''<article class="card" data-tags="{TAGS[inv["slug"]]}">
     <button class="fav" data-fav="{inv["slug"]}" aria-pressed="false" aria-label="Save {inv["name"]} to favourites">{icon(I["heart"])}</button>
-    <a class="card-img" href="design-{inv["slug"]}.html"><img src="{IMGBASE}{inv["image"]}" alt="{inv["name"]} invitation: {inv["tagline"]}" loading="lazy" width="360" height="540">{invite_text(inv, full=False)}</a>
+    <a class="card-img" href="design-{inv["slug"]}.html"><img src="{ART}{inv["image"]}" alt="{inv["name"]} invitation: {inv["tagline"]}" loading="lazy" width="360" height="645">{invite_text(inv, full=False)}</a>
     <div class="card-body"><span class="tag">{COLL[inv["collection"]]}</span><h3><a href="design-{inv["slug"]}.html">{inv["name"]}</a></h3>
       <p class="card-desc">{inv["tagline"]}</p><p class="card-best">Best for: {BEST[inv["slug"]]}</p>
       <div class="card-meta"><span>{inv["tier"]}</span><span>from <b>{inr(inv["price"])}</b></span></div>
@@ -509,7 +508,7 @@ PROD_BADGE = {"rajwada-royale": "Royal", "gulmohar-classic": "Floral", "gulabi-b
 
 
 def mini_phone(inv, cls="h-phone"):
-    return (f'<span class="{cls}"><span class="phone-screen inv-wrap"><img src="{IMGBASE}{inv["image"]}" alt="" loading="lazy" width="360" height="540">'
+    return (f'<span class="{cls}"><span class="phone-screen inv-wrap"><img src="{ART}{inv["image"]}" alt="" loading="lazy" width="360" height="645">'
             f'{invite_text(inv, full=False)}</span></span>')
 
 
@@ -517,7 +516,7 @@ def prod_card(inv):
     return f"""<article class="h-prod">
   <a class="h-prod-stage" href="design-{inv["slug"]}.html" aria-label="{inv["name"]}: view design">
     <span class="h-badge">{PROD_BADGE[inv["slug"]]}</span>
-    <span class="h-print"><img src="{IMGBASE}{inv["image"]}" alt="" loading="lazy" width="360" height="540"></span>
+    <span class="h-print"><img src="{ART}{inv["image"]}" alt="" loading="lazy" width="360" height="645"></span>
     {mini_phone(inv)}
   </a>
   <button class="fav" data-fav="{inv["slug"]}" aria-pressed="false" aria-label="Save {inv["name"]} to favourites">{icon(I["heart"])}</button>
@@ -630,7 +629,7 @@ HOME = f'''
     <ul class="h-chips">{"".join(f"<li>{x}</li>" for x in CHIPS)}</ul>
     <a class="btn btn-primary" href="customize.html">Start my invitation</a>
   </div>
-  <div class="h-inside-phone"><span class="h-bigphone"><span class="phone-screen">{inside_imgs()}</span></span></div>
+  <div class="h-inside-phone"><img class="h-obj h-env" src="img/art/obj-envelope.webp" alt="" width="831" height="627" loading="lazy"><span class="h-bigphone"><span class="phone-screen">{inside_imgs()}</span></span></div>
 </div></section>
 
 <section class="sec h-how"><div class="wrap">
@@ -695,11 +694,7 @@ HOME = f'''
 </div></section>
 
 <section class="h-close"><div class="wrap">
-  <img class="h-obj h-close-k" src="img/art/obj-kalash.webp" alt="" width="809" height="660" loading="lazy">
-  <img class="h-obj h-close-s" src="img/art/obj-wax-seal.webp" alt="" width="900" height="579" loading="lazy">
-  <img class="h-obj h-close-p" src="img/art/obj-potli.webp" alt="" width="515" height="625" loading="lazy">
-  <img class="h-obj h-close-b" src="img/art/obj-bangles.webp" alt="" width="656" height="602" loading="lazy">
-  <img class="h-obj h-close-sc" src="img/art/obj-scroll.webp" alt="" width="791" height="681" loading="lazy">
+  <img class="h-couple" src="img/art/stk-couple.webp" alt="Illustration of a Marwari bride and groom holding hands" width="559" height="809" loading="lazy">
   <p class="deva" lang="hi">॥ शुभ विवाह ॥</p>
   <h2>Your celebration deserves <em>a beautiful beginning.</em></h2>
   <p>Tell us your names and wedding date. We'll suggest designs and confirm the price before you pay anything.</p>
@@ -764,9 +759,9 @@ for inv in CATALOG:
   <div class="detail" id="detail" data-slug="{inv["slug"]}" data-name="{inv["name"]}">
     <div class="gallery">
       <div class="big" id="slide">
-        <div class="slide inv-wrap"><img src="{IMGBASE}{inv["image"]}" alt="{inv["name"]} invitation cover with sample wording" width="720" height="1080" fetchpriority="high">{invite_text(inv)}</div>
-        <div class="slide" hidden><img src="{IMGBASE}{inv["image"]}" alt="{inv["name"]} artwork: {inv["tagline"]}" loading="lazy"></div>
-        <div class="slide slide-phone" hidden><div class="phone"><div class="phone-screen inv-wrap"><img src="{IMGBASE}{inv["image"]}" alt="{inv["name"]} invitation on a phone" loading="lazy">{invite_text(inv)}</div></div></div>
+        <div class="slide inv-wrap"><img src="{ART}{inv["image"]}" alt="{inv["name"]} invitation cover with sample wording" width="720" height="1290" fetchpriority="high">{invite_text(inv)}</div>
+        <div class="slide" hidden><img src="{ART}{inv["image"]}" alt="{inv["name"]} artwork: {inv["tagline"]}" loading="lazy"></div>
+        <div class="slide slide-phone" hidden><div class="phone"><div class="phone-screen inv-wrap"><img src="{ART}{inv["image"]}" alt="{inv["name"]} invitation on a phone" loading="lazy">{invite_text(inv)}</div></div></div>
       </div>
       <button class="nav-arrow prev" aria-label="Previous image">{icon(I["left"])}</button>
       <button class="nav-arrow next" aria-label="Next image">{icon(I["right"])}</button>
@@ -801,8 +796,8 @@ for inv in CATALOG:
 </div></section>'''
     page(f"design-{inv['slug']}", f"{inv['name']}: {COLL[inv['collection']]} Digital Wedding Invitation | Bfiluxe",
          f"{inv['name']} digital wedding invitation: {inv['tagline'].lower()}. {COLL[inv['collection']]} collection, from {inr(inv['price'])}, ready in {days}.",
-         body, "invitations", og_image=IMGBASE + inv["image"],
-         ld=[{"@context": "https://schema.org", "@type": "Product", "name": f"{inv['name']} digital wedding invitation", "image": IMGBASE + inv["image"],
+         body, "invitations", og_image=BASE + "/" + ART + inv["image"],
+         ld=[{"@context": "https://schema.org", "@type": "Product", "name": f"{inv['name']} digital wedding invitation", "image": BASE + "/" + ART + inv["image"],
               "description": inv["desc"], "brand": {"@type": "Brand", "name": "Bfiluxe"}, "category": "Digital wedding invitation",
               "offers": {"@type": "Offer", "price": inv["price"], "priceCurrency": "INR", "availability": "https://schema.org/InStock", "url": f"{BASE}/design-{inv['slug']}.html", "seller": {"@id": BASE + "/#business"}}},
              {"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [
@@ -894,7 +889,7 @@ HOW_STEPS = [
      ["One link for all guests", "QR code for printed kankotri", "Updates without re-sending"], ("demo.html", "See what guests receive")),
 ]
 how_rows = "".join(f'''<div class="hrow reveal">
-  <div class="hrow-img"><img data-img="{img}" alt="" loading="lazy" width="360" height="540"><span class="hrow-num">{n}</span></div>
+  <div class="hrow-img"><img data-img="{img}" alt="" loading="lazy" width="360" height="645"><span class="hrow-num">{n}</span></div>
   <div><p class="eyebrow">Step {n}</p><h3 style="font-size:clamp(26px,3.6vw,34px);color:var(--maroon);margin-top:6px">{t}</h3><p class="lead" style="margin-top:10px">{d}</p>
     <ul class="checks">{"".join(f"<li>{icon(I['check'])}{x}</li>" for x in pts)}</ul>
     {f'<a class="btn btn-outline" href="{cta[0]}">{cta[1]} {icon(I["arrow"])}</a>' if cta else ''}</div></div>''' for n, t, ic, img, d, pts, cta in HOW_STEPS)
