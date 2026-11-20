@@ -12,7 +12,7 @@ from html import escape
 from pathlib import Path
 
 OUT = Path(__file__).resolve().parent.parent / "site"
-V = "20261119b"  # bump to bust browser caches for css/js
+V = "20261119c"  # bump to bust browser caches for css/js
 BASE = "https://bfi-royal-heritage.vercel.app"
 ART = "img/art/"
 IMGBASE = "https://oaosapkkzoynaqpnmvrj.supabase.co/storage/v1/object/public/site/"
@@ -859,7 +859,7 @@ ROWS = [("Designs available", "Basic collection", "Basic + Premium", "All + besp
 PRICING = f'''
 <section class="phead"><div class="wrap"><h1>Digital Wedding Invitation Pricing</h1><p class="lead">Three clear packages. Pay 50% to start and 50% only after you approve your invitation.</p></div></section>
 <section class="sec" style="padding-top:36px"><div class="wrap">
-  {package_cards()}
+  {plan_cards()}
   <div class="trust-row">
     <div>{icon(I["shield"])}<span><b>Pay half after approval</b>50% advance, 50% when you love it</span></div>
     <div>{icon(I["refresh"])}<span><b>Free spelling fixes</b>Always, even after sharing</span></div>
