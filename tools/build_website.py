@@ -260,9 +260,23 @@ LANDING_DESIGN = {"marwari-wedding-invitation-website": "sheesh-mahal", "marwari
                   "wedding-invitation-website-rsvp": "neel-mahal", "rajasthani-digital-wedding-invitation": "mor-pankh"}
 
 
+LIVE_HERO = {"pricing": 2, "videos": 4, "how-it-works": 1, "features": 5, "faq": 3, "contact": 2, "guide": 4, "resources": 3, "partners": 1}
+
+
 def hero_parts(slug):
     """Each page gets its own hero design: (variant, extra copy, art html, section style)."""
     I_ = lambda n: (ART + n) if n.startswith("cover-") else (IMGBASE + n)
+    if slug in LIVE_HERO:
+        n = LIVE_HERO[slug]; t = next(x for x in LIVE if x[0] == n)
+        chips = ""
+        if slug == "pricing":
+            chips = "".join(f'<span class="lh-chip c{k}"><b>{nm}</b>{inr(pr)}</span>' for k, (nm, pr, *_r) in enumerate(PACKAGES))
+        elif slug == "videos":
+            chips = '<span class="lh-chip c0"><b>9:16</b>Status &amp; Reels</span><span class="lh-chip c1"><b>Music</b>Shehnai · Santoor</span><span class="lh-chip c2"><b>{0}</b>From ₹1,499</span>'.format("Videos")
+        art = (f'<div class="live-hero">{chips}<div class="lh-phone"><div class="lh-screen" data-lh><iframe src="live-demo-{n}/?preview=1" title="Live sample invitation: {t[1]} (fictional names)" loading="eager"></iframe></div></div>'
+               f'<p class="lh-cap"><span class="lh-dot"></span>Live sample · {t[1]} · fictional names <a href="live-demo-{n}/" target="_blank" rel="noopener">Open full screen</a></p></div>')
+        extra = ""
+        return "live", extra, art, ""
     if slug == "invitations":
         art = ('<div class="fan">' + "".join(f'<img class="f{k}" src="{I_(n)}" alt="{a}" width="360" height="645">' for k, (n, a) in enumerate(
             [("cover-mor-pankh.webp", "Mor Pankh invitation"), ("cover-rajwada-royale.webp", "Rajwada Royale invitation"), ("cover-gulabi-bagh.webp", "Gulabi Bagh invitation")]))

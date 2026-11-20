@@ -1217,3 +1217,9 @@ var WA_SVG = '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><p
     if (!reduce) timer = setInterval(() => { i++; paint(); }, 2600);
   }
 })();
+
+/* ---------- live invitation heroes: scale the 390px-wide demo to fit its phone ---------- */
+(() => {
+  const fit = (el) => el.style.setProperty("--k", (el.clientWidth / 390).toFixed(4));
+  document.querySelectorAll("[data-lh]").forEach((el) => { fit(el); "ResizeObserver" in window && new ResizeObserver(() => fit(el)).observe(el); });
+})();
