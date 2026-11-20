@@ -80,3 +80,6 @@ main:focus{outline:none}
 html[data-lang="hi"] [data-l="en"],html:not([data-lang="hi"]) [data-l="hi"]{display:none!important}
 
 @media (prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}[data-anim]{opacity:1!important;transform:none!important;filter:none!important}}
+/* embedded preview on bfiluxe pages: no sample bar, no scrollbars */
+.ld-pv,.ld-pv body{scrollbar-width:none}.ld-pv::-webkit-scrollbar{display:none}
+.ld-pv [data-music]{display:none}

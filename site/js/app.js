@@ -1124,7 +1124,7 @@ var WA_SVG = '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><p
 
 /* ---------- Home v2: parallax hero, interactive phone, sticky steps, word reveal ---------- */
 (() => {
-  if (!document.querySelector(".h-hero")) return;
+  if (!document.querySelector(".h-hero, .h-inside, .h-how")) return;
   const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
   // hero parallax (pointer)
   const stage = document.querySelector("[data-parallax]");
@@ -1188,4 +1188,38 @@ var WA_SVG = '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><p
     items.forEach((li, k) => li.addEventListener("click", () => { show(k); clearInterval(timer); timer = setInterval(() => show(i + 1), 3000); }));
     if (!reduce && "IntersectionObserver" in window) new IntersectionObserver(([e]) => { clearInterval(timer); if (e.isIntersecting) { show(i); timer = setInterval(() => show(i + 1), 3000); } }, { threshold: .3 }).observe(pl);
   }
+})();
+
+/* ---------- Lively layer 2: headings rise word by word, package picker ---------- */
+(() => {
+  const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  if (!reduce && "IntersectionObserver" in window) {
+    const heads = document.querySelectorAll(".h-display, .sec-head h2, .lx-head h2, .phero-copy h1, .cta-min h2, .lx-faq h2, .split:has(details.acc) h2");
+    const wrapWords = (el) => { let n = 0;
+      const walk = (node) => { [...node.childNodes].forEach((c) => {
+        if (c.nodeType === 3) { const frag = document.createDocumentFragment();
+          c.textContent.split(/(\s+)/).forEach((w) => { if (!w) return; if (/^\s+$/.test(w)) { frag.appendChild(document.createTextNode(w)); return; }
+            const sp = document.createElement("span"); sp.className = "sw"; sp.style.setProperty("--w", n++); sp.textContent = w; frag.appendChild(sp); });
+          c.replaceWith(frag); }
+        else if (c.nodeType === 1 && !c.classList.contains("sw")) walk(c); }); };
+      walk(el); el.classList.add("sw-on"); };
+    const io = new IntersectionObserver((es) => es.forEach((e) => { if (e.isIntersecting) { e.target.classList.add("sw-in"); io.unobserve(e.target); } }), { rootMargin: "0px 0px -8% 0px" });
+    heads.forEach((h) => { if (h.closest(".h-hero")) return; wrapWords(h); io.observe(h); });
+  }
+  // pricing: tap a package, the phone shows what it opens
+  const pk = document.querySelector("[data-picker]");
+  if (pk) {
+    const tabs = [...document.querySelectorAll(".pk-tabs [data-tier]")], lists = [...document.querySelectorAll(".pk-list")], imgs = [...pk.querySelectorAll("img")];
+    let tier = "Basic", i = 0, timer = 0;
+    const paint = () => { const set = imgs.filter((x) => x.dataset.tier === tier); imgs.forEach((x) => x.classList.remove("on")); set[i % set.length].classList.add("on"); };
+    const pick = (t) => { tier = t; i = 0; tabs.forEach((b) => b.setAttribute("aria-selected", b.dataset.tier === t)); lists.forEach((l) => (l.hidden = l.dataset.tier !== t)); paint(); };
+    tabs.forEach((b) => b.addEventListener("click", () => pick(b.dataset.tier)));
+    if (!reduce) timer = setInterval(() => { i++; paint(); }, 2600);
+  }
+})();
+
+/* ---------- live invitation heroes: scale the 390px-wide demo to fit its phone ---------- */
+(() => {
+  const fit = (el) => el.style.setProperty("--k", (el.clientWidth / 390).toFixed(4));
+  document.querySelectorAll("[data-lh]").forEach((el) => { fit(el); "ResizeObserver" in window && new ResizeObserver(() => fit(el)).observe(el); });
 })();

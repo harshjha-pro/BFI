@@ -10,6 +10,7 @@
   const html = document.documentElement;
   const still = matchMedia("(prefers-reduced-motion: reduce)").matches;
   const params = new URLSearchParams(location.search);
+  const PV = params.get("preview") === "1"; // embedded on bfiluxe pages: opens itself, silent, slow autoscroll
   const rnd = (a, b) => a + Math.random() * (b - a);
 
   /* ---------- dates: always N days from today ---------- */
@@ -27,7 +28,7 @@
   /* ---------- sample ribbon ---------- */
   const rib = document.createElement("div"); rib.className = "ld-ribbon";
   rib.innerHTML = `<span class="l"><b>Sample invitation by Bfiluxe</b> · names, venues and photos are fictional</span><span class="s"><b>Sample</b> · fictional names</span><a href="../customize.html">Create yours</a>`;
-  document.body.prepend(rib);
+  if (!PV) document.body.prepend(rib); else document.documentElement.classList.add("ld-pv");
 
   /* ---------- full-screen effects canvas (petals + bursts) ---------- */
   const cv = document.createElement("canvas"); cv.className = "ld-fx"; cv.setAttribute("aria-hidden", "true"); document.body.append(cv);
@@ -153,12 +154,12 @@
   const minWait = new Promise((r) => setTimeout(r, still ? 0 : 1500));
   Promise.race([Promise.all([preloadAll, minWait]), new Promise((r) => setTimeout(r, 6000))]).then(() => {
     if (bar) bar.style.transform = "scaleX(1)";
-    setTimeout(() => { pre?.classList.add("gone"); setTimeout(() => pre?.remove(), 700); if (!cover) start(); else if (params.get("open") === "1") open(); }, still ? 0 : 300);
+    setTimeout(() => { pre?.classList.add("gone"); setTimeout(() => pre?.remove(), 700); if (!cover) start(); else if (params.get("open") === "1") open(); else if (PV) setTimeout(open, 1600); }, still ? 0 : 300);
   });
   function start() { html.classList.remove("locked"); html.classList.add("opened"); startPetals(); document.dispatchEvent(new Event("ld:open")); }
   function open() {
     if (!cover || cover.classList.contains("is-open")) return;
-    cover.classList.add("is-open"); if (params.get("open") !== "1") playMusic(true);
+    cover.classList.add("is-open"); if (params.get("open") !== "1" && !PV) playMusic(true);
     const d = +(cover.dataset.burstAt || 700);
     setTimeout(() => burst(C.burst, +(C.burstMs || 1800)), still ? 0 : d);
     setTimeout(() => { cover.remove(); start(); $("main")?.focus({ preventScroll: true }); }, still ? 0 : +(cover.dataset.dur || 1800));
@@ -223,4 +224,16 @@
   $$("[data-share]").forEach((b) => b.addEventListener("click", () => window.open(`https://wa.me/?text=${encodeURIComponent(document.title.split(" · ")[0] + "\n" + location.href.split("?")[0])}`, "_blank", "noopener")));
   $$("[data-copy]").forEach((b) => b.addEventListener("click", async () => { try { await navigator.clipboard.writeText(location.href.split("?")[0]); toast("Link copied"); } catch { toast(location.href.split("?")[0]); } }));
   $$("[data-lang-to]").forEach((b) => b.addEventListener("click", () => { html.dataset.lang = b.dataset.langTo; $$("[data-lang-to]").forEach((x) => x.setAttribute("aria-pressed", x.dataset.langTo === b.dataset.langTo)); }));
+
+  /* ---------- preview mode: drift slowly down the invitation, pause at the end, loop; stop on any touch ---------- */
+  if (PV) {
+    let on = true, t = 0, hold = 0;
+    const stop = () => { on = false; };
+    ["wheel", "touchstart", "pointerdown", "keydown"].forEach((ev) => addEventListener(ev, stop, { passive: true, once: true }));
+    document.addEventListener("ld:open", () => setTimeout(() => { const tick = () => { if (!on) return;
+      const max = document.documentElement.scrollHeight - innerHeight;
+      if (hold > 0) { hold--; } else if (scrollY >= max - 2) { hold = 90; setTimeout(() => on && scrollTo({ top: 0, behavior: "smooth" }), 1500); }
+      else { t += 1; scrollBy(0, 1.1); }
+      requestAnimationFrame(tick); }; requestAnimationFrame(tick); }, 1800));
+  }
 })();
