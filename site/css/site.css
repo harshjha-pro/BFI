@@ -1987,3 +1987,43 @@ details.acc[open]{background:var(--glass-strong)}
 .trust-row>div svg,.policy>div svg,.why-list svg,.value svg,.strip-item svg{width:44px!important;height:44px!important;padding:10px;margin:0 0 10px!important;border-radius:50%;background:var(--glass-strong);border:1px solid var(--glass-brd);box-shadow:var(--glass-shadow);color:var(--burgundy)!important;transition:transform .6s cubic-bezier(.3,1.6,.5,1),background .4s,color .4s;box-sizing:border-box}
 .trust-row>div:hover svg,.policy>div:hover svg,.why-list>div:hover svg,.value:hover svg,.strip-item:hover svg{transform:scale(1.12) rotate(-6deg);background:var(--burgundy);color:#F6E6C2!important}
 .value h3,.why-list b,.policy b,.next3 b{font-family:var(--serif);font-weight:400}
+
+/* =================== Lively layer 3 (20 Nov 2026): moving ribbon, rising headings, package picker =================== */
+/* ribbon of rituals under every page header */
+.ribbon{padding:clamp(18px,3vw,34px) 0;overflow:hidden;border-top:1px solid var(--rule);border-bottom:1px solid var(--rule);background:rgba(255,253,248,.35);-webkit-backdrop-filter:var(--blur);backdrop-filter:var(--blur)}
+.rb-row{overflow:hidden;-webkit-mask:linear-gradient(90deg,transparent,#000 8%,#000 92%,transparent);mask:linear-gradient(90deg,transparent,#000 8%,#000 92%,transparent)}
+.rb-track{display:flex;align-items:center;gap:clamp(18px,2.4vw,34px);width:max-content;animation:hMarquee 48s linear infinite}
+.rb-a span{font:italic 400 clamp(30px,4.4vw,58px)/1.1 var(--serif);color:var(--charcoal);white-space:nowrap}
+.rb-a span[lang]{font:400 clamp(24px,3.4vw,44px)/1.1 var(--deva);color:var(--burgundy)}
+.rb-a i{font-style:normal;color:var(--gold-accent);font-size:clamp(16px,1.8vw,22px)}
+.rb-b{margin-top:10px}
+.rb-b .rb-track{animation-duration:38s;animation-direction:reverse}
+.rb-b span{font:600 11.5px/1 var(--sans);letter-spacing:.2em;text-transform:uppercase;color:var(--ink-2);white-space:nowrap}
+.rb-b i{font-style:normal;color:var(--gold-accent)}
+.ribbon:hover .rb-track{animation-play-state:paused}
+
+/* headings rise in, word by word */
+.sw-on .sw{display:inline-block;opacity:0;transform:translateY(.55em) rotate(2deg);filter:blur(4px);transition:opacity .8s cubic-bezier(.2,.7,.2,1),transform .8s cubic-bezier(.2,.7,.2,1),filter .8s;transition-delay:calc(var(--w) * 60ms)}
+.sw-on.sw-in .sw{opacity:1;transform:none;filter:none}
+.sw-on.reveal{opacity:1;transform:none;filter:none}
+
+/* package picker on the pricing page */
+.pk-grid{display:grid;gap:44px;align-items:center}
+@media(min-width:900px){.pk-grid{grid-template-columns:1.05fr .95fr;gap:clamp(48px,7vw,110px)}}
+.pk-tabs{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:28px 0 22px}
+.pk-tabs button{display:flex;flex-direction:column;align-items:flex-start;gap:4px;padding:16px 16px 14px;border-radius:var(--rad);border:1px solid var(--glass-brd);background:var(--glass);-webkit-backdrop-filter:var(--blur);backdrop-filter:var(--blur);box-shadow:var(--glass-shadow);cursor:pointer;text-align:left;transition:transform .4s cubic-bezier(.2,.7,.2,1),background .3s,color .3s}
+.pk-tabs button:hover{transform:translateY(-3px)}
+.pk-tabs b{font:italic 400 24px/1 var(--serif);color:var(--charcoal)}
+.pk-tabs span{font:400 22px/1 var(--serif);color:var(--burgundy)}
+.pk-tabs small{font-size:11.5px;color:var(--ink-2)}
+.pk-tabs [aria-selected=true]{background:linear-gradient(180deg,#6E2838,#4F1A25);border-color:transparent}
+.pk-tabs [aria-selected=true] b,.pk-tabs [aria-selected=true] span{color:#FFF4E6}.pk-tabs [aria-selected=true] small{color:rgba(255,244,230,.75)}
+.pk-list{animation:faqIn .5s cubic-bezier(.2,.7,.2,1)}
+.pk-list>p{color:var(--ink-2);margin-bottom:14px}
+.pk-list .checks{margin-bottom:26px}
+.pk-phone{display:flex;justify-content:center;position:relative}
+.pk-phone::before{content:"";position:absolute;inset:6% -4% 10%;background:radial-gradient(circle,rgba(177,140,88,.24),transparent 65%)}
+.pk-phone .phone-screen>img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:top;opacity:0;transform:scale(1.05);transition:opacity .6s ease,transform .9s ease}
+.pk-phone .phone-screen>img.on{opacity:1;transform:none}
+@media(max-width:520px){.pk-tabs{grid-template-columns:1fr}}
+@media(prefers-reduced-motion:reduce){.rb-track{animation:none}.sw-on .sw{opacity:1;transform:none;filter:none}}

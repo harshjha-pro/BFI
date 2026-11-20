@@ -12,7 +12,7 @@ from html import escape
 from pathlib import Path
 
 OUT = Path(__file__).resolve().parent.parent / "site"
-V = "20261119c"  # bump to bust browser caches for css/js
+V = "20261120a"  # bump to bust browser caches for css/js
 BASE = "https://bfi-royal-heritage.vercel.app"
 ART = "img/art/"
 IMGBASE = "https://oaosapkkzoynaqpnmvrj.supabase.co/storage/v1/object/public/site/"
@@ -357,7 +357,7 @@ def with_hero(slug, body):
     objs = PAGE_OBJS[sum(map(ord, slug)) % len(PAGE_OBJS)]
     deco = ""
     hero = f'<section class="phero h-{variant}"{style}>{deco}<div class="wrap phero-grid"><div class="phero-copy">{m.group(1)}{extra}</div>{art}</div></section>'
-    return body[:m.start()] + hero + body[m.end():]
+    return body[:m.start()] + hero + '<!--/hero-->' + body[m.end():]
 
 
 # Search snippets: titles stay under ~60 characters and descriptions under 160 so Google shows them whole.
@@ -390,11 +390,16 @@ for _k, _v in {**TITLES, **DESCS}.items():
 PAGE_TYPE = {"about": "AboutPage", "contact": "ContactPage", "resources": "CollectionPage"}
 
 
+NO_CTA_RIBBON = {"index", "404", "customize", "login", "account", "privacy", "terms", "demo", "invitation", "videos"}
 NO_CTA = {"index", "404", "contact", "customize", "login", "account", "privacy", "terms", "demo", "free-cards", "invitation"}
 
 
 def page(slug, title, desc, body, active=None, bar=True, ld=None, index=True, og_image=None, chrome=True, path=None):
     body = with_hero(slug, body)
+    if index and slug not in NO_CTA_RIBBON:
+        add = ribbon() + page_extra(slug)
+        body = body.replace("<!--/hero-->", add, 1) if "<!--/hero-->" in body else body + page_extra(slug)
+    body = body.replace("<!--/hero-->", "")
     if index and slug not in NO_CTA and "cta-min" not in body and "{cta" not in body:
         body += cta()  # every marketing page ends on the same minimal call to action
     title, desc = TITLES.get(slug, title), DESCS.get(slug, desc)
@@ -630,6 +635,75 @@ def cta(title="Your celebration deserves <em>a beautiful beginning.</em>", text=
 CTA_HOME = cta()
 
 
+RIBBON_WORDS = ["Ganesh Sthapana", "Mayra", "Pithi", "Mehendi", "Mahila Sangeet", "Baraat", "Toran", "Varmala", "Phere", '<span lang="hi">॥ शुभ विवाह ॥</span>']
+RIBBON_SUB = ["Hindi &amp; English", "A map for every function", "RSVP with guest count", "Music &amp; shehnai", "One link + QR code", "Set by hand"]
+
+
+def ribbon():
+    big = "".join(f"<span>{w}</span><i>✦</i>" for w in RIBBON_WORDS)
+    small = "".join(f"<span>{w}</span><i>·</i>" for w in RIBBON_SUB)
+    return (f'<div class="ribbon" aria-hidden="true"><div class="rb-row rb-a"><div class="rb-track">{big}{big}</div></div>'
+            f'<div class="rb-row rb-b"><div class="rb-track">{small}{small}{small}</div></div></div>')
+
+
+PICK = {"Basic": (["names", "venue"], "Your names, blessing and up to 3 functions, each with its own map."),
+        "Premium": (["countdown", "functions", "rsvp"], "Every function, music, photo gallery, a live countdown and RSVP."),
+        "Luxury": (["cover", "date"], "Our grandest openings, or a design made only for you, with unlimited pages.")}
+
+
+def picker_sec():
+    tabs = "".join(f'<button type="button" role="tab" aria-selected="{"true" if k == 0 else "false"}" data-tier="{n}"><b>{n}</b><span>{inr(pr)}</span><small>Ready in {d}</small></button>'
+                   for k, (n, pr, d, bl, f) in enumerate(PACKAGES))
+    lists = "".join(f'<div class="pk-list" data-tier="{n}"{"" if k == 0 else " hidden"}><p>{PICK[n][1]}</p><ul class="checks">{"".join(f"<li>{icon(I['check'])}{x}</li>" for x in f[:5])}</ul></div>'
+                    for k, (n, pr, d, bl, f) in enumerate(PACKAGES))
+    imgs = "".join(f'<img data-tier="{n}" data-i="{i}"{" class=on" if (n == "Basic" and i == 0) else ""} src="img/screens/{sc}.webp" alt="" width="540" height="1041" loading="lazy">'
+                   for n in PICK for i, sc in enumerate(PICK[n][0]))
+    return (f'<section class="sec pk-sec"><div class="wrap pk-grid"><div><div class="h-rule"><span>Compare at a glance</span><span>Tap a package</span></div>'
+            f'<h2 class="h-display">See what <em>each package opens.</em></h2><div class="pk-tabs" role="tablist" aria-label="Packages">{tabs}</div>{lists}'
+            f'<a class="btn btn-primary" href="customize.html">Start your invitation</a></div>'
+            f'<div class="pk-phone" data-picker aria-hidden="true"><span class="h-bigphone"><span class="phone-screen">{imgs}</span></span></div></div></section>')
+
+
+def page_extra(slug):
+    if slug in ("invitations", "resources", "faq"):
+        return FAN_SEC
+    if slug == "how-it-works":
+        return HOW_SEC
+    if slug == "pricing":
+        return picker_sec()
+    if slug == "features" or slug.startswith("design-") or slug in LANDING_DESIGN or slug == "digital-vs-printed-kankotri":
+        return INSIDE_SEC
+    return ""
+
+
+FAN_SEC = f'''<section class="h-fan-sec" aria-label="The collection"><div class="wrap">
+  <div class="h-rule"><span>The collection</span><span>8 designs · 5 live openings</span></div>
+  <h2 class="h-display">8 designs. <em>Every one set by hand.</em></h2></div>
+  <div class="h-fan" aria-hidden="true"><div class="h-fan-track">{"".join(f'<a class="h-fan-item" href="design-{i["slug"]}.html" tabindex="-1">{mini_phone(i, "h-fan-phone")}<span class="h-fan-name">{i["name"]}</span></a>' for i in CATALOG * 2)}</div></div>
+</section>'''
+
+INSIDE_SEC = f'''<section class="sec h-inside"><div class="wrap h-inside-grid">
+  <div>
+    <div class="h-rule"><span>Inside your invitation</span><span>Real screens from a live demo</span></div>
+    <h2 class="h-display">Everything your guests need. <em>Nothing they don't.</em></h2>
+    <p class="h-lead">One link holds it all, in the order your family follows. Tap a section to see it.</p>
+    <ol class="h-tabs" role="tablist" aria-label="Sections of the invitation">{inside_tabs()}</ol>
+    <p class="h-chips-label">Your functions, in your order</p>
+    <ul class="h-chips">{"".join(f"<li>{x}</li>" for x in CHIPS)}</ul>
+    <a class="btn btn-primary" href="customize.html">Start my invitation</a>
+  </div>
+  <div class="h-inside-phone"><span class="h-bigphone"><span class="phone-screen">{inside_imgs()}</span></span></div>
+</div></section>'''
+
+HOW_SEC = f'''<section class="sec h-how"><div class="wrap">
+  <div class="h-rule"><span>How it works</span><span>Four steps, all on your phone</span></div>
+  <div class="h-how-grid">
+    <div class="h-how-sticky"><span class="h-bigphone"><span class="phone-screen">{how_screens()}</span></span></div>
+    <ol class="h-how-steps">{"".join(f'<li data-step="{n}"><span>{n + 1:02d}</span><h3>{t}</h3><p>{d}</p></li>' for n, (k, t, d) in enumerate(HOW2))}</ol>
+  </div>
+</div></section>'''
+
+
 HOME = f'''
 <section class="h-hero"><div class="wrap h-hero-grid">
   <div class="h-hero-copy">
@@ -655,11 +729,7 @@ HOME = f'''
 </div>
 <p class="wrap h-sample">Sample invitation · names are fictional</p></section>
 
-<section class="h-fan-sec" aria-label="The collection"><div class="wrap">
-  <div class="h-rule"><span>The collection</span><span>8 designs · 5 live openings</span></div>
-  <h2 class="h-display">8 designs. <em>Every one set by hand.</em></h2></div>
-  <div class="h-fan" aria-hidden="true"><div class="h-fan-track">{"".join(f'<a class="h-fan-item" href="design-{i["slug"]}.html" tabindex="-1">{mini_phone(i, "h-fan-phone")}<span class="h-fan-name">{i["name"]}</span></a>' for i in CATALOG * 2)}</div></div>
-</section>
+{FAN_SEC}
 
 <section class="sec h-shop"><div class="wrap">
   <div class="h-rule"><span>Collection</span><span>Every design is personalised for your family by our team</span></div>
@@ -668,26 +738,9 @@ HOME = f'''
   <a class="h-custom" href="customize.html"><span><b>Want something made only for you?</b>Luxury includes a bespoke design around your story.</span><span class="tlink">Start your invitation</span></a>
 </div></section>
 
-<section class="sec h-inside"><div class="wrap h-inside-grid">
-  <div>
-    <div class="h-rule"><span>Inside your invitation</span><span>Real screens from a live demo</span></div>
-    <h2 class="h-display">Everything your guests need. <em>Nothing they don't.</em></h2>
-    <p class="h-lead">One link holds it all, in the order your family follows. Tap a section to see it.</p>
-    <ol class="h-tabs" role="tablist" aria-label="Sections of the invitation">{inside_tabs()}</ol>
-    <p class="h-chips-label">Your functions, in your order</p>
-    <ul class="h-chips">{"".join(f"<li>{x}</li>" for x in CHIPS)}</ul>
-    <a class="btn btn-primary" href="customize.html">Start my invitation</a>
-  </div>
-  <div class="h-inside-phone"><span class="h-bigphone"><span class="phone-screen">{inside_imgs()}</span></span></div>
-</div></section>
+{INSIDE_SEC}
 
-<section class="sec h-how"><div class="wrap">
-  <div class="h-rule"><span>How it works</span><span>Four steps, all on your phone</span></div>
-  <div class="h-how-grid">
-    <div class="h-how-sticky"><span class="h-bigphone"><span class="phone-screen">{how_screens()}</span></span></div>
-    <ol class="h-how-steps">{"".join(f'<li data-step="{n}"><span>{n + 1:02d}</span><h3>{t}</h3><p>{d}</p></li>' for n, (k, t, d) in enumerate(HOW2))}</ol>
-  </div>
-</div></section>
+{HOW_SEC}
 
 <section class="h-quote" aria-label="Our promise"><div class="wrap">
   <p class="deva" lang="hi">॥ शुभ विवाह ॥</p>
