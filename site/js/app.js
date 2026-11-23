@@ -1223,3 +1223,15 @@ var WA_SVG = '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><p
   const fit = (el) => el.style.setProperty("--k", (el.clientWidth / 390).toFixed(4));
   document.querySelectorAll("[data-lh]").forEach((el) => { fit(el); "ResizeObserver" in window && new ResizeObserver(() => fit(el)).observe(el); });
 })();
+
+/* ---------- design page: the package you pick drives the button ---------- */
+(() => {
+  const cta = document.querySelector("[data-plan-cta]"); if (!cta) return;
+  const lab = cta.querySelector("[data-plan-label]");
+  document.querySelectorAll(".pp input[name=plan]").forEach((r) => r.addEventListener("change", () => {
+    lab.textContent = `${r.value} · ${r.dataset.price}`;
+    cta.href = `customize.html?design=${encodeURIComponent(cta.dataset.design)}&tier=${encodeURIComponent(r.value)}`;
+    document.querySelectorAll(".pp-o").forEach((o) => o.classList.toggle("on", o.contains(r)));
+  }));
+  const first = document.querySelector(".pp input:checked"); first && first.closest(".pp-o").classList.add("on");
+})();

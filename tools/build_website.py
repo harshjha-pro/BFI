@@ -12,7 +12,7 @@ from html import escape
 from pathlib import Path
 
 OUT = Path(__file__).resolve().parent.parent / "site"
-V = "20261120a"  # bump to bust browser caches for css/js
+V = "20261120b"  # bump to bust browser caches for css/js
 BASE = "https://bfi-royal-heritage.vercel.app"
 ART = "img/art/"
 IMGBASE = "https://oaosapkkzoynaqpnmvrj.supabase.co/storage/v1/object/public/site/"
@@ -208,7 +208,7 @@ def header(active):
     more = "".join(f'<a href="{k}.html">{t}</a>' for k, t in MORE)
     return f'''<a class="skip" href="#main">Skip to content</a>
 <header class="hdr"><div class="wrap hdr-in">
-  <a class="brand" href="index.html"><img src="img/logo-sm.webp" alt="Bfiluxe, home" width="200" height="174"></a>
+  <a class="brand" href="index.html" aria-label="Bfiluxe, home"><span class="wordmark">BFILUXE</span></a>
   <nav class="nav" aria-label="Main">{links}</nav>
   <div class="hdr-actions">
     <span data-auth-slot class="auth-slot"><a class="util-link" href="login.html">Sign in</a></span>
@@ -217,7 +217,7 @@ def header(active):
   </div>
 </div></header>
 <div class="sheet" id="menu" role="dialog" aria-modal="true" aria-label="Menu" hidden><div class="sheet-bg"></div><div class="sheet-panel">
-  <div class="sheet-top"><a class="brand" href="index.html"><img src="img/logo-sm.webp" alt="Bfiluxe, home" width="200" height="174"></a><button class="icon-btn" data-menu-close aria-label="Close menu">{icon(I["x"])}</button></div>
+  <div class="sheet-top"><a class="brand" href="index.html" aria-label="Bfiluxe, home"><span class="wordmark">BFILUXE</span></a><button class="icon-btn" data-menu-close aria-label="Close menu">{icon(I["x"])}</button></div>
   <nav class="sheet-main" aria-label="Menu">{mlinks}</nav>
   <nav class="sheet-more" aria-label="More">{more}</nav>
   <div class="sheet-foot"><div data-auth-menu><a class="btn btn-outline btn-block" href="login.html">Sign in</a></div><a class="btn btn-primary btn-block" data-wa>{WA} Enquire on WhatsApp</a></div>
@@ -227,7 +227,7 @@ def header(active):
 def footer():
     return f'''<footer class="ftr"><div class="wrap">
   <div class="ftr-grid">
-    <div class="ftr-brand"><a href="index.html" class="ftr-logo"><img src="img/logo-sm.webp" alt="Bfiluxe" width="200" height="174" loading="lazy"></a>
+    <div class="ftr-brand"><a href="index.html" class="ftr-logo" aria-label="Bfiluxe, home"><span class="wordmark">BFILUXE</span></a>
       <p>Invitations made extraordinary. Digital Marwari wedding invitations, invitation websites and videos, rooted in family tradition.</p></div>
     <div><h4>Explore</h4><ul><li><a href="invitations.html">Invitations</a></li><li><a href="videos.html">Invitation videos</a></li><li><a href="how-it-works.html">How It Works</a></li><li><a href="pricing.html">Pricing</a></li><li><a href="contact.html">Contact</a></li></ul></div>
     <div><h4>Resources</h4><ul><li><a href="features.html">Features</a></li><li><a href="resources.html">Guides</a></li><li><a href="faq.html">FAQ</a></li><li><a href="free-cards.html">Free card maker</a></li><li><a href="partners.html">Partner with us</a></li><li><a href="login.html">My account</a></li></ul></div>
@@ -273,7 +273,7 @@ def hero_parts(slug):
             chips = "".join(f'<span class="lh-chip c{k}"><b>{nm}</b>{inr(pr)}</span>' for k, (nm, pr, *_r) in enumerate(PACKAGES))
         elif slug == "videos":
             chips = '<span class="lh-chip c0"><b>9:16</b>Status &amp; Reels</span><span class="lh-chip c1"><b>Music</b>Shehnai · Santoor</span><span class="lh-chip c2"><b>{0}</b>From ₹1,499</span>'.format("Videos")
-        art = (f'<div class="live-hero">{chips}<div class="lh-phone"><div class="lh-screen" data-lh><iframe src="live-demo-{n}/?preview=1" title="Live sample invitation: {t[1]} (fictional names)" loading="eager"></iframe></div></div>'
+        art = (f'<div class="live-hero"><div class="lh-phone"><div class="lh-screen" data-lh><iframe src="live-demo-{n}/?preview=1" title="Live sample invitation: {t[1]} (fictional names)" loading="eager"></iframe></div></div>'
                f'<p class="lh-cap"><span class="lh-dot"></span>Live sample · {t[1]} · fictional names <a href="live-demo-{n}/" target="_blank" rel="noopener">Open full screen</a></p></div>')
         extra = ""
         return "live", extra, art, ""
@@ -411,7 +411,7 @@ NO_CTA = {"index", "404", "contact", "customize", "login", "account", "privacy",
 def page(slug, title, desc, body, active=None, bar=True, ld=None, index=True, og_image=None, chrome=True, path=None):
     body = with_hero(slug, body)
     if index and slug not in NO_CTA_RIBBON:
-        add = ribbon() + page_extra(slug)
+        add = page_extra(slug)
         body = body.replace("<!--/hero-->", add, 1) if "<!--/hero-->" in body else body + page_extra(slug)
     body = body.replace("<!--/hero-->", "")
     if index and slug not in NO_CTA and "cta-min" not in body and "{cta" not in body:
@@ -457,7 +457,7 @@ def page(slug, title, desc, body, active=None, bar=True, ld=None, index=True, og
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="preconnect" href="https://oaosapkkzoynaqpnmvrj.supabase.co" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600&family=Tiro+Devanagari+Hindi&family=Great+Vibes&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;1,400;1,500&family=Montserrat:wght@400;500;600&family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400&family=Tiro+Devanagari+Hindi&family=Great+Vibes&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/site.css?v={V}">{lds}
 </head>'''
     scripts = (f'<script src="js/vendor/qrcode.js?v=1.4.4"></script>\n' if slug == "demo" else "") + f'''<script src="js/vendor/supabase.js?v=2.45.4"></script>
@@ -678,13 +678,22 @@ def picker_sec():
             f'<div class="pk-phone" data-picker aria-hidden="true"><span class="h-bigphone"><span class="phone-screen">{imgs}</span></span></div></div></section>')
 
 
+def guests_say():
+    return ('<section class="sec gs"><div class="wrap center"><p class="eyebrow">The first impression</p><h2>What your guests will say</h2>'
+            '<p class="gs-lead">The memory of your wedding doesn\'t start on the big day. It starts the second they open your invitation.</p>'
+            '<div class="gs-chat"><div class="gs-msg out"><span class="gs-card"><img src="img/art/cover-rajwada-royale.webp" alt="" width="720" height="1290" loading="lazy">'
+            '<b>Aarohi &amp; Vivaan · 17 January 2027</b><span>With the blessings of our families, join us in Jaipur. Every function, maps and RSVP.</span><i>Tap to open the invitation</i></span><em>18:41 ✓✓</em></div>'
+            '<div class="gs-msg in">Kitna sundar hai!! 😍 Hum zaroor aayenge 🙏<em>18:42</em></div></div>'
+            '<p class="gs-note">Sample chat · names are fictional</p></div></section>')
+
+
 def page_extra(slug):
     if slug in ("invitations", "resources", "faq"):
         return FAN_SEC
     if slug == "how-it-works":
         return HOW_SEC
     if slug == "pricing":
-        return picker_sec()
+        return guests_say() + picker_sec()
     if slug == "features" or slug.startswith("design-") or slug in LANDING_DESIGN or slug == "digital-vs-printed-kankotri":
         return INSIDE_SEC
     return ""
@@ -843,6 +852,25 @@ page("invitations", "Wedding Invitation Designs: Royal, Traditional, Elegant, Mo
           "itemListElement": [{"@type": "ListItem", "position": n + 1, "url": f"{BASE}/design-{i['slug']}.html", "name": i["name"]} for n, i in enumerate(CATALOG)]}])
 
 # ---------------- Design detail pages (static, one per design) ----------------
+
+TIER_RANK = {"Basic": 0, "Premium": 1, "Luxury": 2}
+PLAN_SUB = {"Basic": "The design as it is, with your names and details", "Premium": "Every function, music, gallery, countdown and RSVP", "Luxury": "Our grandest openings, or a design made only for you"}
+
+
+def plan_opts(inv):
+    return [(n, max(pr, inv["price"]), d, bl, f) for n, pr, d, bl, f in PACKAGES if TIER_RANK[n] >= TIER_RANK[inv["tier"]]]
+
+
+def plan_pick(inv):
+    out = []
+    for k, (n, pr, d, bl, f) in enumerate(plan_opts(inv)):
+        rec = '<span class="pp-rec">Recommended</span>' if n == "Premium" else ""
+        out.append(f'''<label class="pp-o pp-{n.lower()}">{rec}<input type="radio" name="plan" value="{n}" data-price="{inr(pr)}"{" checked" if k == 0 else ""}>
+          <span class="pp-top"><span class="pp-dot"></span><b>{n}</b><em>{inr(pr)}</em></span><strong>{PLAN_SUB[n]}</strong><span class="pp-bl">{bl} Ready in {d}.</span>
+          <details><summary>See everything included</summary><ul>{"".join(f"<li>{x}</li>" for x in f)}</ul></details></label>''')
+    return "".join(out)
+
+
 for inv in CATALOG:
     tone = "pv-dark" if inv["slug"] in DARK else "pv-light"
     sim = [x for x in CATALOG if x["slug"] != inv["slug"] and x["collection"] == inv["collection"]] + [x for x in CATALOG if x["collection"] != inv["collection"]]
@@ -857,30 +885,36 @@ for inv in CATALOG:
   <div class="detail" id="detail" data-slug="{inv["slug"]}" data-name="{inv["name"]}">
     <div class="gallery">
       <div class="big" id="slide">
-        <div class="slide inv-wrap"><img src="{ART}{inv["image"]}" alt="{inv["name"]} invitation cover with sample wording" width="720" height="1290" fetchpriority="high">{invite_text(inv)}</div>
-        <div class="slide" hidden><img src="{ART}{inv["image"]}" alt="{inv["name"]} artwork: {inv["tagline"]}" loading="lazy"></div>
-        <div class="slide slide-phone" hidden><div class="phone"><div class="phone-screen inv-wrap"><img src="{ART}{inv["image"]}" alt="{inv["name"]} invitation on a phone" loading="lazy">{invite_text(inv)}</div></div></div>
+        <div class="slide slide-phone"><div class="phone"><div class="phone-screen inv-wrap"><img src="{ART}{inv["image"]}" alt="{inv["name"]} invitation cover with sample wording" width="720" height="1290" fetchpriority="high">{invite_text(inv)}</div></div></div>
+        <div class="slide slide-phone" hidden><div class="phone"><div class="phone-screen"><img src="img/screens/names.webp" alt="Blessing and family names screen of a sample invitation" loading="lazy" width="540" height="1041"></div></div></div>
+        <div class="slide slide-phone" hidden><div class="phone"><div class="phone-screen"><img src="img/screens/functions.webp" alt="Every function with times and directions" loading="lazy" width="540" height="1041"></div></div></div>
       </div>
       <button class="nav-arrow prev" aria-label="Previous image">{icon(I["left"])}</button>
       <button class="nav-arrow next" aria-label="Next image">{icon(I["right"])}</button>
       <p class="sample-note">Sample wording: names, date and venue are fictional</p>
-      <div class="dots"><button aria-label="Cover with wording" aria-current="true"></button><button aria-label="Artwork" aria-current="false"></button><button aria-label="On a phone" aria-current="false"></button></div>
+      <div class="dots"><button aria-label="Cover" aria-current="true"></button><button aria-label="Names" aria-current="false"></button><button aria-label="Functions" aria-current="false"></button></div>
     </div>
-    <div>
-      <div class="d-head"><div><h1 style="font-size:clamp(32px,5vw,44px)">{inv["name"]}</h1><p class="eyebrow" style="margin-top:8px">{COLL[inv["collection"]]} Collection · {inv["tier"]}</p></div>
-        <button class="icon-btn" data-fav="{inv["slug"]}" aria-pressed="false" aria-label="Save to favourites">{icon(I["heart"])}</button></div>
-      <p class="lead" style="margin-top:14px">{inv["desc"]}</p>
-      <p class="d-price">from {inr(inv["price"])}</p><p class="muted" style="font-size:14px">Ready in {days} · one free round of changes · 50% advance</p>
-      <ul class="feat">{feats}</ul>
-      <div class="d-actions">
-        <a class="btn btn-primary" href="customize.html?design={inv["slug"]}">Customize This Design {icon(I["arrow"])}</a>
-        <a class="btn btn-outline wa-outline" data-wa="Namaste Bfiluxe 🙏 I'd like to know more about the {inv["name"]} invitation.">{WA} Enquire on WhatsApp</a>
-      </div>
-      <a class="btn btn-ghost btn-block demo-btn" href="demo.html?design={inv["slug"]}" data-track="detail_demo">{icon(I["eye"])} View the live demo of {inv["name"]}</a>
-      <p style="margin-top:10px" class="muted">Best for: {BEST[inv["slug"]]} · <button class="linkbtn" id="ask">Ask a question</button></p>
-      <div class="incl"><b>Included with {inv["tier"]}</b><ul>{"".join(f"<li>{x}</li>" for x in next(p_[4] for p_ in PACKAGES if p_[0] == inv["tier"]))}</ul>
-        <p class="muted" style="font-size:13.5px;margin-top:8px">Pay 50% to start, 50% after you approve the preview. <a href="pricing.html">Compare packages</a></p></div>
-      <div style="margin-top:22px">
+    <div class="d-side">
+      <p class="eyebrow">Digital invitation · {COLL[inv["collection"]]} collection</p>
+      <div class="d-head"><h1 class="d-title">{inv["name"]}</h1>
+        <button class="d-fav" data-fav="{inv["slug"]}" aria-pressed="false" aria-label="Save to favourites">{icon(I["heart"])}</button></div>
+      <p class="d-tag">{inv["desc"]}</p>
+      <p class="d-from">From</p><p class="d-price">{inr(inv["price"])}</p>
+      <p class="d-sub">One payment per wedding · {len(plan_opts(inv))} level{"s" if len(plan_opts(inv)) > 1 else ""} of personalisation</p>
+      <h2 class="d-h2">How personalised should it be?</h2>
+      <p class="d-ticks"><span>RSVP built in</span><span>Hindi &amp; English</span><span>A map for every function</span></p>
+      <div class="pp" role="radiogroup" aria-label="Choose your package">{plan_pick(inv)}</div>
+      <a class="btn btn-primary btn-block d-cta" data-plan-cta data-design="{inv["slug"]}" href="customize.html?design={inv["slug"]}&amp;tier={plan_opts(inv)[0][0]}">Continue with <span data-plan-label>{plan_opts(inv)[0][0]} · {inr(plan_opts(inv)[0][1])}</span> {icon(I["arrow"])}</a>
+      <p class="d-ticks d-ticks-c"><span>Set by hand</span><span>One round of changes</span><span>Balance after you approve</span></p>
+      <div class="d-links"><a href="demo.html?design={inv["slug"]}" data-track="detail_demo">{icon(I["eye"])} Live demo</a><a data-wa="Namaste Bfiluxe 🙏 I'd like to know more about the {inv["name"]} invitation.">{WA} Ask on WhatsApp</a><button class="linkbtn" id="ask">Ask a question</button></div>
+      <div class="d-time"><ol><li><b>Details received</b><small>Names, functions, venues</small></li><li><b>Design &amp; preview</b><small>A private link to check</small></li><li><b>Ready</b><small>{days}</small></li></ol>
+        <p>Counted from when we have your complete details and the 50% advance.</p></div>
+      <div class="d-card"><p class="eyebrow">Made by hand, only for you</p><h3>This is your invitation</h3>
+        <ul><li>{icon(I["edit"])}<div><b>Set by a real person</b><span>Our team in Jaipur types and checks every name.</span></div></li>
+          <li>{icon(I["refresh"])}<div><b>One round of changes</b><span>See your preview and send all changes together.</span></div></li>
+          <li>{icon(I["clock"])}<div><b>At your own pace</b><span>Share details online or on WhatsApp, whenever you are ready.</span></div></li>
+          <li>{icon(I["lock"])}<div><b>One payment, no subscription</b><span>Your link stays live through the wedding and six months after.</span></div></li></ul></div>
+      <div class="d-acc">
         <details class="acc"><summary>What's included</summary><p>A mobile invitation website with your names, families, every function with date, time and Google Maps, a private share link, a QR code for printed cards, and a ready-to-send WhatsApp message.</p></details>
         <details class="acc"><summary>Customization</summary><p>Change names, dates, venues, the number of events, language (English, Hindi, Marwari + Hindi or bilingual), opening blessing and music. Colours can be adjusted on Premium and Luxury.</p></details>
         <details class="acc"><summary>Delivery, payment &amp; changes</summary><p>Ready in {days} after we receive your details. Pay 50% to start and 50% after you approve. One free round of changes; spelling fixes are always free.</p></details>
@@ -889,7 +923,7 @@ for inv in CATALOG:
   </div>
 </div></section>
 <section class="sec sec-tint" style="padding-top:56px"><div class="wrap">
-  <div class="sec-head center"><h2>You May Also Like</h2>{ORN}</div>
+  <div class="h-rule"><span>You may also like</span><span></span></div>
   <div class="grid-inv" id="similar">{"".join(card(x) for x in sim[:4])}</div>
 </div></section>'''
     page(f"design-{inv['slug']}", f"{inv['name']}: {COLL[inv['collection']]} Digital Wedding Invitation | Bfiluxe",
@@ -991,11 +1025,15 @@ how_rows = "".join(f'''<div class="hrow reveal">
   <div><p class="eyebrow">Step {n}</p><h3 style="font-size:clamp(26px,3.6vw,34px);color:var(--maroon);margin-top:6px">{t}</h3><p class="lead" style="margin-top:10px">{d}</p>
     <ul class="checks">{"".join(f"<li>{icon(I['check'])}{x}</li>" for x in pts)}</ul>
     {f'<a class="btn btn-outline" href="{cta[0]}">{cta[1]} {icon(I["arrow"])}</a>' if cta else ''}</div></div>''' for n, t, ic, img, d, pts, cta in HOW_STEPS)
+HOW_LINE = ["Pick a design and package. Open any live demo on your phone first.", "Names, functions, venues and photos, online or on WhatsApp, in Hindi or English.", "We set every name by hand and send a private preview. One round of changes is included.", "Your link, QR code and a ready WhatsApp message. Guests open it in one tap."]
 HOW = f'''
 <section class="phead"><div class="wrap"><h1>How Bfiluxe Invitations Work</h1><p class="lead">From choosing a design to sharing with every relative: four simple steps, all on your phone.</p>
   <div class="stepchips">{"".join(f'<a href="#step-{n}"><b>{n}</b>{t}</a>' for n, t, *_ in HOW_STEPS)}</div></div></section>
 <section class="sec"><div class="wrap">
-  <div class="steps">{"".join(f'<div class="step" id="step-{n}"><div class="step-ic">{icon(I[ic])}</div><h3>{n}. {t}</h3></div>' for n, t, ic, *_ in HOW_STEPS)}</div>
+  <div class="sec-head center"><p class="eyebrow">The process</p><h2>Four steps, zero stress</h2></div>
+  <ol class="roman">{"".join(f'<li id="step-{n}"><span class="rn">{"I II III IV".split()[k]}</span><h3>{t}</h3><p>{HOW_LINE[k]}</p><small>{tg}</small></li>' for k, ((n, t, ic, *_), tg) in enumerate(zip(HOW_STEPS, ["5 minutes", "At your own pace", "Ready in 24–72 hours", "Updates until the wedding"])))}</ol>
+  <p class="center" style="margin-top:34px"><a class="btn btn-primary" href="customize.html">Start my invitation {icon(I["arrow"])}</a></p>
+  <div class="incl4"><h2>Always included</h2><ul><li><b>Set by hand</b><span>A real person, never an automatic editor.</span></li><li><b>One round of changes</b><span>Spelling fixes are always free.</span></li><li><b>Live RSVP</b><span>See who is coming and how many (Premium and Luxury).</span></li><li><b>Hindi &amp; English</b><span>Or both, with every honorific checked.</span></li></ul></div>
 </div></section>
 <section class="sec" style="padding-top:0"><div class="wrap hrows">{how_rows}</div></section>
 <section class="sec sec-tint" style="padding-top:48px"><div class="wrap">
