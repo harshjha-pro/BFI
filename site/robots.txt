@@ -3,4 +3,4 @@ Allow: /
 Disallow: /account.html
 Disallow: /login.html
 
-Sitemap: https://bfi-royal-heritage.vercel.app/sitemap.xml
+Sitemap: https://bfiluxe.com/sitemap.xml

@@ -1047,7 +1047,7 @@ pages["free-cards"] = () => {
       if (ln.rule) { g.globalAlpha = .6; g.fillRect(cx - 150, y + ln.size / 2, 300, 2); g.save(); g.translate(cx, y + ln.size / 2 + 1); g.rotate(Math.PI / 4); g.fillRect(-9, -9, 18, 18); g.restore(); g.globalAlpha = 1; y += ln.size + ln.gap; continue; }
       g.font = ln.font; g.fillText(ln.l, cx, y); y += ln.size * 1.15 + ln.gap;
     }
-    g.shadowBlur = 0; g.globalAlpha = .7; g.font = "500 22px 'DM Sans'"; g.fillStyle = t.dark ? "#fff" : "#392820"; g.fillText("Made free with Bfiluxe · bfi-royal-heritage.vercel.app", W / 2, H - 40); g.globalAlpha = 1;
+    g.shadowBlur = 0; g.globalAlpha = .7; g.font = "500 22px 'DM Sans'"; g.fillStyle = t.dark ? "#fff" : "#392820"; g.fillText("Made free with Bfiluxe · bfiluxe.com", W / 2, H - 40); g.globalAlpha = 1;
     return c;
   }
   // 2) place it on the chosen canvas size (status/square get a soft blurred backdrop)

@@ -13,7 +13,7 @@ from pathlib import Path
 
 OUT = Path(__file__).resolve().parent.parent / "site"
 V = "20261120b"  # bump to bust browser caches for css/js
-BASE = "https://bfi-royal-heritage.vercel.app"
+BASE = "https://bfiluxe.com"
 ART = "img/art/"
 IMGBASE = "https://oaosapkkzoynaqpnmvrj.supabase.co/storage/v1/object/public/site/"
 BIZ = {
