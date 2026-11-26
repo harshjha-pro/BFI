@@ -12,7 +12,7 @@ from html import escape
 from pathlib import Path
 
 OUT = Path(__file__).resolve().parent.parent / "site"
-V = "20261120b"  # bump to bust browser caches for css/js
+V = "20261126c"  # bump to bust browser caches for css/js
 BASE = "https://bfiluxe.com"
 ART = "img/art/"
 IMGBASE = "https://oaosapkkzoynaqpnmvrj.supabase.co/storage/v1/object/public/site/"
@@ -26,25 +26,25 @@ TODAY = date.today().isoformat()
 
 # Catalogue (mirrors the `invitations` table seed in supabase/migrations)
 CATALOG = [
-    ("rajwada-royale", "Rajwada Royale", "royal", "Luxury", 11999, "Golden palace and lanterns on deep maroon",
+    ("rajwada-royale", "Rajwada Royale", "royal", "Luxury", 24999, "Golden palace and lanterns on deep maroon",
      "A grand invitation inspired by Rajasthani palaces: hanging lanterns, a golden haveli and fine filigree for a traditional Marwari wedding.",
      ["Customizable names, dates and text", "Music or shehnai audio", "Shareable link and QR code", "RSVP (optional)", "Event pages with Google Maps"]),
-    ("gulmohar-classic", "Gulmohar Classic", "traditional", "Premium", 6999, "Roses and marigolds on ivory",
+    ("gulmohar-classic", "Gulmohar Classic", "traditional", "Premium", 8999, "Roses and marigolds on ivory",
      "A warm, festive border of roses and marigolds in Rajasthani folk style, loved by families who want a classic kankotri feel.",
      ["Customizable names, dates and text", "Hindi, English or bilingual", "Shareable link and QR code", "RSVP (optional)"]),
-    ("gulabi-bagh", "Gulabi Bagh", "elegant", "Premium", 6999, "Blush peonies and fine gold",
+    ("gulabi-bagh", "Gulabi Bagh", "elegant", "Premium", 8999, "Blush peonies and fine gold",
      "Soft blush florals and delicate gold for a romantic, elegant celebration.",
      ["Customizable names, dates and text", "Music option", "Photo gallery", "Shareable link and QR code", "RSVP (optional)"]),
-    ("mor-pankh", "Mor Pankh", "modern", "Premium", 7999, "Peacock on emerald green",
+    ("mor-pankh", "Mor Pankh", "modern", "Premium", 8999, "Peacock on emerald green",
      "A majestic peacock on emerald green: modern, bold and unmistakably Rajasthani.",
      ["Customizable names, dates and text", "Music option", "Countdown to the wedding", "Shareable link and QR code", "RSVP (optional)"]),
-    ("neel-mahal", "Neel Mahal", "royal", "Luxury", 11999, "Moonlit palace on royal navy",
+    ("neel-mahal", "Neel Mahal", "royal", "Luxury", 24999, "Moonlit palace on royal navy",
      "A glowing palace under a crescent moon on royal navy, made for evening receptions and sangeet nights.",
      ["Customizable names, dates and text", "Music or shehnai audio", "Event pages with Google Maps", "Shareable link and QR code", "RSVP (optional)"]),
     ("gajraj-swagat", "Gajraj Swagat", "traditional", "Basic", 3999, "Royal elephants and marigold toran",
      "Two royal elephants welcome your guests under a marigold toran: auspicious, joyful and simple to share.",
      ["Customizable names, dates and text", "Hindi, English or bilingual", "Shareable link and QR code"]),
-    ("sheesh-mahal", "Sheesh Mahal", "royal", "Luxury", 14999, "Chandeliers and a golden haveli",
+    ("sheesh-mahal", "Sheesh Mahal", "royal", "Luxury", 24999, "Chandeliers and a golden haveli",
      "Our grandest design: crystal chandeliers, a scalloped Mughal arch and a detailed golden haveli facade.",
      ["Customizable names, dates and text", "Music or shehnai audio", "Photo gallery", "Event pages with Google Maps", "RSVP with guest count", "Shareable link and QR code"]),
     ("chhatri", "Chhatri", "elegant", "Basic", 3999, "A single gold chhatri, lots of calm",
@@ -93,13 +93,13 @@ def live_cards():
 
 
 VIDEO_PACKAGES = [
-    ("Basic", 1499, "2 days", "30-second video", "A short, elegant video invite to forward on WhatsApp.",
+    ("Basic", 1499, "2–3 working days", "30-second video", "A short, elegant video invite to forward on WhatsApp.",
      ["30-second animated video", "1 design from our collection", "Couple and both families' names", "Main wedding date, time and venue",
       "Soft instrumental music", "Vertical MP4 for WhatsApp, Instagram and Status", "One free round of changes"]),
-    ("Premium", 2499, "3 days", "60-second video", "Every function, your photos and music.",
+    ("Premium", 2499, "2–3 working days", "60-second video", "Every function, your photos and music.",
      ["60-second animated video", "Everything in Basic", "Up to 5 functions with dates and venues", "Your photos in the video",
       "Shehnai or instrumental music", "Hindi, English or bilingual text", "One free round of changes"]),
-    ("Luxury", 3999, "4 days", "90-second video", "A custom-illustrated video with every function.",
+    ("Luxury", 3999, "2–3 working days", "90-second video", "A custom-illustrated video with every function.",
      ["90-second animated video", "Everything in Premium", "Custom illustration for your video", "All functions, from Ganesh puja to reception",
       "Animated opening with your initials", "One free round of changes"]),
 ]
@@ -110,20 +110,30 @@ def video_cards():
     for name, price, days, length, blurb, feats in VIDEO_PACKAGES:
         out.append(f'''<div class="pkg{' pkg-pop' if name == 'Premium' else ''}">
       <h3>{name}</h3><p class="muted" style="font-size:14.5px;margin-top:4px">{blurb}</p>
-      <p class="pkg-price">{inr(price)}</p><p class="pkg-time">{length} · ready in {days} after complete details and the 50% advance</p>
+      <p class="pkg-price">{was(VMRP[name], price)[0]} {inr(price)} {was(VMRP[name], price)[1]}</p><p class="pkg-time">{length} · ready in {days} after complete details and the 50% advance</p>
       <ul class="checks" style="margin:16px 0 20px">{"".join(f"<li>{icon(I['check'])}{f}</li>" for f in feats)}</ul>
       <a class="btn {'btn-primary' if name == 'Premium' else 'btn-outline'} btn-block" data-wa="Namaste Bfiluxe 🙏 I'd like the {name} invitation video ({inr(price)}).">Order the {name} video</a></div>''')
     return '<div class="pkgs">' + "".join(out) + "</div>"
 
 
+MRP = {"Basic": 5999, "Premium": 14999, "Luxury": 35999}
+VMRP = {"Basic": 2499, "Premium": 3999, "Luxury": 5999}
+DAYS = {"Basic": "3–5 working days", "Premium": "7–14 working days", "Luxury": "15–21 working days"}
+
+
+def was(mrp, pr):
+    off = round((mrp - pr) * 100 / mrp)
+    return f'<s class="mrp" aria-label="Regular price {inr(mrp)}">{inr(mrp)}</s>', f'<span class="save-off">{off}% off</span>'
+
+
 PACKAGES = [
-    ("Basic", 3999, "24 hours", "For simple, elegant invitations shared quickly.",
+    ("Basic", 3999, "3–5 working days", "For simple, elegant invitations shared quickly.",
      ["1 design from the Basic collection", "Couple and both families' names", "Up to 3 events with Google Maps", "English, Hindi or bilingual",
       "Private share link + QR code", "One free round of changes"]),
-    ("Premium", 6999, "48 hours", "For full Marwari weddings with several functions.",
+    ("Premium", 8999, "7–14 working days", "For full Marwari weddings with several functions.",
      ["Any Premium or Basic design", "Everything in Basic", "Up to 8 events: Ganesh puja to reception", "Background music or shehnai",
       "Photo gallery and countdown", "RSVP with guest count", "One free round of changes"]),
-    ("Luxury", 11999, "72 hours", "Our grandest designs, or one made only for you.",
+    ("Luxury", 24999, "15–21 working days", "Our grandest designs, or one made only for you.",
      ["Any design, or a bespoke design", "Everything in Premium", "Unlimited events and pages", "Custom colours and motifs",
       "Family story and video page", "Priority WhatsApp support", "One free round of changes"]),
 ]
@@ -193,7 +203,7 @@ ORG_LD = {
     "name": BIZ["name"], "alternateName": "Bfiluxe", "url": BASE + "/",
     "logo": BASE + "/img/icon-512.png", "image": BASE + "/img/og-image.jpg",
     "description": "Premium digital wedding invitations for Marwari families: mobile invitation websites with every ritual, family names, venues with maps, RSVP and a QR code, shared on WhatsApp.",
-    "telephone": BIZ["tel"], "email": BIZ["email"], "priceRange": "₹3,999 – ₹14,999",
+    "telephone": BIZ["tel"], "email": BIZ["email"], "priceRange": "₹1,499 – ₹24,999",
     "address": {"@type": "PostalAddress", "addressLocality": BIZ["city"], "addressRegion": BIZ["region"], "addressCountry": BIZ["country"]},
     "areaServed": [{"@type": "Country", "name": "India"}, "Worldwide (NRI families)"],
     "openingHoursSpecification": {"@type": "OpeningHoursSpecification", "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"], "opens": "10:00", "closes": "20:00"},
@@ -284,7 +294,7 @@ def hero_parts(slug):
         extra = '<div class="row hero-mini"><a class="btn btn-primary" href="#grid">Browse designs</a><a class="btn btn-ghost" href="demo.html">Open a live demo</a></div>'
         return "fan", extra, art, ""
     if slug == "pricing":
-        art = ('<ul class="tags">' + "".join(f'<li style="--i:{k}"><span>{n}</span><b>{inr(pr)}</b><small>{d}</small></li>' for k, (n, pr, d, *_r) in enumerate(PACKAGES)) + '</ul>')
+        art = ('<ul class="tags">' + "".join(f'<li style="--i:{k}"><span>{n}</span><b><s class="mrp">{inr(MRP[n])}</s> {inr(pr)}</b><small>{d}</small></li>' for k, (n, pr, d, *_r) in enumerate(PACKAGES)) + '</ul>')
         return "banner", "", art, f' style="--bg:url({I_("hero-pricing.jpg")})"'
     if slug == "how-it-works":
         steps = ["Choose", "Share details", "Preview", "Share"]
@@ -392,7 +402,7 @@ TITLES = {
     "partners": "Partner With Bfiluxe: Planners, Photographers, Venues",
 }
 DESCS = {
-    "index": "Digital Marwari wedding invitations and kankotri: royal Rajasthani designs, every ritual and family name, maps, RSVP and QR. From ₹3,999, ready in 24–72 hours.",
+    "index": "Digital Marwari wedding invitations and kankotri: royal Rajasthani designs, every ritual, maps, RSVP and QR. From ₹3,999, ready in 3–5 working days.",
     "faq": "Answers about digital Marwari wedding invitations: Hindi wording, Mayra and Pithi, RSVP, WhatsApp sharing, delivery times, payment and link validity.",
     "features": "Every feature of a Bfiluxe digital wedding invitation in plain words: family names, every function with maps, Hindi wording, music, RSVP, QR code and sharing.",
     "free-cards": "Make a free invitation card for a birthday, Griha Pravesh, Godh Bharai, puja, Diwali and more. 16 templates, live preview, PNG, JPG or PDF. No sign-up.",
@@ -451,9 +461,9 @@ def page(slug, title, desc, body, active=None, bar=True, ld=None, index=True, og
 <meta property="og:type" content="website">
 <meta property="og:locale" content="en_IN">
 <meta name="twitter:card" content="summary_large_image">
-<link rel="icon" href="img/favicon.ico" sizes="any">
-<link rel="icon" href="img/favicon-32.png" type="image/png" sizes="32x32">
-<link rel="apple-touch-icon" href="img/apple-touch-icon.png">
+<link rel="icon" href="img/favicon.ico?v=2" sizes="any">
+<link rel="icon" href="img/favicon-32.png?v=2" type="image/png" sizes="32x32">
+<link rel="apple-touch-icon" href="img/apple-touch-icon.png?v=2">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="preconnect" href="https://oaosapkkzoynaqpnmvrj.supabase.co" crossorigin>
@@ -510,7 +520,7 @@ def package_cards(compact=False):
         pop = name == "Premium"
         out.append(f'''<div class="pkg{' pkg-pop' if pop else ''}">
       <h3>{name}</h3><p class="muted" style="font-size:14.5px;margin-top:4px">{blurb}</p>
-      <p class="pkg-price">from {inr(price)}</p><p class="pkg-time">Ready in {days} after complete details and the 50% advance</p>
+      <p class="pkg-price">{was(MRP[name], price)[0]} {inr(price)} {was(MRP[name], price)[1]}</p><p class="pkg-time">Ready in {days} after complete details and the 50% advance</p>
       <ul class="checks" style="margin:16px 0 20px">{"".join(f"<li>{icon(I['check'])}{f}</li>" for f in (feats[:4] if compact else feats))}</ul>
       <a class="btn {'btn-primary' if pop else 'btn-outline'} btn-block" href="invitations.html?tier={name}">View {name} designs</a></div>''')
     return '<div class="pkgs">' + "".join(out) + "</div>"
@@ -518,8 +528,8 @@ def package_cards(compact=False):
 
 HOME_FAQ = [
     ("What is a digital Marwari wedding invitation?", "A mobile invitation website for your wedding: couple and family names, every function with date, time and Google Maps, plus music, photos and RSVP on higher packages. Guests open it from a WhatsApp link or a QR code."),
-    ("How much does it cost?", f"Basic from {inr(3999)}, Premium from {inr(6999)} and Luxury from {inr(11999)}. You pay 50% to start and 50% after you approve. See <a href='pricing.html'>pricing</a>."),
-    ("How fast will it be ready?", "Basic in 24 hours, Premium in 48 hours and Luxury in 72 hours, counted from when we have all your details and the advance."),
+    ("How much does it cost?", f"Basic {inr(3999)} (regular {inr(5999)}), Premium {inr(8999)} (regular {inr(14999)}) and Luxury {inr(24999)} (regular {inr(35999)}). You pay 50% to start and 50% after you approve. See <a href='pricing.html'>pricing</a>."),
+    ("How fast will it be ready?", "Basic in 3–5 working days, Premium in 7–14 working days and Luxury in 15–21 working days, counted from when we have all your details and the advance."),
     ("Can it include Mayra, Pithi and other rituals?", "Yes. Add any function: Ganesh Sthapana, Mayra, Pithi, Mehendi, Mahila Sangeet, Baraat, Phere, Reception or your own family rituals."),
     ("Can the invitation be in Hindi or Marwari?", "Yes: English, Hindi, Marwari with Hindi, or bilingual, with traditional lines like ॥ श्री गणेशाय नमः ॥."),
     ("Can I see it before paying the balance?", "Yes. You review a private preview on your phone, get one round of changes, and pay the remaining 50% only after you approve."),
@@ -563,7 +573,7 @@ def plan_cards():
         rec = n == "Premium"
         checks = "".join(f"<li>{icon(I['check'])}{f}</li>" for f in feats[:5])
         out.append(f'<div class="h-plan{" rec" if rec else ""}">{"<span class=h-rec>Recommended</span>" if rec else ""}'
-                   f'<p class="h-plan-name">{n}</p><p class="h-plan-price">{inr(pr)}<small>from · ready in {d}</small></p>'
+                   f'<p class="h-plan-name">{n}</p><p class="h-plan-price">{was(MRP[n], pr)[0]}{inr(pr)}<small>{was(MRP[n], pr)[1]} · ready in {d}</small></p>'
                    f'<p class="h-plan-blurb">{bl}</p><ul class="checks">{checks}</ul>'
                    f'<a class="btn {"btn-primary" if rec else "btn-outline"} btn-block" href="invitations.html?tier={n}">See {n} designs</a></div>')
     return '<div class="h-plan-grid">' + "".join(out) + "</div>"
@@ -581,7 +591,7 @@ HOW2 = [("cover", "Choose a design", "Browse the collection and open any live de
         ("date", "Preview and approve", "We set every name by hand. You check a private preview; one round of changes is included."),
         ("wa", "Send one link", "A ready WhatsApp message, your private link and a QR code for printed cards.")]
 QUOTE = "Long before the shehnai plays, your family's blessing travels to every home. Let it arrive beautifully."
-FACTS = [("8", "invitation designs"), ("5", "live openings to try"), ('<span lang="hi">हिं</span> · En', "Hindi, English or both"), ("24–72<small>h</small>", "from details to your link")]
+FACTS = [("8", "invitation designs"), ("5", "live openings to try"), ('<span lang="hi">हिं</span> · En', "Hindi, English or both"), ("3–5<small>days</small>", "for a Basic invitation")]
 CHIPS = ["Ganesh Sthapana", "Mayra", "Pithi", "Mehendi", "Mahila Sangeet", "Baraat", "Phere", "Reception", "+ any family ritual"]
 
 
@@ -666,7 +676,7 @@ PICK = {"Basic": (["names", "venue"], "Your names, blessing and up to 3 function
 
 
 def picker_sec():
-    tabs = "".join(f'<button type="button" role="tab" aria-selected="{"true" if k == 0 else "false"}" data-tier="{n}"><b>{n}</b><span>{inr(pr)}</span><small>Ready in {d}</small></button>'
+    tabs = "".join(f'<button type="button" role="tab" aria-selected="{"true" if k == 0 else "false"}" data-tier="{n}"><b>{n}</b><span><s class="mrp">{inr(MRP[n])}</s> {inr(pr)}</span><small>Ready in {d}</small></button>'
                    for k, (n, pr, d, bl, f) in enumerate(PACKAGES))
     lists = "".join(f'<div class="pk-list" data-tier="{n}"{"" if k == 0 else " hidden"}><p>{PICK[n][1]}</p><ul class="checks">{"".join(f"<li>{icon(I['check'])}{x}</li>" for x in f[:5])}</ul></div>'
                     for k, (n, pr, d, bl, f) in enumerate(PACKAGES))
@@ -732,7 +742,7 @@ HOME = f'''
   <div class="h-hero-copy">
     <p class="eyebrow">Digital Marwari wedding invitations</p>
     <h1>Every ritual. Every name. <em>Every blessing.</em></h1>
-    <p class="h-sub">Your wedding invitation as one beautiful link. It opens like a real card, with every function, a map for each venue, music and RSVP. Set by hand, ready in 24–72 hours.</p>
+    <p class="h-sub">Your wedding invitation as one beautiful link. It opens like a real card, with every function, a map for each venue, music and RSVP. Set by hand, ready from 3 working days.</p>
     <div class="row h-ctas"><a class="btn btn-primary" href="invitations.html" data-track="hero_explore">Explore designs</a><a class="btn btn-outline" href="live-demo-1/" target="_blank" rel="noopener" data-track="hero_demo">Open a live invitation</a></div>
     <p class="h-note">From {inr(3999)} · Hindi &amp; English · balance paid after you approve</p>
   </div>
@@ -790,8 +800,8 @@ HOME = f'''
   <div class="h-rule"><span>Pricing</span><span>One payment per wedding · 50% now, 50% after you approve</span></div>
   <h2 class="h-display center">Choose <em>your package.</em></h2>
   {plan_cards()}
-  <p class="lx-fine center">Delivery times start once we have your complete details and the 50% advance. Sheesh Mahal starts at {inr(14999)}.</p>
-  <a class="lx-video" href="videos.html"><span><b>Invitation videos</b> for WhatsApp, Reels and Status</span><span>{" · ".join(f"{n} {inr(pr)}" for n, pr, *_ in VIDEO_PACKAGES)}</span><span class="tlink">See videos</span></a>
+  <p class="lx-fine center">Delivery times start once we have your complete details and the 50% advance.</p>
+  <a class="lx-video" href="videos.html"><span><b>Invitation videos</b> for WhatsApp, Reels and Status</span><span>{" · ".join(f"{n} <s class=mrp>{inr(VMRP[n])}</s> {inr(pr)}" for n, pr, *_ in VIDEO_PACKAGES)}</span><span class="tlink">See videos</span></a>
 </div></section>
 
 {promises()}
@@ -816,7 +826,7 @@ OCC = [("wedding", "Wedding"), ("save-the-date", "Save the Date"), ("sagai", "Sa
        ("naamkaran", "Naamkaran"), ("mundan", "Mundan"), ("puja", "Bhajan Sandhya"), ("diwali", "Diwali"), ("holi", "Holi Milan"),
        ("gangaur-teej", "Teej & Gangaur"), ("retirement", "Retirement"), ("prayer-meet", "Prayer Meet")]
 page("index", "Digital Wedding Invitations for Marwari Families | Bfiluxe",
-     "Premium digital wedding invitations for Marwari families: royal Rajasthani designs, every ritual and family name, maps, RSVP and QR code. From ₹3,999, ready in 24–72 hours.",
+     "Premium digital wedding invitations for Marwari families: royal Rajasthani designs, every ritual and family name, maps, RSVP and QR code. From ₹3,999, ready from 3 working days.",
      HOME, "index", ld=[ORG_LD, {"@context": "https://schema.org", "@type": "WebSite", "name": "Bfiluxe", "url": BASE + "/", "inLanguage": "en-IN"}, faq_ld(HOME_FAQ)])
 
 # ---------------- Invitations ----------------
@@ -866,7 +876,7 @@ def plan_pick(inv):
     for k, (n, pr, d, bl, f) in enumerate(plan_opts(inv)):
         rec = '<span class="pp-rec">Recommended</span>' if n == "Premium" else ""
         out.append(f'''<label class="pp-o pp-{n.lower()}">{rec}<input type="radio" name="plan" value="{n}" data-price="{inr(pr)}"{" checked" if k == 0 else ""}>
-          <span class="pp-top"><span class="pp-dot"></span><b>{n}</b><em>{inr(pr)}</em></span><strong>{PLAN_SUB[n]}</strong><span class="pp-bl">{bl} Ready in {d}.</span>
+          <span class="pp-top"><span class="pp-dot"></span><b>{n}</b><em><s class="mrp">{inr(MRP[n])}</s> {inr(pr)}</em></span><strong>{PLAN_SUB[n]}</strong><span class="pp-bl">{bl} Ready in {d}.</span>
           <details><summary>See everything included</summary><ul>{"".join(f"<li>{x}</li>" for x in f)}</ul></details></label>''')
     return "".join(out)
 
@@ -878,7 +888,7 @@ for inv in CATALOG:
         return ("edit" if "Custom" in f else "music" if "usic" in f else "rsvp" if "RSVP" in f else "link" if "link" in f
                 else "pin" if "Maps" in f else "globe" if "Hindi" in f else "image" if "Photo" in f else "clock")
     feats = "".join(f'<li>{icon(I[ficon(f)])}<span>{f}</span></li>' for f in inv["features"])
-    days = {"Basic": "24 hours", "Premium": "48 hours", "Luxury": "72 hours"}[inv["tier"]]
+    days = DAYS[inv["tier"]]
     body = f'''
 <section class="sec" style="padding-top:22px"><div class="wrap">
   <p class="crumbs"><a href="invitations.html">Invitations</a> › <a href="invitations.html?c={inv["collection"]}">{COLL[inv["collection"]]} Collection</a> › <span aria-current="page">{inv["name"]}</span></p>
@@ -899,7 +909,7 @@ for inv in CATALOG:
       <div class="d-head"><h1 class="d-title">{inv["name"]}</h1>
         <button class="d-fav" data-fav="{inv["slug"]}" aria-pressed="false" aria-label="Save to favourites">{icon(I["heart"])}</button></div>
       <p class="d-tag">{inv["desc"]}</p>
-      <p class="d-from">From</p><p class="d-price">{inr(inv["price"])}</p>
+      <p class="d-from">From</p><p class="d-price">{was(MRP[inv["tier"]], inv["price"])[0]} {inr(inv["price"])} {was(MRP[inv["tier"]], inv["price"])[1]}</p>
       <p class="d-sub">One payment per wedding · {len(plan_opts(inv))} level{"s" if len(plan_opts(inv)) > 1 else ""} of personalisation</p>
       <h2 class="d-h2">How personalised should it be?</h2>
       <p class="d-ticks"><span>RSVP built in</span><span>Hindi &amp; English</span><span>A map for every function</span></p>
@@ -955,7 +965,7 @@ ROWS = [("Designs available", "Basic collection", "Basic + Premium", "All + besp
         ("Hindi / English / bilingual", "✓", "✓", "✓"), ("Music or shehnai", "–", "✓", "✓"), ("Photo gallery &amp; countdown", "–", "✓", "✓"),
         ("RSVP with guest count", "–", "✓", "✓"), ("Custom colours &amp; motifs", "–", "–", "✓"), ("Family story / video page", "–", "–", "✓"),
         ("Priority WhatsApp support", "–", "–", "✓"), ("Pages", "One scrolling page", "One page with gallery &amp; RSVP sections", "Multiple pages (story, video)"),
-        ("Delivery", "24 hours", "48 hours", "72 hours"), ("Free change rounds", "1", "1", "1"), ("Link stays live", "Wedding + 6 months", "Wedding + 6 months", "Wedding + 6 months"),
+        ("Delivery", "3–5 working days", "7–14 working days", "15–21 working days"), ("Free change rounds", "1", "1", "1"), ("Link stays live", "Wedding + 6 months", "Wedding + 6 months", "Wedding + 6 months"),
         ("Payment", "50% / 50%", "50% / 50%", "50% / 50%")]
 PRICING = f'''
 <section class="phead"><div class="wrap"><h1>Digital Wedding Invitation Pricing</h1><p class="lead">Three clear packages. Pay 50% to start and 50% only after you approve your invitation.</p></div></section>
@@ -975,9 +985,8 @@ PRICING = f'''
 </div></section>
 <section class="sec sec-tint"><div class="wrap">
   <div class="sec-head center"><h2>Compare Packages</h2>{ORN}</div>
-  <div class="tbl-wrap"><table class="tbl"><thead><tr><th scope="col">Feature</th><th scope="col">Basic<br><small>{inr(3999)}</small></th><th scope="col" class="hl">Premium<br><small>{inr(6999)}</small></th><th scope="col">Luxury<br><small>{inr(11999)}</small></th></tr></thead>
+  <div class="tbl-wrap"><table class="tbl"><thead><tr><th scope="col">Feature</th><th scope="col">Basic<br><small><s class="mrp">{inr(5999)}</s> {inr(3999)}</small></th><th scope="col" class="hl">Premium<br><small><s class="mrp">{inr(14999)}</s> {inr(8999)}</small></th><th scope="col">Luxury<br><small><s class="mrp">{inr(35999)}</s> {inr(24999)}</small></th></tr></thead>
   <tbody>{"".join(f"<tr><th scope='row'>{a}</th><td>{b}</td><td class='hl'>{c}</td><td>{d}</td></tr>" for a, b, c, d in ROWS)}</tbody></table></div>
-  <p class="center muted" style="margin-top:14px;font-size:14px">Luxury designs such as Sheesh Mahal start at {inr(14999)}. Every design page shows its starting price.</p>
 </div></section>
 <section class="sec"><div class="wrap">
   <div class="split" style="align-items:start">
@@ -996,13 +1005,13 @@ PRICING = f'''
   <div>{faq_html(PRICE_FAQ)}</div>
 </div></section>'''
 page("pricing", "Pricing: Digital Wedding Invitations from ₹3,999 | Bfiluxe",
-     "Basic ₹3,999, Premium ₹6,999 and Luxury ₹11,999 digital wedding invitation packages. Pay 50% to start, 50% after approval. Compare features.",
+     "Launch prices: Basic ₹3,999, Premium ₹8,999 and Luxury ₹24,999 digital wedding invitation packages. Pay 50% to start, 50% after approval. Compare features.",
      PRICING, "pricing", ld=[faq_ld(PRICE_FAQ), {"@context": "https://schema.org", "@type": "OfferCatalog", "name": "Bfiluxe invitation packages",
      "itemListElement": [{"@type": "Offer", "name": f"{n} digital wedding invitation", "price": p, "priceCurrency": "INR", "description": b} for n, p, d, b, f in PACKAGES]}])
 
 # ---------------- How it works ----------------
 HOW_FAQ = [
-    ("How long does it take?", "Basic invitations are ready in 24 hours, Premium in 48 hours and Luxury in 72 hours after we receive your complete details."),
+    ("How long does it take?", "Basic in 3–5 working days, Premium in 7–14 working days and Luxury in 15–21 working days after we receive your complete details."),
     ("Can I change details after it's shared?", "Yes. Your link stays the same, so guests always see the latest version. One round of changes is free; spelling fixes are always free."),
     ("Is it available in Hindi?", "Choose English, Hindi, Marwari + Hindi or bilingual. We add traditional blessings like ॥ श्री गणेशाय नमः ॥ on request."),
     ("How do guests receive it?", "You get a private link, a ready-to-forward WhatsApp message and a QR code you can print on physical cards."),
@@ -1031,7 +1040,7 @@ HOW = f'''
   <div class="stepchips">{"".join(f'<a href="#step-{n}"><b>{n}</b>{t}</a>' for n, t, *_ in HOW_STEPS)}</div></div></section>
 <section class="sec"><div class="wrap">
   <div class="sec-head center"><p class="eyebrow">The process</p><h2>Four steps, zero stress</h2></div>
-  <ol class="roman">{"".join(f'<li id="step-{n}"><span class="rn">{"I II III IV".split()[k]}</span><h3>{t}</h3><p>{HOW_LINE[k]}</p><small>{tg}</small></li>' for k, ((n, t, ic, *_), tg) in enumerate(zip(HOW_STEPS, ["5 minutes", "At your own pace", "Ready in 24–72 hours", "Updates until the wedding"])))}</ol>
+  <ol class="roman">{"".join(f'<li id="step-{n}"><span class="rn">{"I II III IV".split()[k]}</span><h3>{t}</h3><p>{HOW_LINE[k]}</p><small>{tg}</small></li>' for k, ((n, t, ic, *_), tg) in enumerate(zip(HOW_STEPS, ["5 minutes", "At your own pace", "Ready from 3 working days", "Updates until the wedding"])))}</ol>
   <p class="center" style="margin-top:34px"><a class="btn btn-primary" href="customize.html">Start my invitation {icon(I["arrow"])}</a></p>
   <div class="incl4"><h2>Always included</h2><ul><li><b>Set by hand</b><span>A real person, never an automatic editor.</span></li><li><b>One round of changes</b><span>Spelling fixes are always free.</span></li><li><b>Live RSVP</b><span>See who is coming and how many (Premium and Luxury).</span></li><li><b>Hindi &amp; English</b><span>Or both, with every honorific checked.</span></li></ul></div>
 </div></section>
@@ -1039,9 +1048,9 @@ HOW = f'''
 <section class="sec sec-tint" style="padding-top:48px"><div class="wrap">
   <div class="sec-head center"><h2>Delivery Timeline</h2>{ORN}</div>
   <div class="timeline">
-    <div class="tl"><span class="tag">Basic · {inr(3999)}</span><p style="margin-top:12px"><b>24 hrs</b></p><p class="muted">One design, your names and up to 3 events, share link and QR.</p></div>
-    <div class="tl tl-pop"><span class="tag">Premium · {inr(6999)}</span><p style="margin-top:12px"><b>48 hrs</b></p><p class="muted">Up to 8 events, music, photo gallery, countdown and RSVP.</p></div>
-    <div class="tl"><span class="tag">Luxury · {inr(11999)}</span><p style="margin-top:12px"><b>72 hrs</b></p><p class="muted">Our grandest or a bespoke design, unlimited pages, priority support.</p></div>
+    <div class="tl"><span class="tag">Basic · {inr(3999)}</span><p style="margin-top:12px"><b>3–5 working days</b></p><p class="muted">One design, your names and up to 3 events, share link and QR.</p></div>
+    <div class="tl tl-pop"><span class="tag">Premium · {inr(8999)}</span><p style="margin-top:12px"><b>7–14 working days</b></p><p class="muted">Up to 8 events, music, photo gallery, countdown and RSVP.</p></div>
+    <div class="tl"><span class="tag">Luxury · {inr(24999)}</span><p style="margin-top:12px"><b>15–21 working days</b></p><p class="muted">Our grandest or a bespoke design, unlimited pages, priority support.</p></div>
   </div>
 </div></section>
 <section class="sec"><div class="wrap lx-split">
@@ -1082,7 +1091,7 @@ HOW = f'''
 </div></section>
 {cta()}'''
 page("how-it-works", "How It Works: Digital Wedding Invitation in 4 Steps | Bfiluxe",
-     "Choose a design, share your details, preview and approve, then share on WhatsApp. Ready in 24–72 hours; pay 50% after approval.", HOW, "how-it-works",
+     "Choose a design, share your details, preview and approve, then share on WhatsApp. Ready from 3 working days; pay 50% after approval.", HOW, "how-it-works",
      ld=[faq_ld(HOW_FAQ), {"@context": "https://schema.org", "@type": "HowTo", "name": "How to get a digital Marwari wedding invitation from Bfiluxe",
          "totalTime": "P3D", "step": [{"@type": "HowToStep", "position": int(n), "name": t, "text": d} for n, t, ic, img, d, pts, cta in HOW_STEPS]}])
 
@@ -1151,7 +1160,7 @@ DEMO = f'''
   <footer class="dv-cta">
     <p class="eyebrow">Liked this invitation?</p>
     <h2>Make one for your family</h2>
-    <p class="muted">Your names, every function and your favourite design, ready in 24–72 hours.</p>
+    <p class="muted">Your names, every function and your favourite design, ready from 3 working days.</p>
     <ul class="dv-pills"><li>From ₹3,999</li><li>Hindi &amp; English</li><li>Pay 50% after approval</li></ul>
     <div class="dv-cta-btns"><a class="btn btn-primary" id="demo-cta2" href="customize.html">Create my invitation {icon(I["arrow"])}</a><a class="btn btn-wa" data-wa="Namaste Bfiluxe 🙏 I saw the live demo and would like an invitation like this.">{WA} WhatsApp us</a></div>
     <a class="dv-brand" href="index.html" aria-label="Bfiluxe home"><img src="img/logo-sm.webp" alt="Bfiluxe" width="200" height="174" loading="lazy"><span>Made with love by Bfiluxe</span></a>
@@ -1302,7 +1311,7 @@ CONTACT = f'''
   <div class="next3">
     <div><span>1</span><h3>We reply within an hour</h3><p>A designer messages you on WhatsApp with 2–3 design suggestions.</p></div>
     <div><span>2</span><h3>You confirm a package</h3><p>Pay 50% by UPI or bank transfer and send your details.</p></div>
-    <div><span>3</span><h3>Preview in 24–72 hours</h3><p>Approve, pay the balance and share with every guest.</p></div>
+    <div><span>3</span><h3>Preview from 3 working days</h3><p>Approve, pay the balance and share with every guest.</p></div>
   </div>
 </div></section>
 <section class="sec"><div class="wrap split" style="align-items:start">
@@ -1356,7 +1365,7 @@ page("privacy", "Privacy Policy · Bfiluxe", "How Bfiluxe collects, uses and pro
 TERMS = f'''<section class="phead"><div class="wrap"><h1>Terms of Service</h1><p class="lead">Last updated {date.today().strftime("%d %B %Y")}</p></div></section>
 <article class="sec guide"><div class="wrap narrow legal">
 <h2>Orders and payment</h2><p>Package prices are shown on the <a href="pricing.html">pricing page</a> and each design page. Work starts after a 50% advance; the balance is due after you approve the final invitation and before the final link is shared.</p>
-<h2>Delivery</h2><p>Delivery times (24, 48 or 72 hours) start once we have your complete details. We tell you in advance if a date is not possible.</p>
+<h2>Delivery</h2><p>Delivery times (3–5, 7–14 or 15–21 working days) start once we have your complete details. We tell you in advance if a date is not possible.</p>
 <h2>Changes</h2><p>One round of changes is included in every package: after the first preview, send all your changes together in one message and we apply them. Spelling and name corrections are always free. Further rounds, a different design after approval, or extra pages are quoted before we make them.</p>
 <h2>Your responsibilities</h2><p>Please check every name, date, time and venue in the preview before approving. After approval, we are not responsible for details you supplied incorrectly, though we will still correct spellings for free.</p>
 <h2>Cancellations and refunds</h2><p>If you cancel before we share the first preview, we refund the advance minus any work already done. After the first preview, the advance is not refundable.</p>
@@ -1390,7 +1399,7 @@ FAQ_GROUPS = [
         ("Do you provide a QR code?", "Yes, every package includes a QR code you can print on physical cards or show at the venue."),
     ]),
     ("Ordering, delivery and payment", [
-        ("How long does it take to create a wedding invitation website?", "Basic 24 hours, Premium 48 hours and Luxury 72 hours, counted from when we have all your details and the advance."),
+        ("How long does it take to create a wedding invitation website?", "Basic in 3–5 working days, Premium in 7–14 working days and Luxury in 15–21 working days, counted from when we have all your details and the advance."),
         ("How long does the invitation link remain active?", "Through your wedding and for at least 6 months after it."),
         ("How do I pay?", "50% advance by UPI or bank transfer to start, and the remaining 50% after you approve the preview, before the final link is delivered."),
         ("What does one free revision mean?", "After your first preview, send all your changes together in one message and we apply them. Spelling and name corrections are always free."),
@@ -1428,7 +1437,7 @@ for _old in ("work", "work-mahi-ayush", "work-chittorgarh-engagement"):
 VIDEO_FAQ = [
     ("What is an invitation video?", "A short animated video with your blessing, names, families, functions and venues, set to music. Guests watch it on WhatsApp or Instagram, and you can share it as a Status."),
     ("What format will I receive?", "A vertical MP4 video (9:16), the size that fits WhatsApp, Instagram Reels and Status."),
-    ("How long does it take?", "Basic in 2 days, Premium in 3 days and Luxury in 4 days, counted from when we have your complete details and the 50% advance."),
+    ("How long does it take?", "Every video is ready in 2–3 working days, counted from when we have your complete details and the 50% advance."),
     ("Can the video be in Hindi?", "Yes: Hindi, English or bilingual. Traditional lines such as ॥ श्री गणेशाय नमः ॥ can be added."),
     ("Can I have a video and an invitation website?", "Yes. Many families send the video first and the website link for maps, RSVP and details. Ask on WhatsApp for both together."),
     ("How do I pay?", "50% to start and 50% after you approve the video. One round of changes is included."),
@@ -1639,7 +1648,7 @@ PART_BODY = f"""
     <div><h2>Why partners recommend us</h2><ul class="checks" style="margin-top:14px">
       <li>{icon(I["check"])}Invitations made only for Marwari and Rajasthani weddings</li>
       <li>{icon(I["check"])}Every function, with maps, so guests reach your venue on time</li>
-      <li>{icon(I["check"])}Ready in 24–72 hours, so it never delays your planning</li>
+      <li>{icon(I["check"])}Ready from 3 working days, so it never delays your planning</li>
       <li>{icon(I["check"])}Clients pay 50% after approving, which keeps the experience stress-free</li></ul>
       <p class="muted" style="margin-top:14px;font-size:14px">Commission is paid after the client completes payment. Full terms are shared when you join.</p></div>
     <div class="panel panel-gold"><h2 style="font-size:28px;margin-bottom:6px">Apply to partner</h2><p class="muted" style="margin-bottom:16px">We reply on WhatsApp.</p>
@@ -1669,10 +1678,10 @@ LANDING = {
         sections=[("What is a wedding invitation website?", P_("It is a small, private website made only for your wedding. Guests open it from a WhatsApp link or a QR code, and it works like an app on their phone without installing anything.", "Unlike a picture card, it can hold as many functions as your family celebrates, and it can be updated if a time or venue changes.")),
                   ("What a Marwari invitation website usually contains", OL("<b>Cover</b> with the opening blessing (॥ श्री गणेशाय नमः ॥) and the couple's names", "<b>Blessings</b> from grandparents and elders", "<b>Both families</b>: the bride's and groom's parents, written the way your family prefers", "<b>Functions</b>: Ganesh Sthapana, Mayra, Pithi, Mehendi, Mahila Sangeet, Baraat, Phere, Reception, each with date, time, venue and dress code", "<b>Venue</b> directions with Google Maps", "<b>RSVP</b> so guests confirm attendance and numbers (Premium and Luxury)", "<b>Gallery, countdown and music</b> (Premium and Luxury)")),
                   ("Why families choose a website over a PDF or video", UL("A PDF is hard to read on a phone and cannot be updated.", "A video plays once, and guests cannot tap to get directions.", "A website keeps every function, map and RSVP in one place and stays live after the wedding.")),
-                  ("How to get one made", P_('Choose a design from the <a href="invitations.html">collection</a>, share your names and functions through our <a href="customize.html">form</a> or on WhatsApp, review the preview on your phone, then share the link. It takes 24–72 hours depending on the package.'))],
+                  ("How to get one made", P_('Choose a design from the <a href="invitations.html">collection</a>, share your names and functions through our <a href="customize.html">form</a> or on WhatsApp, review the preview on your phone, then share the link. It takes 3–21 working days depending on the package.'))],
         faqs=[("Do guests need to install an app?", "No. The invitation opens in the phone's browser from a link or QR code."),
               ("Can I keep some functions for family only?", "Yes. Tell us which functions are for close family and we will mark them or keep them on a separate page."),
-              ("How much does it cost?", f"From {inr(3999)} (Basic) to {inr(11999)}+ (Luxury). See <a href='pricing.html'>pricing</a>.")]),
+              ("How much does it cost?", f"From {inr(3999)} (Basic) to {inr(24999)} (Luxury). See <a href='pricing.html'>pricing</a>.")]),
     "marwari-kankotri-online": dict(design="gulmohar-classic", eyebrow="Online kankotri",
         title="Marwari Kankotri Online: Digital Kankotri with Traditional Wording | Bfiluxe",
         desc="What a Marwari kankotri is, the traditions around sending it, and how to make an online kankotri that keeps the blessings, family order and wording intact.",
@@ -1734,7 +1743,7 @@ content_page("digital-vs-printed-kankotri", "Digital vs Printed Kankotri: Which 
       '<tr><th scope="row">Changing a time or venue</th><td>Reprint</td><td class="hl">Update; same link</td></tr>'
       '<tr><th scope="row">Directions</th><td>Address only</td><td class="hl">One-tap Google Maps</td></tr>'
       '<tr><th scope="row">Guest count</th><td>Phone calls</td><td class="hl">RSVP (Premium &amp; Luxury)</td></tr>'
-      '<tr><th scope="row">Lead time</th><td>Design, printing and delivery</td><td class="hl">24–72 hours</td></tr></tbody></table></div>'),
+      '<tr><th scope="row">Lead time</th><td>Design, printing and delivery</td><td class="hl">3–21 working days</td></tr></tbody></table></div>'),
      ("When printed still matters", P_("For grandparents, the family guru and the closest elders, a hand-delivered card carries respect that a message cannot. Many families also keep a printed kankotri as a keepsake.")),
      ("The hybrid approach", OL("Print a small number of cards for elders and close family.", "Add the Bfiluxe QR code on the printed card so every function and map is one scan away.", "Share the digital invitation with everyone else on WhatsApp.", "Send a reminder with the same link a week before the wedding.")),
      ("What to put on each", P_("Keep the printed card short: blessing, names, families and the main wedding date. Put the full list of functions, timings, venues, dress codes and RSVP on the digital invitation, where it can be updated."))],
@@ -1786,7 +1795,7 @@ PUBLIC = ["", "invitations.html", "pricing.html", "how-it-works.html", "demo.htm
 > Studio in {BIZ['city']}, {BIZ['region']}, India that designs premium digital wedding invitations only for Marwari families. Each invitation is a mobile website with the couple's and families' names, every function (Ganesh puja, Mayra, Pithi/Haldi, Mehendi, Mahila Sangeet, Baraat, Phere, Reception) with date, time and Google Maps, music, photo gallery, RSVP and a QR code, shared on WhatsApp.
 
 ## Key facts
-- Packages: Basic from ₹3,999 (ready in 24 hours), Premium from ₹6,999 (48 hours), Luxury from ₹11,999 (72 hours).
+- Packages: Basic ₹3,999 (regular ₹5,999, ready in 3–5 working days), Premium ₹8,999 (regular ₹14,999, 7–14 working days), Luxury ₹24,999 (regular ₹35,999, 15–21 working days).
 - Payment: 50% to start, 50% after the customer approves the invitation. UPI or bank transfer.
 - Languages: English, Hindi, Marwari + Hindi, bilingual.
 - One free round of changes; spelling fixes always free. Links stay live at least 6 months after the wedding.
@@ -1795,7 +1804,7 @@ PUBLIC = ["", "invitations.html", "pricing.html", "how-it-works.html", "demo.htm
 ## Pages
 - [Invitation designs]({BASE}/invitations.html): Royal, Traditional, Elegant and Modern collections
 - [Pricing]({BASE}/pricing.html): packages and feature comparison
-- [Invitation videos]({BASE}/videos.html): animated video invites for WhatsApp, Basic ₹1,499 (30 s, 2 days), Premium ₹2,499 (60 s, 3 days), Luxury ₹3,999 (90 s, 4 days)
+- [Invitation videos]({BASE}/videos.html): animated video invites for WhatsApp, Basic ₹1,499 (30 s), Premium ₹2,499 (60 s), Luxury ₹3,999 (90 s), each ready in 2–3 working days
 - [How it works]({BASE}/how-it-works.html): choose, share details, preview and approve, share
 - [Live demo]({BASE}/demo.html): a sample invitation as guests see it
 - [Marwari wedding guide]({BASE}/guide.html): rituals in order, invitation wording in Hindi and English, send-out checklist

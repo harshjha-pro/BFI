@@ -2271,3 +2271,13 @@ details.acc[open] summary::after{content:"–"!important}
 .h-plan>.btn-block{width:auto;display:flex}
 .mbar .btn{padding:0 10px!important;font-size:10.5px!important;letter-spacing:.1em!important}
 @media(max-width:520px){.d-cta{font-size:11.5px!important;letter-spacing:.08em!important;padding:0 18px}.d-cta span{white-space:nowrap}}
+
+/* ===== Launch prices: struck regular price + saving ===== */
+s.mrp{color:#8a7d74;font-weight:400;text-decoration:line-through;text-decoration-thickness:1px;font-size:.62em;margin-right:.3em;font-family:var(--sans,"Montserrat",sans-serif);letter-spacing:0;vertical-align:.18em;white-space:nowrap}
+.save-off{display:inline-block;font-family:var(--sans,"Montserrat",sans-serif);font-size:11.5px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:#2f6b3a;background:#e6f1e4;border-radius:999px;padding:3px 9px;vertical-align:.3em;margin-left:.35em;white-space:nowrap}
+.h-plan-price small .save-off{margin-left:0;margin-right:.4em}
+.tbl small s.mrp,.pk-tabs s.mrp,.tags s.mrp,.pp-top s.mrp,.card-meta s.mrp,.lx-video s.mrp{font-size:.85em;vertical-align:0}
+.pp-price s.mrp{font-size:.8em;vertical-align:0}
+.h-plan-price>s.mrp,.pkg-price>s.mrp,.d-price>s.mrp{display:block;font-size:17px;line-height:1.2;margin:0 0 2px;vertical-align:0}
+.pkg-price>.save-off,.d-price>.save-off{font-size:11px}
+.h-plan .h-plan-price{white-space:nowrap}
