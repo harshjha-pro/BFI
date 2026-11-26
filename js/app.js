@@ -99,13 +99,13 @@ const displayName = () => user()?.user_metadata?.full_name || user()?.user_metad
 
 /* Fallback catalogue, used only if the database can't be reached (keeps the site working offline). */
 const FALLBACK = [
-  ["rajwada-royale","Rajwada Royale","royal","Luxury",11999,"Golden palace and lanterns on deep maroon"],
-  ["gulmohar-classic","Gulmohar Classic","traditional","Premium",6999,"Roses and marigolds on ivory"],
-  ["gulabi-bagh","Gulabi Bagh","elegant","Premium",6999,"Blush peonies and fine gold"],
-  ["mor-pankh","Mor Pankh","modern","Premium",7999,"Peacock on emerald green"],
-  ["neel-mahal","Neel Mahal","royal","Luxury",11999,"Moonlit palace on royal navy"],
+  ["rajwada-royale","Rajwada Royale","royal","Luxury",24999,"Golden palace and lanterns on deep maroon"],
+  ["gulmohar-classic","Gulmohar Classic","traditional","Premium",8999,"Roses and marigolds on ivory"],
+  ["gulabi-bagh","Gulabi Bagh","elegant","Premium",8999,"Blush peonies and fine gold"],
+  ["mor-pankh","Mor Pankh","modern","Premium",8999,"Peacock on emerald green"],
+  ["neel-mahal","Neel Mahal","royal","Luxury",24999,"Moonlit palace on royal navy"],
   ["gajraj-swagat","Gajraj Swagat","traditional","Basic",3999,"Royal elephants and marigold toran"],
-  ["sheesh-mahal","Sheesh Mahal","royal","Luxury",14999,"Chandeliers and a golden haveli"],
+  ["sheesh-mahal","Sheesh Mahal","royal","Luxury",24999,"Chandeliers and a golden haveli"],
   ["chhatri","Chhatri","elegant","Basic",3999,"A single gold chhatri, lots of calm"],
 ].map(([slug, name, collection, tier, price_from, tagline], i) => ({ slug, name, collection, tier, price_from, tagline, description: tagline + ".", features: ["Customizable names, dates and text", "Shareable link and QR code", "RSVP (optional)"], image: `inv-${slug}.jpg`, sort: i + 1 }));
 const DARK = new Set(["rajwada-royale", "mor-pankh", "neel-mahal", "sheesh-mahal"]);
@@ -233,7 +233,7 @@ function card(inv) {
     <div class="card-body">
       <h3><a href="design-${encodeURIComponent(inv.slug)}.html">${esc(inv.name)}</a></h3>
       <p class="card-desc">${esc(inv.tagline)}</p>${BEST[inv.slug] ? `<p class="card-best">Best for: ${esc(BEST[inv.slug])}</p>` : ""}
-      <div class="card-meta"><span>${esc(inv.tier)}</span><span>from <b>${inr(inv.price_from)}</b></span></div>
+      <div class="card-meta"><span>${esc(inv.tier)}</span><span><s class="mrp">${inr(({Basic:5999,Premium:14999,Luxury:35999})[inv.tier] || 0)}</s> <b>${inr(inv.price_from)}</b></span></div>
       <div class="card-acts"><a class="btn btn-sm btn-outline" href="demo.html?design=${encodeURIComponent(inv.slug)}">Live demo</a><a class="btn btn-sm btn-primary" href="design-${encodeURIComponent(inv.slug)}.html">View design</a></div>
     </div></article>`;
 }
@@ -336,9 +336,9 @@ const EVENT_TYPES = ["Ganesh Sthapana", "Mayra", "Pithi", "Haldi", "Mehendi", "M
 const CZ_KEY = "bfi.customize.v1";
 pages.customize = async () => {
   const all = await invitations();
-  const PKG = { Basic: { price: 3999, days: 24, events: 3, music: false, gallery: false, rsvp: false, colours: false, story: false },
-    Premium: { price: 6999, days: 48, events: 8, music: true, gallery: true, rsvp: true, colours: false, story: false },
-    Luxury: { price: 11999, days: 72, events: 99, music: true, gallery: true, rsvp: true, colours: true, story: true } };
+  const PKG = { Basic: { price: 3999, mrp: 5999, days: "3–5 working days", events: 3, music: false, gallery: false, rsvp: false, colours: false, story: false },
+    Premium: { price: 8999, mrp: 14999, days: "7–14 working days", events: 8, music: true, gallery: true, rsvp: true, colours: false, story: false },
+    Luxury: { price: 24999, mrp: 35999, days: "15–21 working days", events: 99, music: true, gallery: true, rsvp: true, colours: true, story: true } };
   const TIERS = ["Basic", "Premium", "Luxury"];
   let st;
   try { st = JSON.parse(localStorage.getItem(CZ_KEY) || "null"); } catch { st = null; }
@@ -386,8 +386,8 @@ pages.customize = async () => {
       <p class="muted" style="margin:22px 0 12px">2. Choose a package</p>
       <div class="pkg-pick">${TIERS.map((t) => { const p = PKG[t], off = TIERS.indexOf(t) < TIERS.indexOf(minTier());
         return `<label class="pp${off ? " off" : ""}"><input type="radio" name="package" value="${t}" ${D.package === t ? "checked" : ""} ${off ? "disabled" : ""}>
-        <b>${t}</b><span class="pp-price">${inr(Math.max(p.price, t === minTier() ? inv().price_from : 0))}</span>
-        <span>${p.events === 99 ? "Unlimited" : "Up to " + p.events} events · ${p.days} hrs</span><span>${[p.music && "Music", p.gallery && "Gallery", p.rsvp && "RSVP", p.colours && "Custom colours", p.story && "Family story"].filter(Boolean).join(" · ") || "Names, events, maps, QR"}</span>
+        <b>${t}</b><span class="pp-price"><s class="mrp">${inr(p.mrp)}</s> ${inr(Math.max(p.price, t === minTier() ? inv().price_from : 0))}</span>
+        <span>${p.events === 99 ? "Unlimited" : "Up to " + p.events} events · ${p.days}</span><span>${[p.music && "Music", p.gallery && "Gallery", p.rsvp && "RSVP", p.colours && "Custom colours", p.story && "Family story"].filter(Boolean).join(" · ") || "Names, events, maps, QR"}</span>
         ${off ? `<em>${esc(inv().name)} starts in ${minTier()}</em>` : ""}</label>`; }).join("")}</div>
       <p class="muted" style="font-size:13.5px;margin-top:10px">Not sure? Pick the closest; we'll confirm with you on WhatsApp before you pay anything. <a href="pricing.html" target="_blank">Compare packages</a></p>`;
     if (n === 1) return `<div class="form"><div class="f2">${f("bride", "Bride's name <span class='req'>*</span>", 'required autocomplete="off" placeholder="e.g. Priya"')}${f("groom", "Groom's name <span class='req'>*</span>", 'required autocomplete="off" placeholder="e.g. Rohan"')}</div>

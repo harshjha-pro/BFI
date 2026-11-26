@@ -3,7 +3,7 @@
 > Studio in Jaipur, Rajasthan, India that designs premium digital wedding invitations only for Marwari families. Each invitation is a mobile website with the couple's and families' names, every function (Ganesh puja, Mayra, Pithi/Haldi, Mehendi, Mahila Sangeet, Baraat, Phere, Reception) with date, time and Google Maps, music, photo gallery, RSVP and a QR code, shared on WhatsApp.
 
 ## Key facts
-- Packages: Basic from ₹3,999 (ready in 24 hours), Premium from ₹6,999 (48 hours), Luxury from ₹11,999 (72 hours).
+- Packages: Basic ₹3,999 (regular ₹5,999, ready in 3–5 working days), Premium ₹8,999 (regular ₹14,999, 7–14 working days), Luxury ₹24,999 (regular ₹35,999, 15–21 working days).
 - Payment: 50% to start, 50% after the customer approves the invitation. UPI or bank transfer.
 - Languages: English, Hindi, Marwari + Hindi, bilingual.
 - One free round of changes; spelling fixes always free. Links stay live at least 6 months after the wedding.
@@ -12,7 +12,7 @@
 ## Pages
 - [Invitation designs](https://bfiluxe.com/invitations.html): Royal, Traditional, Elegant and Modern collections
 - [Pricing](https://bfiluxe.com/pricing.html): packages and feature comparison
-- [Invitation videos](https://bfiluxe.com/videos.html): animated video invites for WhatsApp, Basic ₹1,499 (30 s, 2 days), Premium ₹2,499 (60 s, 3 days), Luxury ₹3,999 (90 s, 4 days)
+- [Invitation videos](https://bfiluxe.com/videos.html): animated video invites for WhatsApp, Basic ₹1,499 (30 s), Premium ₹2,499 (60 s), Luxury ₹3,999 (90 s), each ready in 2–3 working days
 - [How it works](https://bfiluxe.com/how-it-works.html): choose, share details, preview and approve, share
 - [Live demo](https://bfiluxe.com/demo.html): a sample invitation as guests see it
 - [Marwari wedding guide](https://bfiluxe.com/guide.html): rituals in order, invitation wording in Hindi and English, send-out checklist
@@ -23,11 +23,11 @@
 - [FAQ](https://bfiluxe.com/faq.html): kankotri, Mayra and Pithi, Hindi wording, RSVP, WhatsApp sharing, delivery, link validity, payment and revisions
 - [Free card maker](https://bfiluxe.com/free-cards.html): 16 free templates (wedding, save the date, Sagai, anniversary, birthdays, Godh Bharai, Naamkaran, Mundan, Griha Pravesh, puja, Diwali, Holi, Teej/Gangaur, retirement, prayer meet); download PNG, JPG or PDF
 - [Contact](https://bfiluxe.com/contact.html)
-- [Rajwada Royale](https://bfiluxe.com/design-rajwada-royale.html): Royal collection, from ₹11,999
-- [Gulmohar Classic](https://bfiluxe.com/design-gulmohar-classic.html): Traditional collection, from ₹6,999
-- [Gulabi Bagh](https://bfiluxe.com/design-gulabi-bagh.html): Elegant collection, from ₹6,999
-- [Mor Pankh](https://bfiluxe.com/design-mor-pankh.html): Modern collection, from ₹7,999
-- [Neel Mahal](https://bfiluxe.com/design-neel-mahal.html): Royal collection, from ₹11,999
+- [Rajwada Royale](https://bfiluxe.com/design-rajwada-royale.html): Royal collection, from ₹24,999
+- [Gulmohar Classic](https://bfiluxe.com/design-gulmohar-classic.html): Traditional collection, from ₹8,999
+- [Gulabi Bagh](https://bfiluxe.com/design-gulabi-bagh.html): Elegant collection, from ₹8,999
+- [Mor Pankh](https://bfiluxe.com/design-mor-pankh.html): Modern collection, from ₹8,999
+- [Neel Mahal](https://bfiluxe.com/design-neel-mahal.html): Royal collection, from ₹24,999
 - [Gajraj Swagat](https://bfiluxe.com/design-gajraj-swagat.html): Traditional collection, from ₹3,999
-- [Sheesh Mahal](https://bfiluxe.com/design-sheesh-mahal.html): Royal collection, from ₹14,999
+- [Sheesh Mahal](https://bfiluxe.com/design-sheesh-mahal.html): Royal collection, from ₹24,999
 - [Chhatri](https://bfiluxe.com/design-chhatri.html): Elegant collection, from ₹3,999
