@@ -463,7 +463,7 @@ RENDER.designs = async (m) => {
       <td><select class="in" data-f="tier" aria-label="Package">${["Basic", "Premium", "Luxury"].map((t) => `<option${t === d.tier ? " selected" : ""}>${t}</option>`).join("")}</select></td>
       <td><input class="in" data-f="sort" inputmode="numeric" value="${esc(d.sort)}" style="max-width:70px" aria-label="Order"></td>
       <td><label class="switch"><input type="checkbox" data-f="active"${d.active ? " checked" : ""} aria-label="Show on website"><i></i></label></td>
-      <td><div class="row"><button class="btn btn-sm" data-save>Save</button><a class="icon-btn" href="${CFG.site}/design-${encodeURIComponent(d.slug)}.html" target="_blank" rel="noopener noreferrer" aria-label="Open design page">${ic("ext", 18)}</a></div></td></tr>`).join("")}</tbody></table></div>
+      <td><div class="row"><button class="btn btn-sm" data-save>Save</button><a class="icon-btn" href="${CFG.site}/design-${encodeURIComponent(d.slug)}" target="_blank" rel="noopener noreferrer" aria-label="Open design page">${ic("ext", 18)}</a></div></td></tr>`).join("")}</tbody></table></div>
     <p class="note" style="margin-top:14px">Hiding a design removes it from the invitations page and order form straight away. Its own page stays reachable by direct link until the next site update.</p>`;
   m.querySelectorAll("[data-save]").forEach((b) => b.addEventListener("click", async () => {
     const tr = b.closest("tr"), d = S.designs.find((x) => x.slug === tr.dataset.slug), g = (f) => tr.querySelector(`[data-f="${f}"]`);
@@ -533,7 +533,7 @@ RENDER.settings = async (m) => {
     <div class="grid2"><div class="card" style="margin:0"><div class="sec-h"><h2>Offer bar on the website</h2></div>
       <form id="anf" novalidate><div class="row" style="margin-bottom:12px"><label class="switch"><input type="checkbox" id="an-on"${an.on ? " checked" : ""}><i></i></label><label for="an-on">Show a thin bar at the top of every page</label></div>
       <label class="f" for="an-t">Text (up to 120 characters)</label><input class="in" id="an-t" maxlength="120" value="${esc(an.text || "")}" placeholder="Wedding season offer: up to 40% off until 31 January">
-      <label class="f" for="an-l" style="margin-top:12px">Link (optional, a bfiluxe.com page or WhatsApp)</label><input class="in" id="an-l" maxlength="200" value="${esc(an.link || "")}" placeholder="https://bfiluxe.com/pricing.html">
+      <label class="f" for="an-l" style="margin-top:12px">Link (optional, a bfiluxe.com page or WhatsApp)</label><input class="in" id="an-l" maxlength="200" value="${esc(an.link || "")}" placeholder="https://bfiluxe.com/pricing">
       <div class="row" style="margin-top:14px"><button class="btn" type="submit">Save offer bar</button></div></form></div>
     <div class="card" style="margin:0"><div class="sec-h"><h2>Your account</h2></div>
       <dl class="info" style="margin:0 0 14px;box-shadow:none;background:#FBF8F2"><dt>Email</dt><dd>${esc(S.user?.email)}</dd><dt>Two-step sign-in</dt><dd>${factors.length ? `On · ${esc(factors[0].friendly_name || "authenticator app")}` : "Off"}</dd><dt>Auto sign-out</dt><dd>After ${IDLE_MIN} minutes without activity, and when you close the tab</dd></dl>
