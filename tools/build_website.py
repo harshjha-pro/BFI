@@ -12,7 +12,7 @@ from html import escape
 from pathlib import Path
 
 OUT = Path(__file__).resolve().parent.parent / "site"
-V = "20261127f"  # bump to bust browser caches for css/js
+V = "20261127g"  # bump to bust browser caches for css/js
 BASE = "https://bfiluxe.com"
 ART = "img/art/"
 IMGBASE = "https://oaosapkkzoynaqpnmvrj.supabase.co/storage/v1/object/public/site/"
@@ -1355,7 +1355,7 @@ LOGIN = '''
 </div></section>'''
 page("login", "Sign in · Bfiluxe", "Sign in or create your Bfiluxe account with email or Google.", LOGIN, None, bar=False, index=False)
 ACCT = '''
-<section class="ac-sec"><div class="wrap"><h1 class="sr">My Account</h1><div class="ac" id="account"><div class="ac-skel"></div><div class="ac-skel"></div><div class="ac-skel"></div></div></div></section>'''
+<section class="ac-sec"><div class="ac-wide"><h1 class="sr">My Account</h1><div class="ac" id="account"><div class="ac-skel"></div><div class="ac-skel"></div><div class="ac-skel"></div></div></div></section>'''
 page("account", "My Account · Bfiluxe", "Your saved invitations, favourites and enquiries.", ACCT, None, bar=False, index=False)
 
 # ---------------- Legal ----------------
