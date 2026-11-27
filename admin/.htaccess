@@ -2,6 +2,9 @@
 Options -Indexes
 DirectoryIndex index.html
 RewriteEngine On
+# one address for the admin: bfiluxe.com/admin/ -> admin.bfiluxe.com
+RewriteCond %{HTTP_HOST} ^(www\.)?bfiluxe\.com$ [NC]
+RewriteRule ^(.*)$ https://admin.bfiluxe.com/$1 [R=301,L]
 RewriteCond %{HTTPS} off
 RewriteRule ^(.*)$ https://%{HTTP_HOST}/$1 [R=301,L]
 # hide anything that isn't part of the admin app
