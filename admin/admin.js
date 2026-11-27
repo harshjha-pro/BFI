@@ -75,6 +75,17 @@ const ART = {
     <rect x="34" y="34" width="92" height="60" rx="7" fill="#fff" stroke="#2B241A" stroke-width="2.6"/><path d="M34 39l46 32 46-32" fill="none" stroke="#2B241A" stroke-width="2.6" stroke-linejoin="round"/>
     <circle cx="80" cy="70" r="9" fill="#F8D46B" stroke="#2B241A" stroke-width="2.2"/><path d="M118 14l2.6 6 6 2.6-6 2.6-2.6 6-2.6-6-6-2.6 6-2.6z" fill="#F8D46B" stroke="#2B241A" stroke-width="1.8"/></svg>`,
 };
+const EYE = '<svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><circle cx="12" cy="12" r="3" fill="none" stroke="currentColor" stroke-width="1.8"/></svg>';
+const EYE_OFF = '<svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M3 3l18 18M10.6 5.1A10.8 10.8 0 0 1 12 5c6.4 0 10 7 10 7a17 17 0 0 1-3.2 4.1M6.6 6.6C3.9 8.4 2 12 2 12s3.6 7 10 7a9.7 9.7 0 0 0 5.4-1.6M9.9 9.9a3 3 0 0 0 4.2 4.2" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+function eyes(box) {
+  box.querySelectorAll('input[type="password"]').forEach((inp) => {
+    const wrap = document.createElement("div"); wrap.className = "pw-wrap"; inp.parentNode.insertBefore(wrap, inp); wrap.appendChild(inp);
+    const b = document.createElement("button"); b.type = "button"; b.className = "pw-eye"; b.setAttribute("aria-label", "Show password"); b.setAttribute("aria-pressed", "false"); b.innerHTML = EYE;
+    b.addEventListener("click", () => { const show = inp.type === "password"; inp.type = show ? "text" : "password"; b.innerHTML = show ? EYE_OFF : EYE;
+      b.setAttribute("aria-label", show ? "Hide password" : "Show password"); b.setAttribute("aria-pressed", String(show)); inp.focus(); });
+    wrap.appendChild(b);
+  });
+}
 const empty = (t) => `<div class="empty">${ART.empty}<p>${esc(t)}</p></div>`;
 
 /* ---------- state ---------- */
@@ -108,11 +119,11 @@ function login(msg = "") {
     <label class="f" for="em">Email</label><input class="in" id="em" type="email" autocomplete="username" required maxlength="200">
     <label class="f" for="pw">Password</label><input class="in" id="pw" type="password" autocomplete="current-password" required maxlength="200">
     <button class="btn" type="submit">Continue</button><p class="err" id="err">${esc(msg)}</p></form>`);
-  const f = document.getElementById("f-login");
+  const f = document.getElementById("f-login"); eyes(f);
   f.addEventListener("submit", async (e) => {
     e.preventDefault(); const b = f.querySelector("button"); b.disabled = true; document.getElementById("err").textContent = "";
     const { error } = await sb.auth.signInWithPassword({ email: f.em.value.trim(), password: f.pw.value });
-    b.disabled = false; f.pw.value = "";
+    b.disabled = false; f.pw.value = ""; f.pw.type = "password";
     if (error) { document.getElementById("err").textContent = /rate|many/i.test(error.message) ? "Too many attempts. Wait a few minutes." : "Email or password is not correct."; return; }
     gate();
   });
@@ -522,6 +533,7 @@ RENDER.settings = async (m) => {
     if (value.on && !value.text) return toast("Write the offer text first.", true);
     try { await q(sb.from("site_settings").upsert({ key: "announcement", value, updated_at: new Date().toISOString() })); S.settings.announcement = value; toast("Saved"); } catch (err) { fail(err); }
   });
+  eyes(m.querySelector("#pwf"));
   m.querySelector("#pwf").addEventListener("submit", async (e) => {
     e.preventDefault(); const a = m.querySelector("#p1").value, b = m.querySelector("#p2").value;
     if (a.length < 12) return toast("Use at least 12 characters.", true);

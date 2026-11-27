@@ -238,3 +238,11 @@ table.t td .in{padding:7px 10px;font-size:13px}
   .drawer .info{grid-template-columns:1fr}
 }
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+/* password show/hide */
+.pw-wrap{position:relative}
+.pw-wrap .in{padding-right:46px}
+.auth-form .pw-wrap{margin-bottom:14px}
+.auth-form .pw-wrap .in{margin-bottom:0}
+.pw-eye{position:absolute;right:6px;top:50%;transform:translateY(-50%);width:36px;height:36px;border:0;border-radius:8px;background:transparent;color:var(--muted);display:grid;place-items:center;cursor:pointer}
+.pw-eye:hover{background:#F4F0E8;color:var(--ink)}
+.pw-eye:focus-visible{outline:2px solid #E7BE4C;outline-offset:1px}
