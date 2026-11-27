@@ -128,6 +128,7 @@ function inviteText(slug, o = {}) {
 let _inv;
 async function invitations() {
   if (_inv) return _inv;
+  await liveSettings();
   try {
     if (!sb) throw new Error("offline");
     const { data, error } = await sb.from("invitations").select("*").order("sort");
@@ -136,6 +137,58 @@ async function invitations() {
   } catch { _inv = FALLBACK; }
   return _inv;
 }
+/* ---------- live prices & offer bar (changed in the admin) ---------- */
+const fmtINR = (n) => "₹" + Number(n).toLocaleString("en-IN");
+let _live, LIVE_NOW = null;
+function liveSettings() {
+  if (_live) return _live;
+  _live = (async () => {
+    try { const c = JSON.parse(sessionStorage.getItem("bfx.live") || "null"); if (c && Date.now() - c.t < 60000) return (LIVE_NOW = c.v); } catch {}
+    try {
+      const r = await fetch(`${CFG.supabaseUrl}/rest/v1/site_settings?select=key,value`, { headers: { apikey: CFG.supabaseKey } });
+      if (!r.ok) return null;
+      const v = Object.fromEntries((await r.json()).map((x) => [x.key, x.value]));
+      try { sessionStorage.setItem("bfx.live", JSON.stringify({ t: Date.now(), v })); } catch {}
+      return (LIVE_NOW = v);
+    } catch { return null; }
+  })();
+  return _live;
+}
+const livePkg = (v, kind, t) => { const o = (kind === "v" ? v?.video_packages : v?.packages)?.[t];
+  if (!o || !(Number(o.price) > 0)) return null;
+  return { price: Math.round(+o.price), mrp: +o.mrp > +o.price ? Math.round(+o.mrp) : 0, days: typeof o.days === "string" ? o.days.slice(0, 40) : "" }; };
+(async () => {
+  const v = await liveSettings(); if (!v) return;
+  document.querySelectorAll("[data-k]").forEach((el) => {
+    const [kind, t, f] = el.dataset.k.split(":"); const o = livePkg(v, kind, t); if (!o) return;
+    if (f === "price") { el.dataset.v = o.price; el.textContent = fmtINR(o.price); }
+    else if (f === "mrp") { el.hidden = !o.mrp; if (o.mrp) el.textContent = fmtINR(o.mrp); }
+    else if (f === "off") { el.hidden = !o.mrp; if (o.mrp) el.textContent = Math.round((o.mrp - o.price) * 100 / o.mrp) + "% off"; }
+    else if (f === "days" && o.days) el.textContent = o.days;
+  });
+  if (document.querySelector("[data-dp],[data-dmin]")) {
+    const dp = Object.fromEntries((await invitations()).map((i) => [i.slug, +i.price_from || 0]));
+    const val = (slug, tier) => Math.max(livePkg(v, "p", tier)?.price || 0, dp[slug] || 0);
+    document.querySelectorAll("[data-dp]").forEach((el) => { const n = val(el.dataset.dp, el.dataset.tier); if (!n) return; el.dataset.v = n; el.textContent = fmtINR(n);
+      const box = el.parentElement, mr = box.querySelector('[data-k$=":mrp"]'), off = box.querySelector('[data-k$=":off"]'), m = livePkg(v, "p", el.dataset.tier)?.mrp || 0;
+      if (mr) { mr.hidden = !(m > n); if (m > n) mr.textContent = fmtINR(m); }
+      if (off) { off.hidden = !(m > n); if (m > n) off.textContent = Math.round((m - n) * 100 / m) + "% off"; } });
+    document.querySelectorAll("[data-dmin]").forEach((r) => { const n = val(r.dataset.dmin, r.dataset.tier); if (!n) return; r.dataset.price = fmtINR(n);
+      const lab = document.querySelector("[data-plan-label]"); if (r.checked && lab) lab.textContent = `${r.value} · ${r.dataset.price}`; });
+  }
+  const an = v.announcement;
+  if (an && an.on && typeof an.text === "string" && an.text.trim()) {
+    let closed = ""; try { closed = sessionStorage.getItem("bfx.offer") || ""; } catch {}
+    const text = an.text.trim().slice(0, 120); if (closed === text) return;
+    const link = typeof an.link === "string" && /^(https:\/\/(bfiluxe\.com|www\.bfiluxe\.com|wa\.me)(\/|$)|\/[^/])/.test(an.link) ? an.link : "";
+    const bar = document.createElement("div"); bar.className = "offer-bar"; bar.setAttribute("role", "region"); bar.setAttribute("aria-label", "Offer");
+    const msg = document.createElement(link ? "a" : "span"); msg.textContent = text; if (link) { msg.href = link; if (/^https:\/\/wa\.me/.test(link)) { msg.target = "_blank"; msg.rel = "noopener"; } }
+    const x = document.createElement("button"); x.type = "button"; x.setAttribute("aria-label", "Close offer"); x.textContent = "×";
+    x.addEventListener("click", () => { bar.remove(); try { sessionStorage.setItem("bfx.offer", text); } catch {} });
+    bar.append(msg, x); document.body.prepend(bar);
+  }
+})();
+
 let favs = new Set();
 async function loadFavs() {
   if (!user()) { favs = new Set(); return; }
@@ -233,7 +286,8 @@ function card(inv) {
     <div class="card-body">
       <h3><a href="design-${encodeURIComponent(inv.slug)}.html">${esc(inv.name)}</a></h3>
       <p class="card-desc">${esc(inv.tagline)}</p>${BEST[inv.slug] ? `<p class="card-best">Best for: ${esc(BEST[inv.slug])}</p>` : ""}
-      <div class="card-meta"><span>${esc(inv.tier)}</span><span><s class="mrp">${inr(({Basic:5999,Premium:14999,Luxury:35999})[inv.tier] || 0)}</s> <b>${inr(inv.price_from)}</b></span></div>
+      <div class="card-meta"><span>${esc(inv.tier)}</span><span>${(() => { const o = livePkg(LIVE_NOW, "p", inv.tier), pr = Math.max(o?.price || 0, +inv.price_from || 0), m = o ? o.mrp : ({ Basic: 5999, Premium: 14999, Luxury: 35999 })[inv.tier];
+        return (m > pr ? `<s class="mrp">${inr(m)}</s> ` : "") + `<b>${inr(pr)}</b>`; })()}</span></div>
       <div class="card-acts"><a class="btn btn-sm btn-outline" href="demo.html?design=${encodeURIComponent(inv.slug)}">Live demo</a><a class="btn btn-sm btn-primary" href="design-${encodeURIComponent(inv.slug)}.html">View design</a></div>
     </div></article>`;
 }
@@ -340,6 +394,8 @@ pages.customize = async () => {
     Premium: { price: 8999, mrp: 14999, days: "7–14 working days", events: 8, music: true, gallery: true, rsvp: true, colours: false, story: false },
     Luxury: { price: 24999, mrp: 35999, days: "15–21 working days", events: 99, music: true, gallery: true, rsvp: true, colours: true, story: true } };
   const TIERS = ["Basic", "Premium", "Luxury"];
+  const LV = await liveSettings();
+  TIERS.forEach((t) => { const o = livePkg(LV, "p", t); if (o) { PKG[t].price = o.price; PKG[t].mrp = o.mrp; if (o.days) PKG[t].days = o.days; } });
   let st;
   try { st = JSON.parse(localStorage.getItem(CZ_KEY) || "null"); } catch { st = null; }
   st = st || {};
@@ -386,7 +442,7 @@ pages.customize = async () => {
       <p class="muted" style="margin:22px 0 12px">2. Choose a package</p>
       <div class="pkg-pick">${TIERS.map((t) => { const p = PKG[t], off = TIERS.indexOf(t) < TIERS.indexOf(minTier());
         return `<label class="pp${off ? " off" : ""}"><input type="radio" name="package" value="${t}" ${D.package === t ? "checked" : ""} ${off ? "disabled" : ""}>
-        <b>${t}</b><span class="pp-price"><s class="mrp">${inr(p.mrp)}</s> ${inr(Math.max(p.price, t === minTier() ? inv().price_from : 0))}</span>
+        <b>${t}</b><span class="pp-price">${p.mrp ? `<s class="mrp">${inr(p.mrp)}</s> ` : ""}${inr(Math.max(p.price, t === minTier() ? inv().price_from : 0))}</span>
         <span>${p.events === 99 ? "Unlimited" : "Up to " + p.events} events · ${p.days}</span><span>${[p.music && "Music", p.gallery && "Gallery", p.rsvp && "RSVP", p.colours && "Custom colours", p.story && "Family story"].filter(Boolean).join(" · ") || "Names, events, maps, QR"}</span>
         ${off ? `<em>${esc(inv().name)} starts in ${minTier()}</em>` : ""}</label>`; }).join("")}</div>
       <p class="muted" style="font-size:13.5px;margin-top:10px">Not sure? Pick the closest; we'll confirm with you on WhatsApp before you pay anything. <a href="pricing.html" target="_blank">Compare packages</a></p>`;
@@ -1170,10 +1226,10 @@ var WA_SVG = '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><p
   const prices = [...document.querySelectorAll(".h-plan-price, .pkg-price")];
   if (prices.length && !reduce && "IntersectionObserver" in window) {
     const io = new IntersectionObserver((es) => es.forEach((e) => { if (!e.isIntersecting) return; io.unobserve(e.target);
-      const node = [...e.target.childNodes].find((x) => x.nodeType === 3 && /\d/.test(x.textContent)); if (!node) return;
-      const m = node.textContent.match(/₹([\d,]+)/); if (!m) return; const end = +m[1].replace(/,/g, ""), pre = node.textContent.slice(0, m.index), post = node.textContent.slice(m.index + m[0].length);
-      const t0 = performance.now(), dur = 1200; const step = (t) => { const k = Math.min(1, (t - t0) / dur), v = Math.round(end * (1 - Math.pow(1 - k, 3)) / 10) * 10;
-        node.textContent = pre + fmt(k < 1 ? v : end) + post; if (k < 1) requestAnimationFrame(step); }; requestAnimationFrame(step); }), { threshold: .6 });
+      const el = e.target.querySelector('[data-k$=":price"]'); if (!el) return;
+      const endOf = () => +(el.dataset.v || el.textContent.replace(/[^\d]/g, "")); if (!endOf()) return;
+      const t0 = performance.now(), dur = 1200; const step = (t) => { const end = endOf(), k = Math.min(1, (t - t0) / dur), v = Math.round(end * (1 - Math.pow(1 - k, 3)) / 10) * 10;
+        el.textContent = fmt(k < 1 ? v : end); if (k < 1) requestAnimationFrame(step); }; requestAnimationFrame(step); }), { threshold: .6 });
     prices.forEach((p) => io.observe(p));
   }
   // video page: story-style player cycles the scenes and syncs the list
