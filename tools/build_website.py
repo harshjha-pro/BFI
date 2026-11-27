@@ -12,7 +12,7 @@ from html import escape
 from pathlib import Path
 
 OUT = Path(__file__).resolve().parent.parent / "site"
-V = "20261127b"  # bump to bust browser caches for css/js
+V = "20261127c"  # bump to bust browser caches for css/js
 BASE = "https://bfiluxe.com"
 ART = "img/art/"
 IMGBASE = "https://oaosapkkzoynaqpnmvrj.supabase.co/storage/v1/object/public/site/"
@@ -210,7 +210,7 @@ ORN = f'<div class="orn" aria-hidden="true">{icon(I["lotus"])}</div>'
 
 NAV = [("invitations", "Invitations"), ("videos", "Videos"), ("free-cards", "Free Card Maker"), ("how-it-works", "How It Works"), ("pricing", "Pricing")]
 MORE = [("features", "Features"), ("customize", "Start your invitation"), ("demo", "Live demo"), ("resources", "Guides"), ("faq", "FAQ"),
-        ("partners", "Partner with us"), ("contact", "Contact")]
+        ("contact", "Contact")]
 
 
 def faq_html(items):
@@ -266,7 +266,7 @@ def footer():
     <div class="ftr-brand"><a href="index.html" class="ftr-logo" aria-label="Bfiluxe, home"><img class="brand-el" src="img/elephant.webp" alt="" width="40" height="30"><span class="wordmark">BFILUXE</span></a>
       <p>Invitations made extraordinary. Digital Marwari wedding invitations, invitation websites and videos, rooted in family tradition.</p></div>
     <div><h4>Explore</h4><ul><li><a href="invitations.html">Invitations</a></li><li><a href="videos.html">Invitation videos</a></li><li><a href="how-it-works.html">How It Works</a></li><li><a href="pricing.html">Pricing</a></li><li><a href="contact.html">Contact</a></li></ul></div>
-    <div><h4>Resources</h4><ul><li><a href="features.html">Features</a></li><li><a href="resources.html">Guides</a></li><li><a href="faq.html">FAQ</a></li><li><a href="free-cards.html">Free card maker</a></li><li><a href="partners.html">Partner with us</a></li><li><a href="login.html">My account</a></li></ul></div>
+    <div><h4>Resources</h4><ul><li><a href="features.html">Features</a></li><li><a href="resources.html">Guides</a></li><li><a href="faq.html">FAQ</a></li><li><a href="free-cards.html">Free card maker</a></li><li><a href="login.html">My account</a></li></ul></div>
     <div><h4>Contact</h4><ul><li><a data-wa>WhatsApp {BIZ["phone"]}</a></li><li><a href="tel:{BIZ["tel"]}">Call {BIZ["phone"]}</a></li><li><a href="mailto:{BIZ["email"]}">{BIZ["email"]}</a></li><li>{BIZ["city"]}, {BIZ["region"]}, India</li><li>{BIZ["hours"]}</li><li><a href="bfi-contact.vcf" download>Save our contact card</a></li></ul></div>
   </div>
   <div class="ftr-bot"><span>© <span data-year></span> Bfiluxe</span><span><a href="privacy.html">Privacy</a> · <a href="terms.html">Terms</a></span></div>
@@ -296,7 +296,7 @@ LANDING_DESIGN = {"marwari-wedding-invitation-website": "sheesh-mahal", "marwari
                   "wedding-invitation-website-rsvp": "neel-mahal", "rajasthani-digital-wedding-invitation": "mor-pankh"}
 
 
-LIVE_HERO = {"pricing": 2, "videos": 4, "how-it-works": 1, "features": 5, "faq": 3, "contact": 2, "guide": 4, "resources": 3, "partners": 1}
+LIVE_HERO = {"pricing": 2, "videos": 4, "how-it-works": 1, "features": 5, "faq": 3, "contact": 2, "guide": 4, "resources": 3}
 
 
 def hero_parts(slug):
@@ -392,8 +392,8 @@ def hero_parts(slug):
         return "ritpic", "", art, ""
     word = {"privacy": "PRIVACY", "terms": "TERMS", "account": "ACCOUNT"}.get(slug, "Bfiluxe")
     art = (f'<div class="seal"><svg viewBox="0 0 200 200" aria-hidden="true"><defs><path id="ring-{slug}" d="M100 100 m-74 0 a74 74 0 1 1 148 0 a74 74 0 1 1 -148 0"/></defs>'
-           f'<text><textPath href="#ring-{slug}">BFILUXE · INVITATIONS MADE EXTRAORDINARY · {word} · TRUST · </textPath></text></svg><img src="img/logo-sm.webp" alt="" width="200" height="174"></div>')
-    return "seal", "", art, ""
+           f'<text><textPath href="#ring-{slug}">BFILUXE · INVITATIONS MADE EXTRAORDINARY · {word} · TRUST · </textPath></text></svg><img class="seal-el" src="img/elephant.webp" alt="" width="200" height="150"></div>')
+    return "pseal", "", art, ""
 
 
 PAGE_OBJS = [("kalash", "wax-seal"), ("diya", "rings"), ("potli", "envelope"), ("bangles", "scroll"), ("mehendi-cone", "toran"), ("rings", "kalash"), ("envelope", "diya")]
@@ -1189,7 +1189,7 @@ DEMO = f'''
     <p class="muted">Your names, every function and your favourite design, ready from 3 working days.</p>
     <ul class="dv-pills"><li>From ₹3,999</li><li>Hindi &amp; English</li><li>Pay 50% after approval</li></ul>
     <div class="dv-cta-btns"><a class="btn btn-primary" id="demo-cta2" href="customize.html">Create my invitation {icon(I["arrow"])}</a><a class="btn btn-wa" data-wa="Namaste Bfiluxe 🙏 I saw the live demo and would like an invitation like this.">{WA} WhatsApp us</a></div>
-    <a class="dv-brand" href="index.html" aria-label="Bfiluxe home"><img src="img/logo-sm.webp" alt="Bfiluxe" width="200" height="174" loading="lazy"><span>Made with love by Bfiluxe</span></a>
+    <a class="dv-brand" href="index.html" aria-label="Bfiluxe home"><img src="img/elephant.webp" alt="Bfiluxe" width="200" height="150" loading="lazy"><span>Made with love by Bfiluxe</span></a>
   </footer>
 </main>
 <button class="music-btn" id="music" aria-pressed="false" aria-label="Play music">{icon(I["music"])}</button>'''
@@ -1673,8 +1673,11 @@ PART_BODY = f"""
         <button class="btn btn-primary btn-block" type="submit">Send application</button></form></div>
   </div>
 </div></section>"""
-page("partners", "Partner With Bfiluxe: Referral Programme for Wedding Planners, Photographers & Venues",
-     "Wedding planners, photographers, venues and decorators can recommend Bfiluxe digital wedding invitations and earn 15–20% referral commission on confirmed orders.", PART_BODY, None)
+# Partner programme removed (27 Nov 2026): the old address forwards to the homepage
+(OUT / "partners.html").write_text(f'''<!doctype html><html lang="en-IN"><head><meta charset="utf-8"><meta name="robots" content="noindex">
+<meta http-equiv="refresh" content="0; url=index.html"><link rel="canonical" href="{BASE}/"><title>Bfiluxe</title></head>
+<body><p><a href="index.html">Go to Bfiluxe</a></p></body></html>
+''')
 
 # ---- Landing pages (distinct intent each) ----
 LANDING = {
@@ -1793,7 +1796,7 @@ page("resources", "Marwari Wedding Invitation Guides & Resources | Bfiluxe", "Fr
 
 LIVE_LLMS = ", ".join(f"[{t}]({BASE}/live-demo-{n}/) ({m})" for n, t, c, m, d in LIVE)
 # ---------------- robots, sitemap, llms.txt, vCard ----------------
-PUBLIC = ["", "invitations.html", "pricing.html", "how-it-works.html", "demo.html", "features.html", "live-demo-1/", "live-demo-2/", "live-demo-3/", "live-demo-4/", "live-demo-5/", "guide.html", "resources.html", "digital-vs-printed-kankotri.html", "inviting-guests-mayra-pithi-phere.html", "marwari-wedding-invitation-website.html", "marwari-kankotri-online.html", "hindi-wedding-invitation.html", "wedding-invitation-website-rsvp.html", "rajasthani-digital-wedding-invitation.html", "partners.html", "videos.html", "free-cards.html", "faq.html", "contact.html", "customize.html",
+PUBLIC = ["", "invitations.html", "pricing.html", "how-it-works.html", "demo.html", "features.html", "live-demo-1/", "live-demo-2/", "live-demo-3/", "live-demo-4/", "live-demo-5/", "guide.html", "resources.html", "digital-vs-printed-kankotri.html", "inviting-guests-mayra-pithi-phere.html", "marwari-wedding-invitation-website.html", "marwari-kankotri-online.html", "hindi-wedding-invitation.html", "wedding-invitation-website-rsvp.html", "rajasthani-digital-wedding-invitation.html", "videos.html", "free-cards.html", "faq.html", "contact.html", "customize.html",
           "privacy.html", "terms.html"] + [f"design-{i['slug']}.html" for i in CATALOG]
 (OUT / "robots.txt").write_text(f"User-agent: *\nAllow: /\nDisallow: /account.html\nDisallow: /login.html\nDisallow: /admin/\n\nSitemap: {BASE}/sitemap.xml\n")
 (OUT / "sitemap.xml").write_text('<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n' +
@@ -1818,7 +1821,6 @@ PUBLIC = ["", "invitations.html", "pricing.html", "how-it-works.html", "demo.htm
 - [Marwari wedding guide]({BASE}/guide.html): rituals in order, invitation wording in Hindi and English, send-out checklist
 - [Features]({BASE}/features.html): every feature in plain language, with the packages it comes in
 - [Guides & resources]({BASE}/resources.html): kankotri wording, Hindi honorifics, digital vs printed kankotri, inviting guests to Mayra/Pithi/Phere, RSVP
-- [Partner programme]({BASE}/partners.html): planners, photographers and venues earn 15% (Basic/Premium) or 20% (Luxury) on confirmed referred orders
 - Five sample invitation websites (fictional couples): {LIVE_LLMS}
 - [FAQ]({BASE}/faq.html): kankotri, Mayra and Pithi, Hindi wording, RSVP, WhatsApp sharing, delivery, link validity, payment and revisions
 - [Free card maker]({BASE}/free-cards.html): 16 free templates (wedding, save the date, Sagai, anniversary, birthdays, Godh Bharai, Naamkaran, Mundan, Griha Pravesh, puja, Diwali, Holi, Teej/Gangaur, retirement, prayer meet); download PNG, JPG or PDF
