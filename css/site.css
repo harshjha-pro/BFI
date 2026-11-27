@@ -1087,7 +1087,7 @@ body[data-theme=gulmohar-classic] .dv-scroll,body[data-theme=gulabi-bagh] .dv-sc
 .seal text{font:600 13px var(--sans);letter-spacing:.32em;fill:var(--gold-ink)}
 .seal img{position:absolute;inset:24%;width:52%;height:auto;margin:auto;top:50%;transform:translateY(-50%)}
 .seal::before{content:"";position:absolute;inset:16%;border-radius:50%;background:var(--paper);border:2px solid var(--gold);box-shadow:var(--shadow)}
-@media(max-width:899px){.h-seal .seal{width:170px}}
+@media(max-width:899px){.h-pseal .seal{width:170px}}
 
 /* the generic arch image rules from v12 no longer apply */
 .phero .phero-art{display:none}
@@ -2384,3 +2384,15 @@ html.ad-lock{overflow:hidden}
 .ap-phone input{border:0!important}
 .ap-f input:focus{border-color:#C9A46A!important;box-shadow:0 0 0 3px rgba(201,164,106,.18)!important}
 .ap-f.err input{border-color:#B33A3A!important}
+/* seal: gold elephant in the centre */
+.seal img.seal-el{inset:auto!important;top:50%!important;left:50%!important;width:50%!important;height:auto!important;margin:0!important;transform:translate(-50%,-50%)!important;filter:drop-shadow(0 6px 10px rgba(120,80,10,.18))}
+/* account page: tidy favourites and headings */
+.acct .panel h2{font-family:var(--serif)!important;font-style:italic;font-weight:400}
+#fav-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:20px}
+#fav-grid .card-acts{display:flex;flex-wrap:nowrap;gap:8px}
+#fav-grid .card-acts .btn{flex:1 1 0;white-space:nowrap;padding-left:10px;padding-right:10px}
+/* simple page header with the elephant seal (account, terms, privacy) */
+.phero.h-pseal .phero-grid{min-height:0;padding-top:clamp(36px,5vw,64px);padding-bottom:clamp(36px,5vw,64px)}
+@media(min-width:900px){.phero.h-pseal .phero-grid{grid-template-columns:minmax(0,1fr) 220px}}
+.h-pseal .seal{width:200px!important}
+@media (max-width:899px){.phero.h-pseal .phero-grid{grid-template-columns:minmax(0,1fr) 110px;gap:16px}.h-pseal .seal{width:110px!important}}
