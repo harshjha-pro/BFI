@@ -10,6 +10,21 @@ RewriteRule ^(.*)$ https://bfiluxe.com/$1 [R=301,L]
 RewriteCond %{HTTPS} off
 RewriteRule ^(.*)$ https://%{HTTP_HOST}/$1 [R=301,L]
 
+# Clean addresses: bfiluxe.com/pricing instead of /pricing.html
+# 1) old links: /index.html -> /, /pricing.html -> /pricing (keeps ?query)
+RewriteCond %{THE_REQUEST} \s/+index\.html[\s?] [NC]
+RewriteRule ^index\.html$ / [R=301,L]
+RewriteCond %{THE_REQUEST} \s/+([a-z0-9-]+)\.html[\s?] [NC]
+RewriteRule ^ /%1 [R=301,L,NE]
+# 2) /pricing/ -> /pricing (folders such as /live-demo-1/ are left alone)
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^([a-z0-9-]+)/$ /$1 [R=301,L]
+# 3) serve /pricing from pricing.html
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_FILENAME}.html -f
+RewriteRule ^([a-z0-9-]+)$ $1.html [L]
+
 # Hide repository files
 RedirectMatch 404 /\.git
 RedirectMatch 404 /README\.md$

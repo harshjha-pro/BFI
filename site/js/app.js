@@ -196,7 +196,7 @@ async function loadFavs() {
   favs = new Set((data || []).map((r) => r.slug));
 }
 async function toggleFav(slug, btn) {
-  if (!user()) { openAuth({ why: AUTH_WHY.fav, next: location.pathname.split("/").pop() + location.search }); return; }
+  if (!user()) { openAuth({ why: AUTH_WHY.fav, next: location.pathname + location.search }); return; }
   const on = !favs.has(slug);
   btn.setAttribute("aria-pressed", on);
   const { error } = on ? await sb.from("favorites").insert({ slug }) : await sb.from("favorites").delete().eq("slug", slug);
@@ -213,13 +213,13 @@ async function sendEnquiry(row) {
 function renderAuthSlot() {
   $$("[data-auth-slot]").forEach((el) => {
     el.innerHTML = user()
-      ? `<a class="avatar" href="account.html" title="My account" aria-label="My account">${esc((displayName()[0] || "B").toUpperCase())}</a>`
-      : `<a class="util-link" href="login.html">Sign in</a>`;
+      ? `<a class="avatar" href="/account" title="My account" aria-label="My account">${esc((displayName()[0] || "B").toUpperCase())}</a>`
+      : `<a class="util-link" href="/login">Sign in</a>`;
   });
   $$("[data-auth-menu]").forEach((el) => {
     el.innerHTML = user()
-      ? `<a class="btn btn-outline btn-block" href="account.html">My account</a>`
-      : `<a class="btn btn-outline btn-block" href="login.html">Sign in</a>`;
+      ? `<a class="btn btn-outline btn-block" href="/account">My account</a>`
+      : `<a class="btn btn-outline btn-block" href="/login">Sign in</a>`;
   });
 }
 function initChrome() {
@@ -280,15 +280,15 @@ function card(inv) {
   const on = favs.has(inv.slug);
   return `<article class="card" data-tags="${esc(tagsOf(inv))}">
     <button class="fav" data-fav="${esc(inv.slug)}" aria-pressed="${on}" aria-label="Save ${esc(inv.name)} to favourites">${ic("heart")}</button>
-    <a class="card-img card-stage" href="design-${encodeURIComponent(inv.slug)}.html" aria-label="${esc(inv.name)}: view design"><span class="h-badge">${COLLECTIONS[inv.collection] || ""}</span>
+    <a class="card-img card-stage" href="/design-${encodeURIComponent(inv.slug)}" aria-label="${esc(inv.name)}: view design"><span class="h-badge">${COLLECTIONS[inv.collection] || ""}</span>
       <span class="h-print"><img src="${ART(inv.image)}" alt="" loading="lazy" width="360" height="645"></span>
       <span class="h-phone"><span class="phone-screen inv-wrap"><img src="${ART(inv.image)}" alt="${esc(inv.name)} invitation: ${esc(inv.tagline)}" loading="lazy" width="360" height="645">${inviteText(inv.slug, { mini: true })}</span></span></a>
     <div class="card-body">
-      <h3><a href="design-${encodeURIComponent(inv.slug)}.html">${esc(inv.name)}</a></h3>
+      <h3><a href="/design-${encodeURIComponent(inv.slug)}">${esc(inv.name)}</a></h3>
       <p class="card-desc">${esc(inv.tagline)}</p>${BEST[inv.slug] ? `<p class="card-best">Best for: ${esc(BEST[inv.slug])}</p>` : ""}
       <div class="card-meta"><span>${esc(inv.tier)}</span><span>${(() => { const o = livePkg(LIVE_NOW, "p", inv.tier), pr = Math.max(o?.price || 0, +inv.price_from || 0), m = o ? o.mrp : ({ Basic: 5999, Premium: 14999, Luxury: 35999 })[inv.tier];
         return (m > pr ? `<s class="mrp">${inr(m)}</s> ` : "") + `<b>${inr(pr)}</b>`; })()}</span></div>
-      <div class="card-acts"><a class="btn btn-sm btn-outline" href="demo.html?design=${encodeURIComponent(inv.slug)}">Live demo</a><a class="btn btn-sm btn-primary" href="design-${encodeURIComponent(inv.slug)}.html">View design</a></div>
+      <div class="card-acts"><a class="btn btn-sm btn-outline" href="/demo?design=${encodeURIComponent(inv.slug)}">Live demo</a><a class="btn btn-sm btn-primary" href="/design-${encodeURIComponent(inv.slug)}">View design</a></div>
     </div></article>`;
 }
 function bindFavs(root) {
@@ -340,10 +340,10 @@ pages.invitations = async () => {
   draw();
 };
 
-// Old dynamic URL: invitation.html?slug=x -> design-x.html
+// Old dynamic URL: /invitation?slug=x -> /design-x
 pages.invitation = async () => {
   const slug = params.get("slug");
-  location.replace(slug && /^[a-z0-9-]+$/.test(slug) ? `design-${slug}.html` : "invitations.html");
+  location.replace(slug && /^[a-z0-9-]+$/.test(slug) ? `/design-${slug}` : "/invitations");
 };
 
 // Static design page: gallery, favourite, ask modal
@@ -445,7 +445,7 @@ pages.customize = async () => {
         <b>${t}</b><span class="pp-price">${p.mrp ? `<s class="mrp">${inr(p.mrp)}</s> ` : ""}${inr(Math.max(p.price, t === minTier() ? inv().price_from : 0))}</span>
         <span>${p.events === 99 ? "Unlimited" : "Up to " + p.events} events · ${p.days}</span><span>${[p.music && "Music", p.gallery && "Gallery", p.rsvp && "RSVP", p.colours && "Custom colours", p.story && "Family story"].filter(Boolean).join(" · ") || "Names, events, maps, QR"}</span>
         ${off ? `<em>${esc(inv().name)} starts in ${minTier()}</em>` : ""}</label>`; }).join("")}</div>
-      <p class="muted" style="font-size:13.5px;margin-top:10px">Not sure? Pick the closest; we'll confirm with you on WhatsApp before you pay anything. <a href="pricing.html" target="_blank">Compare packages</a></p>`;
+      <p class="muted" style="font-size:13.5px;margin-top:10px">Not sure? Pick the closest; we'll confirm with you on WhatsApp before you pay anything. <a href="/pricing" target="_blank">Compare packages</a></p>`;
     if (n === 1) return `<div class="form"><div class="f2">${f("bride", "Bride's name <span class='req'>*</span>", 'required autocomplete="off" placeholder="e.g. Priya"')}${f("groom", "Groom's name <span class='req'>*</span>", 'required autocomplete="off" placeholder="e.g. Rohan"')}</div>
       <div class="f2">${sel("order", "Name order", [["bride", "Bride's name first"], ["groom", "Groom's name first"]])}${f("wedding_date", "Wedding date <span class='req'>*</span>", 'type="date" required')}</div>
       <div class="f2">${f("bride_family", "Bride's parents", 'placeholder="e.g. Smt. Sunita & Shri Mahesh Agarwal"')}${f("groom_family", "Groom's parents", 'placeholder="e.g. Smt. Rekha & Shri Anil Maheshwari"')}</div>
@@ -526,7 +526,7 @@ pages.customize = async () => {
     }
   }
   async function saveRemote(status = "draft") {
-    if (!user()) { save(); openAuth({ why: AUTH_WHY.save, next: "customize.html" }); return null; }
+    if (!user()) { save(); openAuth({ why: AUTH_WHY.save, next: "/customize" }); return null; }
     const row = { design_slug: D.design, data: D, status, updated_at: new Date().toISOString() };
     const q = st.id ? sb.from("customizations").update(row).eq("id", st.id).select("id").single() : sb.from("customizations").insert(row).select("id").single();
     const { data, error } = await q;
@@ -561,7 +561,7 @@ pages.customize = async () => {
           <li><b>You review the preview</b> on your phone. One round of changes is included; spelling fixes are always free.</li>
           <li><b>You pay the remaining 50%</b> after you approve.</li>
           <li><b>You receive your link, QR code and a ready-to-forward WhatsApp message.</b></li></ol>
-        <div class="row" style="margin-top:18px"><a class="btn btn-wa" data-wa="${esc(waText(inv().name))}">${WA_SVG} Chat on WhatsApp</a>${user() ? '<a class="btn btn-ghost" href="account.html">Go to my account</a>' : ""}</div>`;
+        <div class="row" style="margin-top:18px"><a class="btn btn-wa" data-wa="${esc(waText(inv().name))}">${WA_SVG} Chat on WhatsApp</a>${user() ? '<a class="btn btn-ghost" href="/account">Go to my account</a>' : ""}</div>`;
       initChrome();
     } catch { setBusy(btn, false); toast("Couldn't send. Please try again or send on WhatsApp."); }
   }
@@ -601,7 +601,7 @@ pages.contact = async () => {
   });
 };
 
-/* ---------- sign in & create account: one panel, used in the side drawer and on login.html ---------- */
+/* ---------- sign in & create account: one panel, used in the side drawer and on /login ---------- */
 const GOOGLE_SVG = '<svg viewBox="0 0 48 48" aria-hidden="true"><path fill="#FFC107" d="M43.6 20.5H42V20H24v8h11.3C33.7 32.7 29.2 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3 0 5.8 1.1 7.9 3l5.7-5.7C34 6.1 29.3 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20 20-8.9 20-20c0-1.3-.1-2.4-.4-3.5z"/><path fill="#FF3D00" d="m6.3 14.7 6.6 4.8C14.7 15.1 19 12 24 12c3 0 5.8 1.1 7.9 3l5.7-5.7C34 6.1 29.3 4 24 4 16.3 4 9.7 8.3 6.3 14.7z"/><path fill="#4CAF50" d="M24 44c5.2 0 9.9-2 13.4-5.2l-6.2-5.2C29.2 35.1 26.7 36 24 36c-5.2 0-9.6-3.3-11.3-8l-6.5 5C9.5 39.6 16.2 44 24 44z"/><path fill="#1976D2" d="M43.6 20.5H42V20H24v8h11.3a12 12 0 0 1-4.1 5.6l6.2 5.2C37 39.2 44 34 44 24c0-1.3-.1-2.4-.4-3.5z"/></svg>';
 const EYE_ON = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><circle cx="12" cy="12" r="3" fill="none" stroke="currentColor" stroke-width="1.7"/></svg>';
 const EYE_OFF = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 3l18 18M10.6 5.1A10.8 10.8 0 0 1 12 5c6.4 0 10 7 10 7a17 17 0 0 1-3.2 4.1M6.6 6.6C3.9 8.4 2 12 2 12s3.6 7 10 7a9.7 9.7 0 0 0 5.4-1.6M9.9 9.9a3 3 0 0 0 4.2 4.2" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>';
@@ -627,7 +627,7 @@ async function sha256Hex(t) { const b = await crypto.subtle.digest("SHA-256", ne
 
 function authPanel(host, { mode = "signin", why = "", next = "", inDrawer = false, onClose } = {}) {
   host.innerHTML = `<div class="ap">
-    <div class="ap-head"><a class="ap-brand" href="index.html" aria-label="Bfiluxe home"><img src="img/elephant.webp" alt="" width="46" height="34"><span class="wordmark">BFILUXE</span></a>
+    <div class="ap-head"><a class="ap-brand" href="/" aria-label="Bfiluxe home"><img src="img/elephant.webp" alt="" width="46" height="34"><span class="wordmark">BFILUXE</span></a>
       ${inDrawer ? '<button type="button" class="ap-x" data-ap-close aria-label="Close">×</button>' : ""}</div>
     <h2 class="ap-title" id="ap-title"></h2><p class="ap-sub" id="ap-sub"></p>
     ${why ? `<div class="notice info ap-why">${esc(why)}</div>` : ""}
@@ -650,13 +650,13 @@ function authPanel(host, { mode = "signin", why = "", next = "", inDrawer = fals
       <li>${TICK}<span><b>Save designs you love</b> and compare them later.</span></li>
       <li>${TICK}<span><b>Save your invitation draft</b> and finish it on any device.</span></li>
       <li>${TICK}<span><b>Track your order</b> from details to delivery.</span></li></ul></div>
-    <p class="ap-legal">By continuing you agree to our <a href="terms.html">Terms</a> and <a href="privacy.html">Privacy Policy</a>.</p>
+    <p class="ap-legal">By continuing you agree to our <a href="/terms">Terms</a> and <a href="/privacy">Privacy Policy</a>.</p>
   </div>`;
   const $h = (q) => host.querySelector(q), $$h = (q) => [...host.querySelectorAll(q)];
   const form = $h(".ap-form"), status = $h(".ap-status"), pass = $h("#ap-pass"), btn = $h(".ap-go");
   const say = (cls, msg) => (status.innerHTML = msg ? `<div class="notice ${cls}">${msg}</div>` : "");
   const waHelp = `<a href="${waHref("Namaste Bfiluxe 🙏 I need help with my account.")}" target="_blank" rel="noopener">message us on WhatsApp</a>`;
-  const target = () => safeNext(next) || (inDrawer ? "" : "account.html");
+  const target = () => safeNext(next) || (inDrawer ? "" : "/account");
   const done = () => { const t = target(); if (t) location.replace(t); else location.reload(); };
   const setMode = (m) => {
     mode = m;
@@ -718,7 +718,7 @@ function authPanel(host, { mode = "signin", why = "", next = "", inDrawer = fals
     if (!CFG.authEmails) return say("info", `To reset your password, ${waHelp} from your registered number and we'll help you right away.`);
     const email = form.email.value.trim();
     if (!/^\S+@\S+\.\S+$/.test(email)) { form.email.focus(); return say("bad", "Enter your email above first."); }
-    const { error } = await sb.auth.resetPasswordForEmail(email, { redirectTo: new URL("account.html#reset", location.href).href });
+    const { error } = await sb.auth.resetPasswordForEmail(email, { redirectTo: new URL("/account#reset", location.href).href });
     error ? say("bad", esc(error.message)) : say("ok", `We've emailed a password reset link to <b>${esc(email)}</b>.`);
   });
   form.addEventListener("submit", async (e) => {
@@ -762,7 +762,7 @@ function authPanel(host, { mode = "signin", why = "", next = "", inDrawer = fals
 /* side drawer: opens from any "Sign in" link */
 let authOpen = null;
 function openAuth({ mode = "signin", why = "", next = "" } = {}) {
-  if (user()) { location.href = safeNext(next) || "account.html"; return; }
+  if (user()) { location.href = safeNext(next) || "/account"; return; }
   if (authOpen) return;
   const last = document.activeElement;
   const wrap = document.createElement("div"); wrap.className = "ad-scrim";
@@ -782,11 +782,11 @@ function openAuth({ mode = "signin", why = "", next = "" } = {}) {
   setTimeout(() => panel.querySelector(mode === "signup" ? "#ap-name" : "#ap-email")?.focus({ preventScroll: true }), 250);
 }
 function loginLink(href) {
-  try { const u = new URL(href, location.href); if (!/\/login\.html$/.test(u.pathname) || u.origin !== location.origin) return null;
+  try { const u = new URL(href, location.href); if (!/\/login(\.html)?$/.test(u.pathname) || u.origin !== location.origin) return null;
     return { mode: u.searchParams.get("mode") === "signup" ? "signup" : "signin", why: AUTH_WHY[u.searchParams.get("why")] || "", next: u.searchParams.get("next") || "" }; } catch { return null; }
 }
 document.addEventListener("click", (e) => {
-  const a = e.target.closest && e.target.closest("a[href]"); if (!a || e.ctrlKey || e.metaKey || e.shiftKey || /\/login\.html$/.test(location.pathname)) return;
+  const a = e.target.closest && e.target.closest("a[href]"); if (!a || e.ctrlKey || e.metaKey || e.shiftKey || /\/login(\.html)?$/.test(location.pathname)) return;
   const o = loginLink(a.getAttribute("href")); if (!o) return;
   e.preventDefault();
   try { openAuth(o); if (!document.querySelector(".ad .ap-form")) throw new Error("panel did not render"); }
@@ -795,7 +795,7 @@ document.addEventListener("click", (e) => {
 
 /* ---------- login page ---------- */
 pages.login = async () => {
-  const next = safeNext(params.get("next")) || "account.html";
+  const next = safeNext(params.get("next")) || "/account";
   if (user()) { location.replace(next); return; }
   authPanel($("#auth-root"), { mode: params.get("mode") === "signup" ? "signup" : "signin", why: AUTH_WHY[params.get("why")] || "", next });
 };
@@ -803,59 +803,134 @@ pages.login = async () => {
 pages.account = async () => {
   const root = $("#account");
   if (!user()) {
-    // Give an OAuth/magic-link redirect a moment to finish before sending to login
-    await new Promise((r) => setTimeout(r, 600));
-    if (!user()) { location.replace("login.html?next=account.html"); return; }
+    // Give an OAuth/magic-link redirect a moment to finish before asking to sign in
+    await new Promise((r) => setTimeout(r, 700));
+    if (!user()) { location.replace("/login?next=/account"); return; }
   }
   const u = user();
   const all = await invitations();
   const bySlug = Object.fromEntries(all.map((i) => [i.slug, i]));
   const [{ data: prof }, { data: drafts }, { data: enq }] = await Promise.all([
     sb.from("profiles").select("*").eq("id", u.id).maybeSingle(),
-    sb.from("customizations").select("id,design_slug,data,status,updated_at").order("updated_at", { ascending: false }),
-    sb.from("enquiries").select("id,design_slug,status,source,created_at").order("created_at", { ascending: false }),
+    sb.from("customizations").select("id,design_slug,data,status,updated_at,created_at").order("updated_at", { ascending: false }),
+    sb.from("enquiries").select("id,design_slug,status,source,package,created_at").order("created_at", { ascending: false }),
   ]);
   await loadFavs();
+  const mine = drafts || [], asks = enq || [];
+  const name = prof?.full_name || displayName() || "there";
+  const first = String(name).trim().split(/\s+/)[0];
   const when = (s) => new Date(s).toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" });
-  const thumb = (slug) => (bySlug[slug] ? `<img src="${ART(bySlug[slug].image)}" alt="">` : "");
+  const ago = (s) => { const d = (Date.now() - new Date(s)) / 864e5; return d < 1 ? "today" : d < 2 ? "yesterday" : d < 30 ? Math.floor(d) + " days ago" : when(s); };
+  const cover = (slug) => (bySlug[slug] ? ART(bySlug[slug].image) : "");
+  const priceOf = (i) => { const o = livePkg(LIVE_NOW, "p", i.tier); return Math.max(o?.price || 0, +i.price_from || 0); };
+  const STEPS = [["draft", "Details"], ["submitted", "Sent to studio"], ["in_progress", "Being designed"], ["preview_sent", "Preview ready"], ["approved", "Approved"], ["delivered", "Delivered"]];
+  const stepIx = (s) => Math.max(0, STEPS.findIndex(([k]) => k === s));
+  const ST = { draft: ["Draft", "st-draft"], submitted: ["Sent to studio", "st-new"], in_progress: ["Being designed", "st-info"], preview_sent: ["Preview ready", "st-info"],
+    approved: ["Approved", "st-ok"], delivered: ["Delivered", "st-ok"], cancelled: ["Cancelled", "st-bad"] };
+  const pill = (s) => { const [t, c] = ST[s] || [s, "st-draft"]; return `<span class="ac-pill ${c}">${esc(t)}</span>`; };
+  const couple = (c) => [c.data?.bride, c.data?.groom].filter(Boolean).map(esc).join(" &amp; ");
+  const mainEvent = (c) => (c?.data?.events || []).find((e) => /pher/i.test(e.type) && e.date) || (c?.data?.events || []).find((e) => e.date);
+  const active = mine.find((c) => c.status !== "cancelled") || null;
+  const wedding = active && mainEvent(active)?.date ? new Date(mainEvent(active).date + "T00:00") : null;
+  const daysTo = wedding && !isNaN(wedding) ? Math.ceil((wedding - Date.now()) / 864e5) : null;
+  const saved = all.filter((i) => favs.has(i.slug));
+  const suggest = all.filter((i) => !favs.has(i.slug)).slice(0, 4);
+  const tints = ["#F9CF86", "#F8AE84", "#F6A6A8", "#BFD7F2"];
+  const AC_ART = {
+    hello: `<svg viewBox="0 0 360 240" aria-hidden="true"><ellipse cx="190" cy="222" rx="140" ry="12" fill="#EAD9A4" opacity=".6"/><path d="M70 130c-12-40 20-82 68-84 36-2 52 20 82 12 36-8 66 18 64 56-2 46-40 62-84 64-58 2-114-4-130-48z" fill="#FFF5D6"/>
+      <g transform="rotate(-8 150 130)"><rect x="104" y="44" width="92" height="166" rx="15" fill="#fff" stroke="#2B241A" stroke-width="3"/><rect x="113" y="57" width="74" height="140" rx="8" fill="#4B202A"/><path d="M124 92q26-24 52 0v62h-52z" fill="#F8D46B"/><circle cx="150" cy="82" r="6" fill="#F8D46B"/><path d="M130 168h40M136 178h28" stroke="#F8D46B" stroke-width="3" stroke-linecap="round"/></g>
+      <g transform="rotate(10 250 160)"><rect x="200" y="126" width="110" height="74" rx="8" fill="#fff" stroke="#2B241A" stroke-width="3"/><path d="M200 132l55 38 55-38" fill="none" stroke="#2B241A" stroke-width="3" stroke-linejoin="round"/><circle cx="255" cy="170" r="12" fill="#C8463F" stroke="#2B241A" stroke-width="3"/></g>
+      <g fill="#F2A33A" stroke="#2B241A" stroke-width="2.5"><circle cx="80" cy="200" r="12"/><circle cx="102" cy="214" r="9"/><circle cx="300" cy="74" r="10"/></g><path d="M290 30l4 9 9 4-9 4-4 9-4-9-9-4 9-4z" fill="#F8D46B" stroke="#2B241A" stroke-width="2" stroke-linejoin="round"/></svg>`,
+    help: `<svg viewBox="0 0 220 140" aria-hidden="true"><path d="M30 104c-8-28 16-58 52-58 24 0 32 12 54 8 28-6 50 10 48 34-2 28-28 38-58 39-44 2-86-2-96-23z" fill="#FFF5D6"/><rect x="62" y="22" width="56" height="100" rx="11" fill="#fff" stroke="#2B241A" stroke-width="2.6"/><rect x="69" y="32" width="42" height="80" rx="5" fill="#E7F4EA"/>
+      <rect x="74" y="40" width="26" height="12" rx="6" fill="#fff" stroke="#2B241A" stroke-width="1.6"/><rect x="82" y="58" width="24" height="12" rx="6" fill="#B8E2C3" stroke="#2B241A" stroke-width="1.6"/><rect x="74" y="76" width="30" height="12" rx="6" fill="#fff" stroke="#2B241A" stroke-width="1.6"/>
+      <path d="M140 40h52a10 10 0 0 1 10 10v20a10 10 0 0 1-10 10h-30l-14 12v-12h-8a10 10 0 0 1-10-10V50a10 10 0 0 1 10-10z" fill="#F8D46B" stroke="#2B241A" stroke-width="2.6" stroke-linejoin="round"/><circle cx="154" cy="60" r="3" fill="#2B241A"/><circle cx="166" cy="60" r="3" fill="#2B241A"/><circle cx="178" cy="60" r="3" fill="#2B241A"/></svg>`,
+    empty: `<svg viewBox="0 0 160 110" aria-hidden="true"><ellipse cx="80" cy="100" rx="60" ry="7" fill="#EFE5C8"/><rect x="34" y="34" width="92" height="60" rx="7" fill="#fff" stroke="#2B241A" stroke-width="2.6"/><path d="M34 39l46 32 46-32" fill="none" stroke="#2B241A" stroke-width="2.6" stroke-linejoin="round"/><circle cx="80" cy="70" r="9" fill="#F8D46B" stroke="#2B241A" stroke-width="2.2"/><path d="M118 14l2.6 6 6 2.6-6 2.6-2.6 6-2.6-6-6-2.6 6-2.6z" fill="#F8D46B" stroke="#2B241A" stroke-width="1.8"/></svg>`,
+  };
+  const empty = (t, cta = "") => `<div class="ac-empty">${AC_ART.empty}<p>${t}</p>${cta}</div>`;
+  const NAV = [["ov", "Overview", "home"], ["inv", "My invitations", "edit"], ["fav", "Saved designs", "heart"], ["enq", "Enquiries", "rsvp"], ["rev", "Review", "star"], ["me", "Profile & security", "user"]];
+  const navIcon = { home: '<path d="M4 11l8-7 8 7v9h-5v-6H9v6H4z"/>', edit: '<path d="M5 19h4L19 9l-4-4L5 15z"/>', heart: '<path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10z"/>',
+    rsvp: '<path d="M4 6h16v10H8l-4 4z"/>', star: '<path d="M12 4l2.4 5 5.6.6-4.2 3.8 1.2 5.6-5-2.9-5 2.9 1.2-5.6L4 9.6 9.6 9z"/>', user: '<circle cx="12" cy="8" r="4"/><path d="M4 21c1-4.4 4.2-6.5 8-6.5s7 2.1 8 6.5"/>' };
+  const nic = (k) => `<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round" stroke-linecap="round">${navIcon[k]}</svg>`;
+  const tabsInv = [["all", "All"], ["draft", "Drafts"], ["work", "In progress"], ["done", "Delivered"]];
   root.innerHTML = `
-  <aside class="panel">
-    <div style="display:flex;gap:14px;align-items:center"><span class="avatar" style="width:56px;height:56px;font-size:24px">${esc((displayName()[0] || "B").toUpperCase())}</span>
-      <div style="min-width:0"><b style="font:600 22px var(--serif);color:var(--maroon)">${esc(prof?.full_name || displayName())}</b><br><small class="muted" style="word-break:break-all">${esc(u.email || "")}</small></div></div>
-    <form class="form" id="prof" style="margin-top:20px" novalidate>
-      <div class="field"><label for="p-name">Full name</label><input id="p-name" name="full_name" value="${esc(prof?.full_name || "")}" autocomplete="name"></div>
-      <div class="field"><label for="p-phone">WhatsApp number</label><input id="p-phone" name="phone" type="tel" value="${esc(prof?.phone || "")}" autocomplete="tel" inputmode="tel"></div>
-      <button class="btn btn-primary" type="submit">Save profile</button></form>
-    <div id="pw-box"></div>
-    <button class="btn btn-ghost btn-block" id="signout" style="margin-top:18px">Log out</button>
-  </aside>
-  <div style="display:grid;gap:22px">
-    <section class="panel"><div class="step-title"><h2 style="font-size:26px">My invitations</h2><a class="btn btn-sm btn-primary" href="customize.html">${ic("plus")} New</a></div>
-      <div class="list">${(drafts || []).length ? drafts.map((c) => `<div class="li">${thumb(c.design_slug)}<div class="grow"><b>${esc(bySlug[c.design_slug]?.name || "Invitation")}${c.data?.bride ? ` · ${esc(c.data.bride)} &amp; ${esc(c.data.groom || "")}` : ""}</b><small>Updated ${when(c.updated_at)}</small></div><span class="status">${c.status === "submitted" ? "Sent to studio" : "Draft"}</span>${c.status === "draft" ? `<a class="btn btn-sm btn-outline" href="customize.html?id=${c.id}">Continue</a>` : ""}</div>`).join("") : `<p class="muted">No saved invitations yet. <a href="invitations.html">Choose a design</a> to start.</p>`}</div></section>
-    <section class="panel"><h2 style="font-size:26px;margin-bottom:14px">Favourites</h2>
-      <div class="grid-inv" id="fav-grid">${favs.size ? all.filter((i) => favs.has(i.slug)).map(card).join("") : `<p class="muted" style="grid-column:1/-1">Tap the ♡ on any design to save it here.</p>`}</div></section>
-    <section class="panel" id="review-box"><h2 style="font-size:26px;margin-bottom:6px">Write a review</h2><p class="muted" style="margin-bottom:14px">Received your invitation? Tell other families about it. Reviews appear on the website after the studio checks them.</p>
+  <nav class="ac-nav" aria-label="Account sections">${NAV.map(([id, t, i], k) => `<a href="#ac-${id}"${k === 0 ? ' aria-current="true"' : ""}><span class="ac-ni">${nic(i)}</span>${t}</a>`).join("")}
+    <div class="ac-navcard"><img src="img/elephant.webp" alt="" width="120" height="90"><b>${saved.length}</b><span>design${saved.length === 1 ? "" : "s"} saved</span></div></nav>
+  <div class="ac-main">
+    <section class="ac-hello" id="ac-ov"><div class="ac-hello-t"><p class="ac-k">My account</p><h2 class="ac-hi">Namaste, ${esc(first)}</h2>
+      <p>${active ? (active.status === "draft" ? `Your <b>${esc(bySlug[active.design_slug]?.name || "invitation")}</b> draft is saved. Finish it whenever you're ready.` : `Your <b>${esc(bySlug[active.design_slug]?.name || "invitation")}</b> invitation is with our studio. We'll message you on WhatsApp at every step.`) : "Choose a design you love and we'll make it yours, with every function, map and RSVP."}</p>
+      <div class="ac-hello-cta">${active && active.status === "draft" ? `<a class="btn btn-primary" href="/customize?id=${encodeURIComponent(active.id)}">Continue my invitation</a>` : `<a class="btn btn-primary" href="${active ? "#ac-inv" : "/invitations"}">${active ? "Track my invitation" : "Choose a design"}</a>`}<a class="btn btn-outline" href="/demo">See a live demo</a></div></div>
+      <div class="ac-hello-art">${AC_ART.hello}</div></section>
+
+    ${active ? `<section class="ac-card"><div class="ac-h"><h2>Your invitation</h2>${pill(active.status)}</div>
+      <div class="ac-track-top">${cover(active.design_slug) ? `<img src="${cover(active.design_slug)}" alt="" width="72" height="128">` : ""}<div><b>${esc(bySlug[active.design_slug]?.name || "Invitation")}</b>${couple(active) ? `<span>${couple(active)}</span>` : ""}<small>Updated ${ago(active.updated_at)}</small></div></div>
+      ${active.status === "cancelled" ? `<p class="muted">This invitation was cancelled. Message us on WhatsApp if that's a mistake.</p>` : `<ol class="ac-track">${STEPS.map(([k, t], n) => `<li class="${n < stepIx(active.status) ? "done" : n === stepIx(active.status) ? "now" : ""}"><i>${n < stepIx(active.status) ? "✓" : n + 1}</i><span>${t}</span></li>`).join("")}</ol>`}</section>` : ""}
+
+    <section class="ac-card" id="ac-fav"><div class="ac-h"><h2>Saved designs</h2><a class="ac-link" href="/invitations">All designs →</a></div>
+      ${saved.length ? `<div class="ac-pop">${saved.map((i, k) => `<article class="ac-pc"><a class="ac-pc-art" href="/design-${encodeURIComponent(i.slug)}" style="--t:${tints[k % tints.length]}"><img src="${ART(i.image)}" alt="${esc(i.name)} cover" loading="lazy"></a>
+        <div class="ac-pc-b"><h3>${esc(i.name)}</h3><p>${esc(i.tagline)}</p><div class="ac-pc-f"><span>${esc(i.tier)} · <b>${inr(priceOf(i))}</b></span><a class="ac-yb" href="/customize?design=${encodeURIComponent(i.slug)}">Start</a></div>
+        <button class="ac-unfav" type="button" data-fav="${esc(i.slug)}" aria-pressed="true" aria-label="Remove ${esc(i.name)} from saved">♥</button></div></article>`).join("")}</div>`
+        : empty("Tap the ♡ on any design to save it here.", `<a class="ac-yb" href="/invitations">Browse designs</a>`)}</section>
+
+    <section class="ac-card" id="ac-inv"><div class="ac-h"><h2>My invitations</h2><div class="ac-tabs" role="tablist">${tabsInv.map(([k, t], n) => `<button type="button" role="tab" data-it="${k}" aria-selected="${n === 0}">${t}</button>`).join("")}</div></div>
+      <div class="ac-list" id="ac-inv-list"></div><a class="ac-new" href="/customize">+ Start a new invitation</a></section>
+
+    <section class="ac-card" id="ac-enq"><div class="ac-h"><h2>My enquiries</h2></div>
+      <div class="ac-list">${asks.length ? asks.map((q, k) => `<div class="ac-row"><span class="ac-av c${k % 5}">${cover(q.design_slug) ? `<img src="${cover(q.design_slug)}" alt="">` : "?"}</span><div class="ac-rt"><b>${esc(bySlug[q.design_slug]?.name || "General enquiry")}</b><span>${when(q.created_at)} · ${q.package ? esc(q.package) + " · " : ""}via ${q.source === "customize" ? "order form" : q.source === "details" ? "design page" : "contact form"}</span></div>${pill({ new: "submitted", contacted: "in_progress", won: "approved", lost: "cancelled" }[q.status])}</div>`).join("")
+        : empty("Enquiries you send while signed in appear here.", `<a class="ac-yb" href="/contact">Ask us something</a>`)}</div></section>
+
+    <section class="ac-card" id="ac-rev"><div class="ac-h"><h2>Write a review</h2></div><p class="muted" style="margin:-4px 0 14px">Received your invitation? Tell other families about it. Reviews appear on the website after a quick check.</p>
       <div id="my-reviews"></div>
       <form class="form" id="rev" novalidate>
-        <div class="f2"><div class="field"><label for="rv-name">Name to show</label><input id="rv-name" name="name" required maxlength="80" value="${esc(prof?.full_name || displayName())}"></div>
+        <div class="f2"><div class="field"><label for="rv-name">Name to show</label><input id="rv-name" name="name" required maxlength="80" value="${esc(name)}"></div>
         <div class="field"><label for="rv-city">City</label><input id="rv-city" name="city" maxlength="60" placeholder="e.g. Jaipur"></div></div>
-        <div class="f2"><div class="field"><label for="rv-design">Design</label><select id="rv-design" name="design_slug"><option value="">Choose…</option>${all.map((i) => `<option value="${i.slug}">${esc(i.name)}</option>`).join("")}</select></div>
+        <div class="f2"><div class="field"><label for="rv-design">Design</label><select id="rv-design" name="design_slug"><option value="">Choose…</option>${all.map((i) => `<option value="${esc(i.slug)}">${esc(i.name)}</option>`).join("")}</select></div>
         <div class="field"><label for="rv-rating">Rating</label><select id="rv-rating" name="rating"><option value="5">★★★★★ Excellent</option><option value="4">★★★★ Very good</option><option value="3">★★★ Good</option><option value="2">★★ Fair</option><option value="1">★ Poor</option></select></div></div>
         <div class="field"><label for="rv-body">Your review</label><textarea id="rv-body" name="body" required minlength="10" maxlength="800" placeholder="What did your family and guests think?"></textarea></div>
         <button class="btn btn-primary" type="submit">Submit review</button></form></section>
-    <section class="panel"><h2 style="font-size:26px;margin-bottom:14px">My enquiries</h2>
-      <div class="list">${(enq || []).length ? enq.map((q) => `<div class="li">${thumb(q.design_slug)}<div class="grow"><b>${esc(bySlug[q.design_slug]?.name || "General enquiry")}</b><small>${when(q.created_at)} · via ${q.source === "customize" ? "Customize" : q.source === "details" ? "design page" : "Contact"}</small></div><span class="status">${{ new: "Received", contacted: "In touch", won: "Confirmed", lost: "Closed" }[q.status]}</span></div>`).join("") : `<p class="muted">Enquiries you send while logged in appear here.</p>`}</div></section>
-  </div>`;
-  bindFavs($("#fav-grid"));
+  </div>
+
+  <aside class="ac-rail">
+    <div class="ac-me" id="ac-me"><span class="ac-avatar">${esc((first[0] || "B").toUpperCase())}</span><div class="ac-me-t"><b>${esc(name)}</b><span>${esc(u.email || "")}</span></div></div>
+    <div class="ac-tiles">
+      <div class="ac-tile"><b>${saved.length}</b><span>Saved<br>designs</span></div>
+      <div class="ac-tile"><b>${mine.length}</b><span>My<br>invitations</span></div>
+      <div class="ac-tile"><b>${asks.length}</b><span>Enquiries<br>sent</span></div>
+      <div class="ac-tile"><b>${daysTo !== null && daysTo >= 0 ? daysTo : "—"}</b><span>Days to<br>the wedding</span></div></div>
+    <div class="ac-card ac-help">${AC_ART.help}<h3>Need help?</h3><p>We reply on WhatsApp within an hour, ${esc(CFG.hours || "10am – 8pm")}.</p><a class="ac-yb" href="${waHref("Namaste Bfiluxe 🙏 I need help with my invitation.")}" target="_blank" rel="noopener">WhatsApp us</a></div>
+    ${suggest.length ? `<div class="ac-card"><div class="ac-h"><h2>You may also like</h2></div><div class="ac-sug">${suggest.map((i) => `<a href="/design-${encodeURIComponent(i.slug)}"><img src="${ART(i.image)}" alt="" loading="lazy" width="48" height="64"><span><b>${esc(i.name)}</b><small>${esc(i.tier)} · ${inr(priceOf(i))}</small></span></a>`).join("")}</div><a class="ac-link" href="/invitations" style="display:block;margin-top:12px;text-align:right">View all →</a></div>` : ""}
+    <div class="ac-card" id="ac-me-form"><div class="ac-h"><h2>Profile &amp; security</h2></div>
+      <form class="form" id="prof" novalidate>
+        <div class="field"><label for="p-name">Full name</label><input id="p-name" name="full_name" value="${esc(prof?.full_name || "")}" autocomplete="name" maxlength="120"></div>
+        <div class="field"><label for="p-phone">WhatsApp number</label><input id="p-phone" name="phone" type="tel" value="${esc(prof?.phone || "")}" autocomplete="tel" inputmode="tel" maxlength="20"></div>
+        <button class="btn btn-primary btn-block" type="submit">Save profile</button></form>
+      <div id="pw-box"></div>
+      <button class="btn btn-outline btn-block" id="signout" style="margin-top:12px">Log out</button></div>
+  </aside>`;
+  // anchor the "me" card to the profile section
+  $("#ac-me").addEventListener("click", () => $("#ac-me-form").scrollIntoView({ behavior: "smooth", block: "start" }));
+  $$(".ac-nav a").forEach((a) => a.addEventListener("click", () => { $$(".ac-nav a").forEach((x) => x.removeAttribute("aria-current")); a.setAttribute("aria-current", "true"); }));
+  const navMe = $('.ac-nav a[href="#ac-me"]'); if (navMe) navMe.setAttribute("href", "#ac-me-form");
+  // invitations list with tabs
+  const drawInv = (tab) => {
+    const rows = mine.filter((c) => tab === "all" || (tab === "draft" ? c.status === "draft" : tab === "done" ? c.status === "delivered" : !["draft", "delivered", "cancelled"].includes(c.status)));
+    $("#ac-inv-list").innerHTML = rows.length ? rows.map((c, k) => `<div class="ac-row"><span class="ac-av c${k % 5}">${cover(c.design_slug) ? `<img src="${cover(c.design_slug)}" alt="">` : "✦"}</span>
+      <div class="ac-rt"><b>${esc(bySlug[c.design_slug]?.name || "Invitation")}${couple(c) ? ` · ${couple(c)}` : ""}</b><span>Updated ${ago(c.updated_at)}${c.data?.package ? " · " + esc(c.data.package) : ""}</span></div>${pill(c.status)}
+      ${c.status === "draft" || c.status === "submitted" ? `<a class="ac-yb" href="/customize?id=${encodeURIComponent(c.id)}">${c.status === "draft" ? "Continue" : "View"}</a>` : `<a class="ac-yb ac-yb-ghost" href="${waHref("Namaste Bfiluxe 🙏 About my invitation " + (bySlug[c.design_slug]?.name || ""))}" target="_blank" rel="noopener">Message</a>`}</div>`).join("")
+      : empty(tab === "all" ? "No invitations yet. Choose a design to start your first one." : "Nothing here yet.", tab === "all" ? `<a class="ac-yb" href="/invitations">Choose a design</a>` : "");
+  };
+  $$("#ac-inv [data-it]").forEach((b) => b.addEventListener("click", () => { $$("#ac-inv [data-it]").forEach((x) => x.setAttribute("aria-selected", x === b)); drawInv(b.dataset.it); }));
+  drawInv("all");
+  // saved designs: remove with the heart
+  $$(".ac-unfav").forEach((b) => b.addEventListener("click", async () => { await toggleFav(b.dataset.fav, b); if (!favs.has(b.dataset.fav)) b.closest(".ac-pc").remove(); }));
   $("#prof").addEventListener("submit", async (e) => {
     e.preventDefault(); const d = formData(e.target); const btn = $("button", e.target); setBusy(btn, true, "Saving…");
     const { error } = await sb.from("profiles").update({ full_name: d.full_name || null, phone: d.phone || null }).eq("id", u.id);
     setBusy(btn, false); toast(error ? "Couldn't save. Please try again." : "Profile saved");
   });
-  $("#signout").onclick = async () => { await sb.auth.signOut(); location.href = "index.html"; };
+  $("#signout").onclick = async () => { await sb.auth.signOut(); location.href = "/"; };
   const drawMine = async () => {
-    const { data: mine } = await sb.from("reviews").select("rating,body,approved,created_at").eq("user_id", u.id).order("created_at", { ascending: false });
-    $("#my-reviews").innerHTML = (mine || []).map((r) => `<div class="li" style="margin-bottom:10px"><div class="grow"><b>${"★".repeat(r.rating)}</b><small>${esc(r.body.slice(0, 120))}</small></div><span class="status">${r.approved ? "Published" : "Awaiting check"}</span></div>`).join("");
+    const { data: rv } = await sb.from("reviews").select("rating,body,approved,created_at").eq("user_id", u.id).order("created_at", { ascending: false });
+    $("#my-reviews").innerHTML = (rv || []).map((r) => `<div class="ac-row" style="margin-bottom:10px"><span class="ac-av c0">★</span><div class="ac-rt"><b>${"★".repeat(r.rating)}</b><span>${esc(r.body.slice(0, 120))}</span></div>${pill(r.approved ? "approved" : "submitted").replace("Approved", "Published").replace("Sent to studio", "Awaiting check")}</div>`).join("");
   };
   drawMine();
   $("#rev").addEventListener("submit", async (e) => {
@@ -865,10 +940,10 @@ pages.account = async () => {
     const { error } = await sb.from("reviews").insert({ name: d.name, city: d.city || null, design_slug: d.design_slug || null, rating: +d.rating, body: d.body });
     setBusy(btn, false);
     if (error) return toast("Couldn't send your review. Please try again.");
-    f.reset(); f.name.value = prof?.full_name || displayName(); toast("Thank you! Your review will appear after a quick check."); drawMine();
+    f.reset(); f.name.value = name; toast("Thank you! Your review will appear after a quick check."); drawMine();
   });
   const pwForm = () => {
-    $("#pw-box").innerHTML = `<form class="form" id="pw" style="margin-top:20px;padding-top:18px;border-top:1px solid var(--beige)" novalidate><div class="field"><label for="pw-new">Set a new password</label><input id="pw-new" name="password" type="password" minlength="8" required autocomplete="new-password"></div><button class="btn btn-outline" type="submit">Update password</button></form>`;
+    $("#pw-box").innerHTML = `<form class="form" id="pw" style="margin-top:16px;padding-top:16px;border-top:1px solid #EFE7DA" novalidate><div class="field"><label for="pw-new">New password</label><input id="pw-new" name="password" type="password" minlength="8" required autocomplete="new-password"></div><button class="btn btn-outline btn-block" type="submit">Update password</button></form>`;
     $("#pw").addEventListener("submit", async (e) => {
       e.preventDefault(); const p = e.target.password.value;
       if (p.length < 8) return toast("Use at least 8 characters");
@@ -878,7 +953,7 @@ pages.account = async () => {
     });
   };
   if (location.hash === "#reset" || sessionStorage.getItem("bfi.recovery")) { sessionStorage.removeItem("bfi.recovery"); pwForm(); $("#pw-new").focus(); }
-  else $("#pw-box").innerHTML = `<p style="margin-top:14px"><button class="linkbtn" id="pw-open">Change password</button></p>`, ($("#pw-open").onclick = pwForm);
+  else $("#pw-box").innerHTML = `<p style="margin:12px 0 0;text-align:center"><button class="linkbtn" id="pw-open">Change password</button></p>`, ($("#pw-open").onclick = pwForm);
 };
 
 /* ---------- sample content for each demo design (fictional families) ---------- */
@@ -957,7 +1032,7 @@ pages.demo = async () => {
   const day = (n) => { const d = new Date(); d.setHours(0, 0, 0, 0); d.setDate(d.getDate() + n); return d; };
   const wedding = day(60); wedding.setHours(19, 30);
   const fmt = (d) => d.toLocaleDateString("en-IN", { weekday: "long", day: "numeric", month: "long", year: "numeric" });
-  $("#demo-cta").href = $("#demo-cta2").href = `customize.html?design=${inv.slug}`;
+  $("#demo-cta").href = $("#demo-cta2").href = `/customize?design=${inv.slug}`;
 
   // ---- each design has its own theme, opening animation and floating effect ----
   const TH = {
@@ -1087,7 +1162,7 @@ pages.demo = async () => {
     <div class="acts"><a href="${mapsLink(venue.split(",").slice(1).join(",").trim() || venue)}" target="_blank" rel="noopener">Directions</a><button type="button" data-ics="${k}">Add to calendar</button></div></div></div>`; }).join("");
   $("#dv-events").addEventListener("click", (e) => { const b = e.target.closest("[data-ics]"); if (b) { const [n, name, time, venue] = ev[+b.dataset.ics]; ics(name, day(n), time, venue); } });
 
-  $("#dv-designs").innerHTML = all.map((i) => `<a href="demo.html?design=${i.slug}" aria-current="${i.slug === inv.slug}"><img src="${ART(i.image)}" alt="" loading="lazy">${esc(i.name)}</a>`).join("");
+  $("#dv-designs").innerHTML = all.map((i) => `<a href="/demo?design=${i.slug}" aria-current="${i.slug === inv.slug}"><img src="${ART(i.image)}" alt="" loading="lazy">${esc(i.name)}</a>`).join("");
   $("#dv-rsvp").addEventListener("submit", (e) => {
     e.preventDefault(); if (!validate(e.target)) return;
     e.target.outerHTML = `<div class="notice ok">Thank you! (This is a demo, so nothing was sent. On your real invitation, RSVPs reach you instantly with the guest count.)</div>`;
@@ -1267,7 +1342,7 @@ var WA_SVG = '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><p
     try { ({ data: { session } } = await sb.auth.getSession()); } catch {}
     sb.auth.onAuthStateChange((evt, s) => {
       session = s; renderAuthSlot();
-      if (evt === "PASSWORD_RECOVERY") { sessionStorage.setItem("bfi.recovery", "1"); if (!location.pathname.endsWith("account.html")) location.href = "account.html#reset"; }
+      if (evt === "PASSWORD_RECOVERY") { sessionStorage.setItem("bfi.recovery", "1"); if (!/\/account(\.html)?$/.test(location.pathname)) location.href = "/account#reset"; }
     });
     if (user()) loadFavs().then(() => $$("[data-fav]").forEach((b) => b.setAttribute("aria-pressed", favs.has(b.dataset.fav))));
   }
@@ -1281,9 +1356,9 @@ var WA_SVG = '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><p
     else if (/wa\.me\//.test(href) || a.hasAttribute("data-wa")) track("whatsapp_click", { from: page });
     else if (/^tel:/.test(href)) track("call_click", { from: page });
     else if (/^mailto:/.test(href)) track("email_click", { from: page });
-    else if (/demo\.html/.test(href)) track("demo_open", { from: page, to: href.slice(0, 60) });
-    else if (/customize\.html/.test(href)) track("customize_click", { from: page });
-    else if (/design-[\w-]+\.html/.test(href)) track("design_click", { from: page, to: href.slice(0, 60) });
+    else if (/\/demo(\.html)?([?#]|$)/.test(href)) track("demo_open", { from: page, to: href.slice(0, 60) });
+    else if (/\/customize(\.html)?([?#]|$)/.test(href)) track("customize_click", { from: page });
+    else if (/\/design-[\w-]+(\.html)?([?#]|$)/.test(href)) track("design_click", { from: page, to: href.slice(0, 60) });
     else if (a.matches("[data-fmt]")) track("free_card_download", { fmt: a.dataset.fmt });
   }, { capture: true });
   try { page.startsWith("design-") ? initDesignPage() : await pages[page]?.(); } catch (e) { console.error(e); }
@@ -1397,7 +1472,7 @@ var WA_SVG = '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><p
   const lab = cta.querySelector("[data-plan-label]");
   document.querySelectorAll(".pp input[name=plan]").forEach((r) => r.addEventListener("change", () => {
     lab.textContent = `${r.value} · ${r.dataset.price}`;
-    cta.href = `customize.html?design=${encodeURIComponent(cta.dataset.design)}&tier=${encodeURIComponent(r.value)}`;
+    cta.href = `/customize?design=${encodeURIComponent(cta.dataset.design)}&tier=${encodeURIComponent(r.value)}`;
     document.querySelectorAll(".pp-o").forEach((o) => o.classList.toggle("on", o.contains(r)));
   }));
   const first = document.querySelector(".pp input:checked"); first && first.closest(".pp-o").classList.add("on");

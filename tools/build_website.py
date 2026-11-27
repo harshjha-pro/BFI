@@ -12,7 +12,7 @@ from html import escape
 from pathlib import Path
 
 OUT = Path(__file__).resolve().parent.parent / "site"
-V = "20261127e"  # bump to bust browser caches for css/js
+V = "20261127f"  # bump to bust browser caches for css/js
 BASE = "https://bfiluxe.com"
 ART = "img/art/"
 IMGBASE = "https://oaosapkkzoynaqpnmvrj.supabase.co/storage/v1/object/public/site/"
@@ -1355,8 +1355,7 @@ LOGIN = '''
 </div></section>'''
 page("login", "Sign in · Bfiluxe", "Sign in or create your Bfiluxe account with email or Google.", LOGIN, None, bar=False, index=False)
 ACCT = '''
-<section class="phead" style="padding:30px 0 26px"><div class="wrap"><h1 style="font-size:clamp(30px,5vw,44px)">My Account</h1></div></section>
-<section class="sec" style="padding-top:28px"><div class="wrap"><div class="acct" id="account"><div class="panel skel" style="height:320px"></div><div class="panel skel" style="height:320px"></div></div></div></section>'''
+<section class="ac-sec"><div class="wrap"><h1 class="sr">My Account</h1><div class="ac" id="account"><div class="ac-skel"></div><div class="ac-skel"></div><div class="ac-skel"></div></div></div></section>'''
 page("account", "My Account · Bfiluxe", "Your saved invitations, favourites and enquiries.", ACCT, None, bar=False, index=False)
 
 # ---------------- Legal ----------------
@@ -1827,5 +1826,23 @@ PUBLIC = ["", "invitations.html", "pricing.html", "how-it-works.html", "demo.htm
 - [Contact]({BASE}/contact.html)
 """ + "".join(f"- [{i['name']}]({BASE}/design-{i['slug']}.html): {COLL[i['collection']]} collection, from ₹{i['price']:,}\n" for i in CATALOG))
 (OUT / "bfi-contact.vcf").write_text(f"""BEGIN:VCARD\r\nVERSION:3.0\r\nFN:Bfiluxe\r\nORG:Bfiluxe\r\nTITLE:Digital wedding invitations\r\nTEL;TYPE=CELL,VOICE:{BIZ['tel']}\r\nEMAIL;TYPE=INTERNET:{BIZ['email']}\r\nURL:{BASE}/\r\nADR;TYPE=WORK:;;;{BIZ['city']};{BIZ['region']};;India\r\nNOTE:WhatsApp us for wedding invitations. {BIZ['hours']}.\r\nEND:VCARD\r\n""")
+
+# ---------------- Clean addresses: /pricing instead of pricing.html ----------------
+# Hostinger's .htaccess serves /pricing from pricing.html and 301-redirects old *.html links.
+import re as _re
+_PAGES = {p.stem for p in OUT.glob("*.html")}
+_URL = _re.compile(r'(https://bfiluxe\.com/|(?<=["\'=(\s>])(?:\.\./)*)([a-z0-9][a-z0-9-]*)\.html(?=[?#"\'\s)<,]|$)')
+def _clean(m):
+    full, name = m.group(1).startswith("http"), m.group(2)
+    if name not in _PAGES:
+        return m.group(0)
+    path = "" if name == "index" else name
+    return ("https://bfiluxe.com/" if full else "/") + path
+for _f in list(OUT.glob("*.html")) + list(OUT.glob("live-demo-*/index.html")) + [OUT / "sitemap.xml", OUT / "llms.txt", OUT / "robots.txt", OUT / "bfi-contact.vcf"]:
+    if _f.exists():
+        _t = _f.read_text(encoding="utf-8")
+        _n = _URL.sub(_clean, _t)
+        if _n != _t:
+            _f.write_text(_n, encoding="utf-8")
 
 print("built", sorted(p.name for p in OUT.glob("*.html")))
