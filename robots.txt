@@ -2,5 +2,6 @@ User-agent: *
 Allow: /
 Disallow: /account.html
 Disallow: /login.html
+Disallow: /admin/
 
 Sitemap: https://bfiluxe.com/sitemap.xml
