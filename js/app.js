@@ -847,38 +847,62 @@ pages.account = async () => {
     empty: `<svg viewBox="0 0 160 110" aria-hidden="true"><ellipse cx="80" cy="100" rx="60" ry="7" fill="#EFE5C8"/><rect x="34" y="34" width="92" height="60" rx="7" fill="#fff" stroke="#2B241A" stroke-width="2.6"/><path d="M34 39l46 32 46-32" fill="none" stroke="#2B241A" stroke-width="2.6" stroke-linejoin="round"/><circle cx="80" cy="70" r="9" fill="#F8D46B" stroke="#2B241A" stroke-width="2.2"/><path d="M118 14l2.6 6 6 2.6-6 2.6-2.6 6-2.6-6-6-2.6 6-2.6z" fill="#F8D46B" stroke="#2B241A" stroke-width="1.8"/></svg>`,
   };
   const empty = (t, cta = "") => `<div class="ac-empty">${AC_ART.empty}<p>${t}</p>${cta}</div>`;
-  const NAV = [["ov", "Overview", "home"], ["inv", "My invitations", "edit"], ["fav", "Saved designs", "heart"], ["enq", "Enquiries", "rsvp"], ["rev", "Review", "star"], ["me", "Profile & security", "user"]];
+  const NAV = [["overview", "Overview", "home"], ["invitations", "My invitations", "edit"], ["saved", "Saved designs", "heart"], ["enquiries", "Enquiries", "rsvp"], ["review", "Write a review", "star"], ["profile", "Profile & security", "user"]];
   const navIcon = { home: '<path d="M4 11l8-7 8 7v9h-5v-6H9v6H4z"/>', edit: '<path d="M5 19h4L19 9l-4-4L5 15z"/>', heart: '<path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10z"/>',
     rsvp: '<path d="M4 6h16v10H8l-4 4z"/>', star: '<path d="M12 4l2.4 5 5.6.6-4.2 3.8 1.2 5.6-5-2.9-5 2.9 1.2-5.6L4 9.6 9.6 9z"/>', user: '<circle cx="12" cy="8" r="4"/><path d="M4 21c1-4.4 4.2-6.5 8-6.5s7 2.1 8 6.5"/>' };
   const nic = (k) => `<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round" stroke-linecap="round">${navIcon[k]}</svg>`;
   const tabsInv = [["all", "All"], ["draft", "Drafts"], ["work", "In progress"], ["done", "Delivered"]];
+  const vhead = (t, sub) => `<div class="ac-vh"><div><p class="ac-k">My account</p><h2 class="ac-hi">${t}</h2>${sub ? `<p class="ac-vsub">${sub}</p>` : ""}</div></div>`;
   root.innerHTML = `
-  <nav class="ac-nav" aria-label="Account sections">${NAV.map(([id, t, i], k) => `<a href="#ac-${id}"${k === 0 ? ' aria-current="true"' : ""}><span class="ac-ni">${nic(i)}</span>${t}</a>`).join("")}
-    <div class="ac-navcard"><img src="img/elephant.webp" alt="" width="120" height="90"><b>${saved.length}</b><span>design${saved.length === 1 ? "" : "s"} saved</span></div></nav>
-  <div class="ac-main">
-    <section class="ac-hello" id="ac-ov"><div class="ac-hello-t"><p class="ac-k">My account</p><h2 class="ac-hi">Namaste, ${esc(first)}</h2>
+  <nav class="ac-nav" aria-label="Account sections">${NAV.map(([id, t, i]) => `<a href="#${id}" data-go="${id}"><span class="ac-ni">${nic(i)}</span>${t}</a>`).join("")}
+    <div class="ac-navcard"><img src="/img/elephant.webp" alt="" width="120" height="90"><b>${saved.length}</b><span>design${saved.length === 1 ? "" : "s"} saved</span></div></nav>
+
+  <div class="ac-view ac-ov" data-v="overview">
+   <div class="ac-main">
+    <section class="ac-hello"><div class="ac-hello-t"><p class="ac-k">My account</p><h2 class="ac-hi">Namaste, ${esc(first)}</h2>
       <p>${active ? (active.status === "draft" ? `Your <b>${esc(bySlug[active.design_slug]?.name || "invitation")}</b> draft is saved. Finish it whenever you're ready.` : `Your <b>${esc(bySlug[active.design_slug]?.name || "invitation")}</b> invitation is with our studio. We'll message you on WhatsApp at every step.`) : "Choose a design you love and we'll make it yours, with every function, map and RSVP."}</p>
-      <div class="ac-hello-cta">${active && active.status === "draft" ? `<a class="btn btn-primary" href="/customize?id=${encodeURIComponent(active.id)}">Continue my invitation</a>` : `<a class="btn btn-primary" href="${active ? "#ac-inv" : "/invitations"}">${active ? "Track my invitation" : "Choose a design"}</a>`}<a class="btn btn-outline" href="/demo">See a live demo</a></div></div>
+      <div class="ac-hello-cta">${active && active.status === "draft" ? `<a class="btn btn-primary" href="/customize?id=${encodeURIComponent(active.id)}">Continue my invitation</a>` : active ? `<a class="btn btn-primary" href="#invitations" data-go="invitations">Track my invitation</a>` : `<a class="btn btn-primary" href="/invitations">Choose a design</a>`}<a class="btn btn-outline" href="/demo">See a live demo</a></div></div>
       <div class="ac-hello-art">${AC_ART.hello}</div></section>
 
     ${active ? `<section class="ac-card"><div class="ac-h"><h2>Your invitation</h2>${pill(active.status)}</div>
       <div class="ac-track-top">${cover(active.design_slug) ? `<img src="${cover(active.design_slug)}" alt="" width="72" height="128">` : ""}<div><b>${esc(bySlug[active.design_slug]?.name || "Invitation")}</b>${couple(active) ? `<span>${couple(active)}</span>` : ""}<small>Updated ${ago(active.updated_at)}</small></div></div>
-      ${active.status === "cancelled" ? `<p class="muted">This invitation was cancelled. Message us on WhatsApp if that's a mistake.</p>` : `<ol class="ac-track">${STEPS.map(([k, t], n) => `<li class="${n < stepIx(active.status) ? "done" : n === stepIx(active.status) ? "now" : ""}"><i>${n < stepIx(active.status) ? "✓" : n + 1}</i><span>${t}</span></li>`).join("")}</ol>`}</section>` : ""}
+      ${active.status === "cancelled" ? `<p class="muted">This invitation was cancelled. Message us on WhatsApp if that's a mistake.</p>` : `<ol class="ac-track">${STEPS.map(([k, t], n) => `<li class="${n < stepIx(active.status) ? "done" : n === stepIx(active.status) ? "now" : ""}"><i>${n < stepIx(active.status) ? "✓" : n + 1}</i><span>${t}</span></li>`).join("")}</ol>`}</section>`
+    : `<section class="ac-card ac-steps"><div class="ac-h"><h2>How your invitation gets made</h2></div><ol>
+      <li><b>1</b><span><strong>Choose a design</strong>Open any design and tap ♡ to save it.</span></li>
+      <li><b>2</b><span><strong>Share your details</strong>Names, functions and venues, at your own pace.</span></li>
+      <li><b>3</b><span><strong>Preview &amp; approve</strong>We send a private preview on WhatsApp.</span></li>
+      <li><b>4</b><span><strong>Share with guests</strong>One link with every function, map and RSVP.</span></li></ol></section>`}
+   </div>
+   <aside class="ac-rail">
+    <div class="ac-me" data-go="profile" role="button" tabindex="0"><span class="ac-avatar">${esc((first[0] || "B").toUpperCase())}</span><div class="ac-me-t"><b>${esc(name)}</b><span>${esc(u.email || "")}</span></div></div>
+    <div class="ac-tiles">
+      <a class="ac-tile" href="#saved" data-go="saved"><b>${saved.length}</b><span>Saved<br>designs</span></a>
+      <a class="ac-tile" href="#invitations" data-go="invitations"><b>${mine.length}</b><span>My<br>invitations</span></a>
+      <a class="ac-tile" href="#enquiries" data-go="enquiries"><b>${asks.length}</b><span>Enquiries<br>sent</span></a>
+      <div class="ac-tile"><b>${daysTo !== null && daysTo >= 0 ? daysTo : "—"}</b><span>Days to<br>the wedding</span></div></div>
+    <div class="ac-card ac-help">${AC_ART.help}<h3>Need help?</h3><p>We reply on WhatsApp within an hour, ${esc(CFG.hours || "10am – 8pm")}.</p><a class="ac-yb" href="${waHref("Namaste Bfiluxe 🙏 I need help with my invitation.")}" target="_blank" rel="noopener">WhatsApp us</a></div>
+    ${suggest.length ? `<div class="ac-card"><div class="ac-h"><h2>You may also like</h2></div><div class="ac-sug">${suggest.map((i) => `<a href="/design-${encodeURIComponent(i.slug)}"><img src="${ART(i.image)}" alt="" loading="lazy" width="48" height="64"><span><b>${esc(i.name)}</b><small>${esc(i.tier)} · ${inr(priceOf(i))}</small></span></a>`).join("")}</div><a class="ac-link" href="/invitations" style="display:block;margin-top:12px;text-align:right">View all →</a></div>` : ""}
+   </aside>
+  </div>
 
-    <section class="ac-card" id="ac-fav"><div class="ac-h"><h2>Saved designs</h2><a class="ac-link" href="/invitations">All designs →</a></div>
+  <div class="ac-view" data-v="invitations" hidden>${vhead("My invitations", "Every invitation you started or sent to our studio.")}
+    <section class="ac-card" id="ac-inv"><div class="ac-h"><h2>Your invitations</h2><div class="ac-tabs" role="tablist">${tabsInv.map(([k, t], n) => `<button type="button" role="tab" data-it="${k}" aria-selected="${n === 0}">${t}</button>`).join("")}</div></div>
+      <div class="ac-list" id="ac-inv-list"></div><a class="ac-new" href="/customize">+ Start a new invitation</a></section></div>
+
+  <div class="ac-view" data-v="saved" hidden>${vhead("Saved designs", "Designs you saved with the ♡.")}
+    <section class="ac-card"><div class="ac-h"><h2>${saved.length} saved design${saved.length === 1 ? "" : "s"}</h2><a class="ac-link" href="/invitations">All designs →</a></div>
       ${saved.length ? `<div class="ac-pop">${saved.map((i, k) => `<article class="ac-pc"><a class="ac-pc-art" href="/design-${encodeURIComponent(i.slug)}" style="--t:${tints[k % tints.length]}"><img src="${ART(i.image)}" alt="${esc(i.name)} cover" loading="lazy"></a>
         <div class="ac-pc-b"><h3>${esc(i.name)}</h3><p>${esc(i.tagline)}</p><div class="ac-pc-f"><span>${esc(i.tier)} · <b>${inr(priceOf(i))}</b></span><a class="ac-yb" href="/customize?design=${encodeURIComponent(i.slug)}">Start</a></div>
         <button class="ac-unfav" type="button" data-fav="${esc(i.slug)}" aria-pressed="true" aria-label="Remove ${esc(i.name)} from saved">♥</button></div></article>`).join("")}</div>`
-        : empty("Tap the ♡ on any design to save it here.", `<a class="ac-yb" href="/invitations">Browse designs</a>`)}</section>
+        : empty("Tap the ♡ on any design to save it here.", `<a class="ac-yb" href="/invitations">Browse designs</a>`)}</section></div>
 
-    <section class="ac-card" id="ac-inv"><div class="ac-h"><h2>My invitations</h2><div class="ac-tabs" role="tablist">${tabsInv.map(([k, t], n) => `<button type="button" role="tab" data-it="${k}" aria-selected="${n === 0}">${t}</button>`).join("")}</div></div>
-      <div class="ac-list" id="ac-inv-list"></div><a class="ac-new" href="/customize">+ Start a new invitation</a></section>
-
-    <section class="ac-card" id="ac-enq"><div class="ac-h"><h2>My enquiries</h2></div>
+  <div class="ac-view" data-v="enquiries" hidden>${vhead("Enquiries", "Messages you sent us while signed in, and where they stand.")}
+    <section class="ac-card"><div class="ac-h"><h2>Your enquiries</h2></div>
       <div class="ac-list">${asks.length ? asks.map((q, k) => `<div class="ac-row"><span class="ac-av c${k % 5}">${cover(q.design_slug) ? `<img src="${cover(q.design_slug)}" alt="">` : "?"}</span><div class="ac-rt"><b>${esc(bySlug[q.design_slug]?.name || "General enquiry")}</b><span>${when(q.created_at)} · ${q.package ? esc(q.package) + " · " : ""}via ${q.source === "customize" ? "order form" : q.source === "details" ? "design page" : "contact form"}</span></div>${pill({ new: "submitted", contacted: "in_progress", won: "approved", lost: "cancelled" }[q.status])}</div>`).join("")
-        : empty("Enquiries you send while signed in appear here.", `<a class="ac-yb" href="/contact">Ask us something</a>`)}</div></section>
+        : empty("Enquiries you send while signed in appear here.", `<a class="ac-yb" href="/contact">Ask us something</a>`)}</div></section></div>
 
-    <section class="ac-card" id="ac-rev"><div class="ac-h"><h2>Write a review</h2></div><p class="muted" style="margin:-4px 0 14px">Received your invitation? Tell other families about it. Reviews appear on the website after a quick check.</p>
+  <div class="ac-view" data-v="review" hidden>${vhead("Write a review", "Received your invitation? Tell other families about it. Reviews appear on the website after a quick check.")}
+    <section class="ac-card ac-narrow">
       <div id="my-reviews"></div>
       <form class="form" id="rev" novalidate>
         <div class="f2"><div class="field"><label for="rv-name">Name to show</label><input id="rv-name" name="name" required maxlength="80" value="${esc(name)}"></div>
@@ -886,30 +910,33 @@ pages.account = async () => {
         <div class="f2"><div class="field"><label for="rv-design">Design</label><select id="rv-design" name="design_slug"><option value="">Choose…</option>${all.map((i) => `<option value="${esc(i.slug)}">${esc(i.name)}</option>`).join("")}</select></div>
         <div class="field"><label for="rv-rating">Rating</label><select id="rv-rating" name="rating"><option value="5">★★★★★ Excellent</option><option value="4">★★★★ Very good</option><option value="3">★★★ Good</option><option value="2">★★ Fair</option><option value="1">★ Poor</option></select></div></div>
         <div class="field"><label for="rv-body">Your review</label><textarea id="rv-body" name="body" required minlength="10" maxlength="800" placeholder="What did your family and guests think?"></textarea></div>
-        <button class="btn btn-primary" type="submit">Submit review</button></form></section>
-  </div>
+        <button class="btn btn-primary" type="submit">Submit review</button></form></section></div>
 
-  <aside class="ac-rail">
-    <div class="ac-me" id="ac-me"><span class="ac-avatar">${esc((first[0] || "B").toUpperCase())}</span><div class="ac-me-t"><b>${esc(name)}</b><span>${esc(u.email || "")}</span></div></div>
-    <div class="ac-tiles">
-      <div class="ac-tile"><b>${saved.length}</b><span>Saved<br>designs</span></div>
-      <div class="ac-tile"><b>${mine.length}</b><span>My<br>invitations</span></div>
-      <div class="ac-tile"><b>${asks.length}</b><span>Enquiries<br>sent</span></div>
-      <div class="ac-tile"><b>${daysTo !== null && daysTo >= 0 ? daysTo : "—"}</b><span>Days to<br>the wedding</span></div></div>
-    <div class="ac-card ac-help">${AC_ART.help}<h3>Need help?</h3><p>We reply on WhatsApp within an hour, ${esc(CFG.hours || "10am – 8pm")}.</p><a class="ac-yb" href="${waHref("Namaste Bfiluxe 🙏 I need help with my invitation.")}" target="_blank" rel="noopener">WhatsApp us</a></div>
-    ${suggest.length ? `<div class="ac-card"><div class="ac-h"><h2>You may also like</h2></div><div class="ac-sug">${suggest.map((i) => `<a href="/design-${encodeURIComponent(i.slug)}"><img src="${ART(i.image)}" alt="" loading="lazy" width="48" height="64"><span><b>${esc(i.name)}</b><small>${esc(i.tier)} · ${inr(priceOf(i))}</small></span></a>`).join("")}</div><a class="ac-link" href="/invitations" style="display:block;margin-top:12px;text-align:right">View all →</a></div>` : ""}
-    <div class="ac-card" id="ac-me-form"><div class="ac-h"><h2>Profile &amp; security</h2></div>
+  <div class="ac-view" data-v="profile" hidden>${vhead("Profile &amp; security")}
+    <div class="ac-two">
+    <section class="ac-card"><div class="ac-h"><h2>Your details</h2></div>
+      <div class="ac-me ac-me-flat"><span class="ac-avatar">${esc((first[0] || "B").toUpperCase())}</span><div class="ac-me-t"><b>${esc(name)}</b><span>${esc(u.email || "")}</span></div></div>
       <form class="form" id="prof" novalidate>
         <div class="field"><label for="p-name">Full name</label><input id="p-name" name="full_name" value="${esc(prof?.full_name || "")}" autocomplete="name" maxlength="120"></div>
         <div class="field"><label for="p-phone">WhatsApp number</label><input id="p-phone" name="phone" type="tel" value="${esc(prof?.phone || "")}" autocomplete="tel" inputmode="tel" maxlength="20"></div>
-        <button class="btn btn-primary btn-block" type="submit">Save profile</button></form>
+        <button class="btn btn-primary" type="submit">Save profile</button></form></section>
+    <section class="ac-card"><div class="ac-h"><h2>Security</h2></div>
+      <p class="muted" style="margin:0">Signed in as <b>${esc(u.email || "")}</b>${u.app_metadata?.provider === "google" ? " with Google" : ""}.</p>
       <div id="pw-box"></div>
-      <button class="btn btn-outline btn-block" id="signout" style="margin-top:12px">Log out</button></div>
-  </aside>`;
-  // anchor the "me" card to the profile section
-  $("#ac-me").addEventListener("click", () => $("#ac-me-form").scrollIntoView({ behavior: "smooth", block: "start" }));
-  $$(".ac-nav a").forEach((a) => a.addEventListener("click", () => { $$(".ac-nav a").forEach((x) => x.removeAttribute("aria-current")); a.setAttribute("aria-current", "true"); }));
-  const navMe = $('.ac-nav a[href="#ac-me"]'); if (navMe) navMe.setAttribute("href", "#ac-me-form");
+      <button class="btn btn-outline" id="signout" style="margin-top:16px">Log out</button></section>
+    </div></div>`;
+  // one view at a time: #overview, #invitations, #saved, #enquiries, #review, #profile
+  const VIEWS = NAV.map(([id]) => id);
+  const show = (v, push) => {
+    if (!VIEWS.includes(v)) v = "overview";
+    $$(".ac-view", root).forEach((el) => { el.hidden = el.dataset.v !== v; });
+    $$(".ac-nav a", root).forEach((a) => (a.dataset.go === v ? a.setAttribute("aria-current", "page") : a.removeAttribute("aria-current")));
+    if (push) { history.pushState(null, "", "#" + v); window.scrollTo({ top: 0, behavior: "smooth" }); }
+  };
+  root.addEventListener("click", (e) => { const g = e.target.closest("[data-go]"); if (!g) return; e.preventDefault(); show(g.dataset.go, true); });
+  root.addEventListener("keydown", (e) => { const g = e.target.closest("[data-go][role=button]"); if (g && (e.key === "Enter" || e.key === " ")) { e.preventDefault(); show(g.dataset.go, true); } });
+  addEventListener("popstate", () => show(location.hash.slice(1)));
+  show(location.hash === "#reset" ? "profile" : location.hash.slice(1));
   // invitations list with tabs
   const drawInv = (tab) => {
     const rows = mine.filter((c) => tab === "all" || (tab === "draft" ? c.status === "draft" : tab === "done" ? c.status === "delivered" : !["draft", "delivered", "cancelled"].includes(c.status)));
