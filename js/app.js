@@ -609,6 +609,22 @@ const TICK = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.2 4
 const safeNext = (nx) => (nx && /^[\w\-./?=&%#]+$/.test(nx) && !nx.startsWith("//") && !nx.includes("://") ? nx : "");
 const AUTH_WHY = { fav: "Sign in to save designs you love.", save: "Sign in to save your invitation and finish it later.", review: "Sign in to write a review." };
 
+/* Google sign-in with Google's own button (popup on bfiluxe.com), then Supabase signInWithIdToken.
+   Falls back to the redirect button if Google's script can't load. */
+let _gsi;
+function loadGsi() {
+  if (_gsi) return _gsi;
+  _gsi = new Promise((res, rej) => {
+    if (window.google?.accounts?.id) return res(window.google);
+    const s = document.createElement("script"); s.src = "https://accounts.google.com/gsi/client"; s.async = true; s.defer = true;
+    s.onload = () => (window.google?.accounts?.id ? res(window.google) : rej(new Error("gsi missing")));
+    s.onerror = () => rej(new Error("gsi blocked")); document.head.appendChild(s);
+    setTimeout(() => rej(new Error("gsi timeout")), 8000);
+  });
+  return _gsi;
+}
+async function sha256Hex(t) { const b = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(t)); return [...new Uint8Array(b)].map((x) => x.toString(16).padStart(2, "0")).join(""); }
+
 function authPanel(host, { mode = "signin", why = "", next = "", inDrawer = false, onClose } = {}) {
   host.innerHTML = `<div class="ap">
     <div class="ap-head"><a class="ap-brand" href="index.html" aria-label="Bfiluxe home"><img src="img/elephant.webp" alt="" width="46" height="34"><span class="wordmark">BFILUXE</span></a>
@@ -616,7 +632,8 @@ function authPanel(host, { mode = "signin", why = "", next = "", inDrawer = fals
     <h2 class="ap-title" id="ap-title"></h2><p class="ap-sub" id="ap-sub"></p>
     ${why ? `<div class="notice info ap-why">${esc(why)}</div>` : ""}
     <div class="ap-tabs" role="tablist" aria-label="Sign in or create an account"><button type="button" role="tab" data-mode="signin">Sign in</button><button type="button" role="tab" data-mode="signup">Create account</button></div>
-    <button class="ap-google" type="button" data-google>${GOOGLE_SVG}<span>Continue with Google</span></button>
+    <div class="ap-gsi" data-gsi aria-live="polite"></div>
+    <button class="ap-google" type="button" data-google hidden>${GOOGLE_SVG}<span>Continue with Google</span></button>
     <div class="ap-or"><span>or with email</span></div>
     <form class="ap-form" novalidate>
       <div class="ap-f" data-only="signup"><label for="ap-name">Full name</label><input id="ap-name" name="name" autocomplete="name" maxlength="120" placeholder="e.g. Priya Sharma"></div>
@@ -651,6 +668,7 @@ function authPanel(host, { mode = "signin", why = "", next = "", inDrawer = fals
     pass.autocomplete = m === "signup" ? "new-password" : "current-password";
     btn.textContent = m === "signup" ? "Create account" : "Sign in";
     say("", "");
+    if (typeof drawGsi === "function") try { drawGsi(); } catch {}
   };
   $$h(".ap-tabs button").forEach((b) => b.addEventListener("click", () => setMode(b.dataset.mode)));
   $h(".ap-tabs").addEventListener("keydown", (e) => { if (e.key === "ArrowRight" || e.key === "ArrowLeft") { setMode(mode === "signin" ? "signup" : "signin"); $h(`.ap-tabs [data-mode="${mode}"]`).focus(); } });
@@ -661,11 +679,41 @@ function authPanel(host, { mode = "signin", why = "", next = "", inDrawer = fals
     const lvl = !v ? 0 : sc <= 1 ? 1 : sc <= 2 ? 2 : 3; $h(".ap-meter").dataset.l = lvl;
     $h("#ap-help").textContent = !v ? "At least 8 characters. A mix of letters and numbers is stronger." : v.length < 8 ? `${8 - v.length} more character${v.length === 7 ? "" : "s"} needed.` : ["", "Okay password.", "Good password.", "Strong password."][lvl]; });
   $h("#ap-phone").addEventListener("input", (e) => { e.target.value = e.target.value.replace(/\D/g, "").slice(0, 10); });
-  $h("[data-google]").addEventListener("click", async () => {
+  const redirectGoogle = async () => {
     const redirectTo = new URL(target() || location.pathname + location.search, location.href).href;
     const { error } = await sb.auth.signInWithOAuth({ provider: "google", options: { redirectTo } });
     if (error) say("bad", /provider is not enabled|Unsupported provider/i.test(error.message) ? "Google sign-in is being set up. Please use your email for now." : esc(error.message));
-  });
+  };
+  $h("[data-google]").addEventListener("click", redirectGoogle);
+  const gsiBox = $h("[data-gsi]"), fallback = () => { gsiBox.hidden = true; $h("[data-google]").hidden = false; };
+  let gsiReady = false;
+  const drawGsi = () => {
+    if (!gsiReady) return;
+    gsiBox.innerHTML = "";
+    window.google.accounts.id.renderButton(gsiBox, { type: "standard", theme: "outline", size: "large", shape: "pill", logo_alignment: "center",
+      text: mode === "signup" ? "signup_with" : "continue_with", width: Math.min(400, Math.max(240, Math.round(gsiBox.clientWidth || 360))) });
+  };
+  if (CFG.googleClientId && window.crypto?.subtle) {
+    (async () => {
+      try {
+        const g = await loadGsi();
+        const raw = Array.from(crypto.getRandomValues(new Uint8Array(24)), (x) => x.toString(16).padStart(2, "0")).join("");
+        g.accounts.id.initialize({
+          client_id: CFG.googleClientId, nonce: await sha256Hex(raw), ux_mode: "popup", use_fedcm_for_prompt: true, itp_support: true,
+          context: mode === "signup" ? "signup" : "signin",
+          callback: async (resp) => {
+            if (!resp?.credential) return say("bad", "Google sign-in was cancelled. Please try again.");
+            say("info", "Signing you in with Google…");
+            const { error } = await sb.auth.signInWithIdToken({ provider: "google", token: resp.credential, nonce: raw });
+            if (error) return say("bad", /nonce/i.test(error.message) ? "Google sign-in expired. Please tap the Google button again." : esc(error.message));
+            track("google_signin", {}); say("ok", "Signed in."); setTimeout(done, 400);
+          },
+        });
+        gsiReady = true; drawGsi();
+        setTimeout(() => { if (!gsiBox.querySelector("iframe, div[role=button]")) fallback(); }, 4000);
+      } catch { fallback(); }
+    })();
+  } else fallback();
   $h("[data-forgot]").addEventListener("click", async () => {
     if (!CFG.authEmails) return say("info", `To reset your password, ${waHelp} from your registered number and we'll help you right away.`);
     const email = form.email.value.trim();
