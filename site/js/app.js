@@ -730,7 +730,8 @@ function openAuth({ mode = "signin", why = "", next = "" } = {}) {
   document.addEventListener("keydown", key);
   authPanel(panel, { mode, why, next, inDrawer: true, onClose: close });
   authOpen = close;
-  requestAnimationFrame(() => { wrap.classList.add("in"); setTimeout(() => panel.querySelector(mode === "signup" ? "#ap-name" : "#ap-email")?.focus(), 200); });
+  void wrap.offsetWidth; wrap.classList.add("in");
+  setTimeout(() => panel.querySelector(mode === "signup" ? "#ap-name" : "#ap-email")?.focus({ preventScroll: true }), 250);
 }
 function loginLink(href) {
   try { const u = new URL(href, location.href); if (!/\/login\.html$/.test(u.pathname) || u.origin !== location.origin) return null;
@@ -739,7 +740,9 @@ function loginLink(href) {
 document.addEventListener("click", (e) => {
   const a = e.target.closest && e.target.closest("a[href]"); if (!a || e.ctrlKey || e.metaKey || e.shiftKey || /\/login\.html$/.test(location.pathname)) return;
   const o = loginLink(a.getAttribute("href")); if (!o) return;
-  e.preventDefault(); document.querySelector(".sheet.open,[data-sheet].open") && document.querySelector("[data-close-sheet],.sheet-close")?.click(); openAuth(o);
+  e.preventDefault();
+  try { openAuth(o); if (!document.querySelector(".ad .ap-form")) throw new Error("panel did not render"); }
+  catch (err) { document.querySelector(".ad-scrim")?.remove(); document.documentElement.classList.remove("ad-lock"); authOpen = null; location.href = a.href; }
 });
 
 /* ---------- login page ---------- */

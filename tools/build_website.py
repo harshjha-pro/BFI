@@ -12,7 +12,7 @@ from html import escape
 from pathlib import Path
 
 OUT = Path(__file__).resolve().parent.parent / "site"
-V = "20261127c"  # bump to bust browser caches for css/js
+V = "20261127d"  # bump to bust browser caches for css/js
 BASE = "https://bfiluxe.com"
 ART = "img/art/"
 IMGBASE = "https://oaosapkkzoynaqpnmvrj.supabase.co/storage/v1/object/public/site/"
