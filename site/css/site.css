@@ -2400,3 +2400,8 @@ html.ad-lock{overflow:hidden}
 .ad-scrim,.ad-scrim.in,.ad-scrim.out{-webkit-backdrop-filter:none!important;backdrop-filter:none!important;transition:background .25s ease!important}
 .ad-scrim.in{background:rgba(28,18,16,.55)!important}
 .ad{will-change:auto;contain:layout paint}
+/* Google's own sign-in button (shows bfiluxe.com in the Google popup) */
+.ap-gsi{display:flex;justify-content:center;min-height:44px;width:100%}
+.ap-gsi[hidden]{display:none}
+.ap-gsi:empty{border:1px solid #dadce0;border-radius:999px;min-height:44px;background:linear-gradient(90deg,#fff,#f6f2ec,#fff);background-size:200% 100%;animation:apShim 1.2s linear infinite}
+@keyframes apShim{to{background-position:-200% 0}}

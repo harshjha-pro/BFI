@@ -11,5 +11,7 @@ window.BFI_CONFIG = {
   city: "Jaipur, Rajasthan, India",
   hours: "10am – 8pm, all days",
   // Turn on after setting up the email sender (SMTP) in Supabase: shows "Email me a login link" and email password resets
-  authEmails: false
+  authEmails: false,
+  // Google sign-in (public OAuth client ID, not a secret). Google's own button shows "bfiluxe.com" instead of the Supabase address.
+  googleClientId: "1079237653621-hsn9dp80ahjdmka70ltdn8clkme4qb0d.apps.googleusercontent.com"
 };
