@@ -196,7 +196,7 @@ async function loadFavs() {
   favs = new Set((data || []).map((r) => r.slug));
 }
 async function toggleFav(slug, btn) {
-  if (!user()) { location.href = `login.html?next=${encodeURIComponent(location.pathname + location.search)}&why=fav`; return; }
+  if (!user()) { openAuth({ why: AUTH_WHY.fav, next: location.pathname.split("/").pop() + location.search }); return; }
   const on = !favs.has(slug);
   btn.setAttribute("aria-pressed", on);
   const { error } = on ? await sb.from("favorites").insert({ slug }) : await sb.from("favorites").delete().eq("slug", slug);
@@ -526,7 +526,7 @@ pages.customize = async () => {
     }
   }
   async function saveRemote(status = "draft") {
-    if (!user()) { save(); location.href = `login.html?next=${encodeURIComponent("customize.html")}&why=save`; return null; }
+    if (!user()) { save(); openAuth({ why: AUTH_WHY.save, next: "customize.html" }); return null; }
     const row = { design_slug: D.design, data: D, status, updated_at: new Date().toISOString() };
     const q = st.id ? sb.from("customizations").update(row).eq("id", st.id).select("id").single() : sb.from("customizations").insert(row).select("id").single();
     const { data, error } = await q;
@@ -617,76 +617,153 @@ pages.partners = async () => {
   });
 };
 
-/* ---------- login ---------- */
-pages.login = async () => {
-  const nx = params.get("next") || "";
-  const next = /^[\w\-./?=&%]+$/.test(nx) && !nx.startsWith("//") && !nx.includes("://") ? nx : "account.html";
-  if (user()) { location.replace(next); return; }
-  const why = { fav: "Login to save favourites.", save: "Login to save your invitation draft.", review: "Login to write a review." }[params.get("why")];
-  if (why) $("#why").innerHTML = `<div class="notice info">${why}</div>`;
-  const redirectTo = new URL(next, location.href).href;
-  const status = $("#auth-status");
-  const say = (cls, msg) => (status.innerHTML = `<div class="notice ${cls}">${msg}</div>`);
-  const waHelp = `<a href="${waHref("Namaste Bfiluxe 🙏 I need help logging in to my account.")}" target="_blank" rel="noopener">message us on WhatsApp</a>`;
-  // Email links (magic link, password reset) need the studio's email sender to be set up in Supabase.
-  if (!CFG.authEmails) { $("#magic").hidden = true; }
-  let mode = "signin";
+/* ---------- sign in & create account: one panel, used in the side drawer and on login.html ---------- */
+const GOOGLE_SVG = '<svg viewBox="0 0 48 48" aria-hidden="true"><path fill="#FFC107" d="M43.6 20.5H42V20H24v8h11.3C33.7 32.7 29.2 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3 0 5.8 1.1 7.9 3l5.7-5.7C34 6.1 29.3 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20 20-8.9 20-20c0-1.3-.1-2.4-.4-3.5z"/><path fill="#FF3D00" d="m6.3 14.7 6.6 4.8C14.7 15.1 19 12 24 12c3 0 5.8 1.1 7.9 3l5.7-5.7C34 6.1 29.3 4 24 4 16.3 4 9.7 8.3 6.3 14.7z"/><path fill="#4CAF50" d="M24 44c5.2 0 9.9-2 13.4-5.2l-6.2-5.2C29.2 35.1 26.7 36 24 36c-5.2 0-9.6-3.3-11.3-8l-6.5 5C9.5 39.6 16.2 44 24 44z"/><path fill="#1976D2" d="M43.6 20.5H42V20H24v8h11.3a12 12 0 0 1-4.1 5.6l6.2 5.2C37 39.2 44 34 44 24c0-1.3-.1-2.4-.4-3.5z"/></svg>';
+const EYE_ON = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><circle cx="12" cy="12" r="3" fill="none" stroke="currentColor" stroke-width="1.7"/></svg>';
+const EYE_OFF = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 3l18 18M10.6 5.1A10.8 10.8 0 0 1 12 5c6.4 0 10 7 10 7a17 17 0 0 1-3.2 4.1M6.6 6.6C3.9 8.4 2 12 2 12s3.6 7 10 7a9.7 9.7 0 0 0 5.4-1.6M9.9 9.9a3 3 0 0 0 4.2 4.2" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+const TICK = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.2 4.2L19 7" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+const safeNext = (nx) => (nx && /^[\w\-./?=&%#]+$/.test(nx) && !nx.startsWith("//") && !nx.includes("://") ? nx : "");
+const AUTH_WHY = { fav: "Sign in to save designs you love.", save: "Sign in to save your invitation and finish it later.", review: "Sign in to write a review." };
+
+function authPanel(host, { mode = "signin", why = "", next = "", inDrawer = false, onClose } = {}) {
+  host.innerHTML = `<div class="ap">
+    <div class="ap-head"><a class="ap-brand" href="index.html" aria-label="Bfiluxe home"><img src="img/elephant.webp" alt="" width="46" height="34"><span class="wordmark">BFILUXE</span></a>
+      ${inDrawer ? '<button type="button" class="ap-x" data-ap-close aria-label="Close">×</button>' : ""}</div>
+    <h2 class="ap-title" id="ap-title"></h2><p class="ap-sub" id="ap-sub"></p>
+    ${why ? `<div class="notice info ap-why">${esc(why)}</div>` : ""}
+    <div class="ap-tabs" role="tablist" aria-label="Sign in or create an account"><button type="button" role="tab" data-mode="signin">Sign in</button><button type="button" role="tab" data-mode="signup">Create account</button></div>
+    <button class="ap-google" type="button" data-google>${GOOGLE_SVG}<span>Continue with Google</span></button>
+    <div class="ap-or"><span>or with email</span></div>
+    <form class="ap-form" novalidate>
+      <div class="ap-f" data-only="signup"><label for="ap-name">Full name</label><input id="ap-name" name="name" autocomplete="name" maxlength="120" placeholder="e.g. Priya Sharma"></div>
+      <div class="ap-f" data-only="signup"><label for="ap-phone">Mobile number <small>(WhatsApp)</small></label><div class="ap-phone"><span>+91</span><input id="ap-phone" name="phone" type="tel" inputmode="numeric" autocomplete="tel-national" maxlength="10" placeholder="10-digit number"></div></div>
+      <div class="ap-f"><label for="ap-email">Email</label><input id="ap-email" name="email" type="email" autocomplete="email" maxlength="200" placeholder="you@gmail.com" required></div>
+      <div class="ap-f"><div class="ap-lab"><label for="ap-pass">Password</label><button type="button" class="ap-link" data-forgot data-only="signin">Forgot password?</button></div>
+        <div class="ap-pw"><input id="ap-pass" name="password" type="password" autocomplete="current-password" maxlength="72" required><button type="button" class="ap-eye" aria-label="Show password" aria-pressed="false">${EYE_ON}</button></div>
+        <div class="ap-meter" data-only="signup" aria-hidden="true"><i></i><i></i><i></i></div><p class="ap-help" data-only="signup" id="ap-help">At least 8 characters. A mix of letters and numbers is stronger.</p></div>
+      <input type="text" name="company" tabindex="-1" autocomplete="off" class="sr" aria-hidden="true">
+      <button class="btn btn-primary btn-block ap-go" type="submit"></button>
+      <div class="ap-status" aria-live="polite"></div>
+    </form>
+    <div class="ap-perks" data-only="signup"><p class="ap-k">With your account</p><ul>
+      <li>${TICK}<span><b>Save designs you love</b> and compare them later.</span></li>
+      <li>${TICK}<span><b>Save your invitation draft</b> and finish it on any device.</span></li>
+      <li>${TICK}<span><b>Track your order</b> from details to delivery.</span></li></ul></div>
+    <a class="ap-partner" href="partners.html"><span class="ap-partner-i" aria-hidden="true">✦</span><span><b>Wedding planner or card shop?</b><small>Join the Bfiluxe partner programme</small></span><span aria-hidden="true">→</span></a>
+    <p class="ap-legal">By continuing you agree to our <a href="terms.html">Terms</a> and <a href="privacy.html">Privacy Policy</a>.</p>
+  </div>`;
+  const $h = (q) => host.querySelector(q), $$h = (q) => [...host.querySelectorAll(q)];
+  const form = $h(".ap-form"), status = $h(".ap-status"), pass = $h("#ap-pass"), btn = $h(".ap-go");
+  const say = (cls, msg) => (status.innerHTML = msg ? `<div class="notice ${cls}">${msg}</div>` : "");
+  const waHelp = `<a href="${waHref("Namaste Bfiluxe 🙏 I need help with my account.")}" target="_blank" rel="noopener">message us on WhatsApp</a>`;
+  const target = () => safeNext(next) || (inDrawer ? "" : "account.html");
+  const done = () => { const t = target(); if (t) location.replace(t); else location.reload(); };
   const setMode = (m) => {
     mode = m;
-    $$(".tabs button").forEach((b) => b.setAttribute("aria-selected", b.dataset.mode === m));
-    $("#name-field").hidden = m !== "signup";
-    $("#pass-help").hidden = m !== "signup";
-    $("#a-name").required = m === "signup";
-    $("#a-pass").autocomplete = m === "signup" ? "new-password" : "current-password";
-    $("#auth-submit").textContent = m === "signup" ? "Create account" : "Login";
-    $("#forgot").hidden = m === "signup";
-    status.innerHTML = "";
+    $$h(".ap-tabs button").forEach((b) => { b.setAttribute("aria-selected", b.dataset.mode === m); b.tabIndex = b.dataset.mode === m ? 0 : -1; });
+    $$h("[data-only]").forEach((el) => { el.hidden = el.dataset.only !== m; });
+    $h("#ap-title").textContent = m === "signup" ? "Create your account" : "Welcome back";
+    $h("#ap-sub").textContent = m === "signup" ? "Takes a minute. Save designs, drafts and track your invitation." : "Sign in to see your saved designs and invitation.";
+    $h("#ap-name").required = m === "signup";
+    pass.autocomplete = m === "signup" ? "new-password" : "current-password";
+    btn.textContent = m === "signup" ? "Create account" : "Sign in";
+    say("", "");
   };
-  $$(".tabs button").forEach((b) => (b.onclick = () => setMode(b.dataset.mode)));
-  if (params.get("mode") === "signup") setMode("signup");
-  $("#google").onclick = async () => {
+  $$h(".ap-tabs button").forEach((b) => b.addEventListener("click", () => setMode(b.dataset.mode)));
+  $h(".ap-tabs").addEventListener("keydown", (e) => { if (e.key === "ArrowRight" || e.key === "ArrowLeft") { setMode(mode === "signin" ? "signup" : "signin"); $h(`.ap-tabs [data-mode="${mode}"]`).focus(); } });
+  const eye = $h(".ap-eye");
+  eye.addEventListener("click", () => { const show = pass.type === "password"; pass.type = show ? "text" : "password"; eye.innerHTML = show ? EYE_OFF : EYE_ON;
+    eye.setAttribute("aria-label", show ? "Hide password" : "Show password"); eye.setAttribute("aria-pressed", String(show)); pass.focus(); });
+  pass.addEventListener("input", () => { const v = pass.value, sc = (v.length >= 8) + (v.length >= 12) + (/\d/.test(v) && /[a-z]/i.test(v)) + /[^\w]/.test(v);
+    const lvl = !v ? 0 : sc <= 1 ? 1 : sc <= 2 ? 2 : 3; $h(".ap-meter").dataset.l = lvl;
+    $h("#ap-help").textContent = !v ? "At least 8 characters. A mix of letters and numbers is stronger." : v.length < 8 ? `${8 - v.length} more character${v.length === 7 ? "" : "s"} needed.` : ["", "Okay password.", "Good password.", "Strong password."][lvl]; });
+  $h("#ap-phone").addEventListener("input", (e) => { e.target.value = e.target.value.replace(/\D/g, "").slice(0, 10); });
+  $h("[data-google]").addEventListener("click", async () => {
+    const redirectTo = new URL(target() || location.pathname + location.search, location.href).href;
     const { error } = await sb.auth.signInWithOAuth({ provider: "google", options: { redirectTo } });
-    if (error) say("bad", /provider is not enabled|Unsupported provider/i.test(error.message) ? "Google login is being set up. Please create an account with your email for now." : esc(error.message));
-  };
-  if (/error_description=/.test(location.hash) || params.get("error_description")) {
-    const msg = new URLSearchParams(location.hash.slice(1)).get("error_description") || params.get("error_description");
-    say("bad", /provider is not enabled/i.test(msg) ? "Google login is being set up. Please use email for now." : esc(msg));
-  }
-  const form = $("#auth-form");
-  form.addEventListener("submit", async (e) => {
-    e.preventDefault(); if (!validate(form)) return;
-    const d = formData(form); const btn = $("#auth-submit");
-    if (mode === "signup" && d.password.length < 8) { say("bad", "Use at least 8 characters for your password."); return; }
-    setBusy(btn, true);
-    try {
-      if (mode === "signup") {
-        const r = await fetch(`${CFG.supabaseUrl}/functions/v1/signup`, { method: "POST", headers: { "content-type": "application/json", apikey: CFG.supabaseKey },
-          body: JSON.stringify({ email: d.email, password: d.password, name: d.name, company: d.company }) });
-        const out = await r.json().catch(() => ({}));
-        if (!r.ok) throw new Error(out.error || "Couldn't create the account. Please try again.");
-      }
-      const { error } = await sb.auth.signInWithPassword({ email: d.email, password: d.password });
-      if (error) throw error;
-      location.replace(next);
-    } catch (err) {
-      const m = err.message || "";
-      say("bad", /invalid login/i.test(m) ? "Email or password is incorrect." : /not confirmed/i.test(m) ? `This account isn't activated yet. Please ${waHelp} and we'll activate it.` : /already has an account/i.test(m) ? `${esc(m)} <button class="linkbtn" data-to="signin">Go to login</button>` : esc(m));
-      $("[data-to=signin]")?.addEventListener("click", () => setMode("signin"));
-    } finally { setBusy(btn, false); }
+    if (error) say("bad", /provider is not enabled|Unsupported provider/i.test(error.message) ? "Google sign-in is being set up. Please use your email for now." : esc(error.message));
   });
-  $("#magic").onclick = async () => {
-    const email = form.email.value.trim();
-    if (!/^\S+@\S+\.\S+$/.test(email)) { form.email.focus(); return say("bad", "Enter your email above, then tap “Email me a login link”."); }
-    const { error } = await sb.auth.signInWithOtp({ email, options: { emailRedirectTo: redirectTo, shouldCreateUser: false } });
-    error ? say("bad", esc(error.message)) : say("ok", `Check <b>${esc(email)}</b> for a login link. It works once and expires in an hour.`);
-  };
-  $("#forgot").onclick = async () => {
+  $h("[data-forgot]").addEventListener("click", async () => {
     if (!CFG.authEmails) return say("info", `To reset your password, ${waHelp} from your registered number and we'll help you right away.`);
     const email = form.email.value.trim();
     if (!/^\S+@\S+\.\S+$/.test(email)) { form.email.focus(); return say("bad", "Enter your email above first."); }
     const { error } = await sb.auth.resetPasswordForEmail(email, { redirectTo: new URL("account.html#reset", location.href).href });
     error ? say("bad", esc(error.message)) : say("ok", `We've emailed a password reset link to <b>${esc(email)}</b>.`);
-  };
+  });
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const d = formData(form), email = (d.email || "").trim(), phone = (d.phone || "").replace(/\D/g, "");
+    $$h(".ap-f.err").forEach((f) => f.classList.remove("err"));
+    const bad = (id, msg) => { const f = $h(id).closest(".ap-f"); f.classList.add("err"); $h(id).focus(); say("bad", msg); };
+    if (mode === "signup" && !(d.name || "").trim()) return bad("#ap-name", "Please enter your name.");
+    if (mode === "signup" && phone && phone.length !== 10) return bad("#ap-phone", "Enter a 10-digit mobile number, or leave it empty.");
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)) return bad("#ap-email", "Enter a valid email address.");
+    if (!d.password) return bad("#ap-pass", "Enter your password.");
+    if (mode === "signup" && d.password.length < 8) return bad("#ap-pass", "Use at least 8 characters for your password.");
+    setBusy(btn, true); say("", "");
+    try {
+      if (mode === "signup") {
+        const r = await fetch(`${CFG.supabaseUrl}/functions/v1/signup`, { method: "POST", headers: { "content-type": "application/json", apikey: CFG.supabaseKey },
+          body: JSON.stringify({ email, password: d.password, name: d.name.trim(), phone: phone ? "+91" + phone : "", company: d.company }) });
+        const out = await r.json().catch(() => ({}));
+        if (!r.ok) throw new Error(out.error || "Couldn't create the account. Please try again.");
+        track("signup", {});
+      }
+      const { error } = await sb.auth.signInWithPassword({ email, password: d.password });
+      if (error) throw error;
+      say("ok", mode === "signup" ? "Account created. Welcome to Bfiluxe!" : "Signed in.");
+      setTimeout(done, 500);
+    } catch (err) {
+      const m = err.message || "";
+      say("bad", /invalid login/i.test(m) ? "Email or password is incorrect." : /not confirmed/i.test(m) ? `This account isn't activated yet. Please ${waHelp} and we'll activate it.`
+        : /already has an account/i.test(m) ? `This email already has an account. <button type="button" class="ap-link" data-to-signin>Sign in instead</button>` : /fetch|network/i.test(m) ? "No connection. Check your internet and try again." : esc(m));
+      host.querySelector("[data-to-signin]")?.addEventListener("click", () => setMode("signin"));
+    } finally { setBusy(btn, false); }
+  });
+  $h("[data-ap-close]")?.addEventListener("click", () => onClose?.());
+  setMode(mode);
+  if (/error_description=/.test(location.hash) || params.get("error_description")) {
+    const msg = new URLSearchParams(location.hash.slice(1)).get("error_description") || params.get("error_description");
+    say("bad", /provider is not enabled/i.test(msg) ? "Google sign-in is being set up. Please use your email for now." : esc(msg));
+  }
+}
+
+/* side drawer: opens from any "Sign in" link */
+let authOpen = null;
+function openAuth({ mode = "signin", why = "", next = "" } = {}) {
+  if (user()) { location.href = safeNext(next) || "account.html"; return; }
+  if (authOpen) return;
+  const last = document.activeElement;
+  const wrap = document.createElement("div"); wrap.className = "ad-scrim";
+  wrap.innerHTML = '<aside class="ad" role="dialog" aria-modal="true" aria-labelledby="ap-title"></aside>';
+  document.body.appendChild(wrap); document.documentElement.classList.add("ad-lock");
+  const panel = wrap.firstElementChild;
+  const close = () => { wrap.classList.add("out"); document.documentElement.classList.remove("ad-lock"); document.removeEventListener("keydown", key);
+    setTimeout(() => wrap.remove(), 260); authOpen = null; last?.focus?.(); };
+  const key = (e) => { if (e.key === "Escape") close();
+    if (e.key === "Tab") { const f = [...panel.querySelectorAll("a[href],button:not([disabled]),input:not([type=hidden]):not(.sr)")].filter((x) => x.offsetParent);
+      if (!f.length) return; if (e.shiftKey && document.activeElement === f[0]) { e.preventDefault(); f[f.length - 1].focus(); } else if (!e.shiftKey && document.activeElement === f[f.length - 1]) { e.preventDefault(); f[0].focus(); } } };
+  wrap.addEventListener("click", (e) => { if (e.target === wrap) close(); });
+  document.addEventListener("keydown", key);
+  authPanel(panel, { mode, why, next, inDrawer: true, onClose: close });
+  authOpen = close;
+  requestAnimationFrame(() => { wrap.classList.add("in"); setTimeout(() => panel.querySelector(mode === "signup" ? "#ap-name" : "#ap-email")?.focus(), 200); });
+}
+function loginLink(href) {
+  try { const u = new URL(href, location.href); if (!/\/login\.html$/.test(u.pathname) || u.origin !== location.origin) return null;
+    return { mode: u.searchParams.get("mode") === "signup" ? "signup" : "signin", why: AUTH_WHY[u.searchParams.get("why")] || "", next: u.searchParams.get("next") || "" }; } catch { return null; }
+}
+document.addEventListener("click", (e) => {
+  const a = e.target.closest && e.target.closest("a[href]"); if (!a || e.ctrlKey || e.metaKey || e.shiftKey || /\/login\.html$/.test(location.pathname)) return;
+  const o = loginLink(a.getAttribute("href")); if (!o) return;
+  e.preventDefault(); document.querySelector(".sheet.open,[data-sheet].open") && document.querySelector("[data-close-sheet],.sheet-close")?.click(); openAuth(o);
+});
+
+/* ---------- login page ---------- */
+pages.login = async () => {
+  const next = safeNext(params.get("next")) || "account.html";
+  if (user()) { location.replace(next); return; }
+  authPanel($("#auth-root"), { mode: params.get("mode") === "signup" ? "signup" : "signin", why: AUTH_WHY[params.get("why")] || "", next });
 };
 
 pages.account = async () => {
