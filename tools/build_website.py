@@ -12,7 +12,7 @@ from html import escape
 from pathlib import Path
 
 OUT = Path(__file__).resolve().parent.parent / "site"
-V = "20261127a"  # bump to bust browser caches for css/js
+V = "20261127b"  # bump to bust browser caches for css/js
 BASE = "https://bfiluxe.com"
 ART = "img/art/"
 IMGBASE = "https://oaosapkkzoynaqpnmvrj.supabase.co/storage/v1/object/public/site/"
@@ -244,7 +244,7 @@ def header(active):
     more = "".join(f'<a href="{k}.html">{t}</a>' for k, t in MORE)
     return f'''<a class="skip" href="#main">Skip to content</a>
 <header class="hdr"><div class="wrap hdr-in">
-  <a class="brand" href="index.html" aria-label="Bfiluxe, home"><span class="wordmark">BFILUXE</span></a>
+  <a class="brand" href="index.html" aria-label="Bfiluxe, home"><img class="brand-el" src="img/elephant.webp" alt="" width="40" height="30"><span class="wordmark">BFILUXE</span></a>
   <nav class="nav" aria-label="Main">{links}</nav>
   <div class="hdr-actions">
     <span data-auth-slot class="auth-slot"><a class="util-link" href="login.html">Sign in</a></span>
@@ -253,7 +253,7 @@ def header(active):
   </div>
 </div></header>
 <div class="sheet" id="menu" role="dialog" aria-modal="true" aria-label="Menu" hidden><div class="sheet-bg"></div><div class="sheet-panel">
-  <div class="sheet-top"><a class="brand" href="index.html" aria-label="Bfiluxe, home"><span class="wordmark">BFILUXE</span></a><button class="icon-btn" data-menu-close aria-label="Close menu">{icon(I["x"])}</button></div>
+  <div class="sheet-top"><a class="brand" href="index.html" aria-label="Bfiluxe, home"><img class="brand-el" src="img/elephant.webp" alt="" width="40" height="30"><span class="wordmark">BFILUXE</span></a><button class="icon-btn" data-menu-close aria-label="Close menu">{icon(I["x"])}</button></div>
   <nav class="sheet-main" aria-label="Menu">{mlinks}</nav>
   <nav class="sheet-more" aria-label="More">{more}</nav>
   <div class="sheet-foot"><div data-auth-menu><a class="btn btn-outline btn-block" href="login.html">Sign in</a></div><a class="btn btn-primary btn-block" data-wa>{WA} Enquire on WhatsApp</a></div>
@@ -263,7 +263,7 @@ def header(active):
 def footer():
     return f'''<footer class="ftr"><div class="wrap">
   <div class="ftr-grid">
-    <div class="ftr-brand"><a href="index.html" class="ftr-logo" aria-label="Bfiluxe, home"><span class="wordmark">BFILUXE</span></a>
+    <div class="ftr-brand"><a href="index.html" class="ftr-logo" aria-label="Bfiluxe, home"><img class="brand-el" src="img/elephant.webp" alt="" width="40" height="30"><span class="wordmark">BFILUXE</span></a>
       <p>Invitations made extraordinary. Digital Marwari wedding invitations, invitation websites and videos, rooted in family tradition.</p></div>
     <div><h4>Explore</h4><ul><li><a href="invitations.html">Invitations</a></li><li><a href="videos.html">Invitation videos</a></li><li><a href="how-it-works.html">How It Works</a></li><li><a href="pricing.html">Pricing</a></li><li><a href="contact.html">Contact</a></li></ul></div>
     <div><h4>Resources</h4><ul><li><a href="features.html">Features</a></li><li><a href="resources.html">Guides</a></li><li><a href="faq.html">FAQ</a></li><li><a href="free-cards.html">Free card maker</a></li><li><a href="partners.html">Partner with us</a></li><li><a href="login.html">My account</a></li></ul></div>
@@ -1349,29 +1349,11 @@ page("contact", "Contact Bfiluxe | WhatsApp +91 89495 09745", "Talk to Bfiluxe o
 
 # ---------------- Login / Account ----------------
 GOOGLE = '<svg viewBox="0 0 48 48" aria-hidden="true"><path fill="#FFC107" d="M43.6 20.5H42V20H24v8h11.3C33.7 32.7 29.2 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3 0 5.8 1.1 7.9 3l5.7-5.7C34 6.1 29.3 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20 20-8.9 20-20c0-1.3-.1-2.4-.4-3.5z"/><path fill="#FF3D00" d="m6.3 14.7 6.6 4.8C14.7 15.1 19 12 24 12c3 0 5.8 1.1 7.9 3l5.7-5.7C34 6.1 29.3 4 24 4 16.3 4 9.7 8.3 6.3 14.7z"/><path fill="#4CAF50" d="M24 44c5.2 0 9.9-2 13.4-5.2l-6.2-5.2C29.2 35.1 26.7 36 24 36c-5.2 0-9.6-3.3-11.3-8l-6.5 5C9.5 39.6 16.2 44 24 44z"/><path fill="#1976D2" d="M43.6 20.5H42V20H24v8h11.3a12 12 0 0 1-4.1 5.6l6.2 5.2C37 39.2 44 34 44 24c0-1.3-.1-2.4-.4-3.5z"/></svg>'
-LOGIN = f'''
-<section class="sec" style="padding-top:40px;background:var(--tint)"><div class="wrap">
-  <div class="auth">
-    <div class="center" style="margin-bottom:20px"><img src="img/logo.webp" alt="Bfiluxe" width="431" height="374" style="width:170px;height:auto;margin:0 auto 6px"><h1 style="font-size:34px">Welcome to Bfiluxe</h1><p class="muted" style="margin-top:6px">Save designs and drafts, and track your invitation.</p></div>
-    <div class="panel panel-gold">
-      <div id="why"></div>
-      <div class="tabs" role="tablist"><button role="tab" data-mode="signin" aria-selected="true">Login</button><button role="tab" data-mode="signup" aria-selected="false">Create account</button></div>
-      <button class="btn btn-google btn-block" id="google" type="button">{GOOGLE} Continue with Google</button>
-      <div class="or">or use email</div>
-      <form class="form" id="auth-form" novalidate>
-        <div class="field" id="name-field" hidden><label for="a-name">Full name</label><input id="a-name" name="name" autocomplete="name"></div>
-        <div class="field"><label for="a-email">Email</label><input id="a-email" name="email" type="email" required autocomplete="email"></div>
-        <div class="field"><label for="a-pass">Password</label><input id="a-pass" name="password" type="password" required autocomplete="current-password" minlength="8"><div class="help" id="pass-help" hidden>At least 8 characters.</div></div>
-        <input type="text" name="company" tabindex="-1" autocomplete="off" class="sr" aria-hidden="true">
-        <button class="btn btn-primary btn-block" id="auth-submit" type="submit">Login</button>
-      </form>
-      <div id="auth-status" style="margin-top:14px" aria-live="polite"></div>
-      <div class="row" style="justify-content:space-between;margin-top:14px;font-size:14.5px"><button class="linkbtn" id="magic" type="button">Email me a login link</button><button class="linkbtn" id="forgot" type="button">Forgot password?</button></div>
-    </div>
-    <p class="center muted" style="font-size:13px;margin-top:16px">By continuing you agree to our <a href="terms.html">Terms</a> and <a href="privacy.html">Privacy Policy</a>.</p>
-  </div>
+LOGIN = '''
+<section class="sec ap-page"><div class="wrap">
+  <div class="ap-card" id="auth-root"><noscript><p>Please turn on JavaScript to sign in, or message us on WhatsApp.</p></noscript></div>
 </div></section>'''
-page("login", "Login · Bfiluxe", "Login or create your Bfiluxe account with email or Google.", LOGIN, None, bar=False, index=False)
+page("login", "Sign in · Bfiluxe", "Sign in or create your Bfiluxe account with email or Google.", LOGIN, None, bar=False, index=False)
 ACCT = '''
 <section class="phead" style="padding:30px 0 26px"><div class="wrap"><h1 style="font-size:clamp(30px,5vw,44px)">My Account</h1></div></section>
 <section class="sec" style="padding-top:28px"><div class="wrap"><div class="acct" id="account"><div class="panel skel" style="height:320px"></div><div class="panel skel" style="height:320px"></div></div></div></section>'''
