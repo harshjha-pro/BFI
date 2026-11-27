@@ -153,7 +153,8 @@ async function enrollStep() {
   if (error) { await sb.auth.signOut(); return login("Could not start two-step setup: " + error.message); }
   authShell(`<form id="f-code" novalidate><h1>Protect your admin</h1><p class="muted">One-time setup. Scan this QR code with an authenticator app (Google Authenticator, Microsoft Authenticator or Authy), then type the 6-digit code it shows. After this, signing in always needs your phone, so a stolen password alone can't open the admin.</p>
     <img class="qr" id="qr" alt="QR code for your authenticator app" width="190" height="190">
-    <p class="small muted" style="margin:0 0 4px">Can't scan? Type this key into the app:</p><div class="secret" id="secret"></div>
+    <ol class="small muted" style="margin:0 0 10px;padding-left:18px;line-height:1.7"><li>Install <b>Google Authenticator</b> or <b>Microsoft Authenticator</b> on your phone.</li><li>Open the app, tap <b>+</b>, then <b>Scan a QR code</b>. Use the app, not the phone camera.</li><li>Type the 6-digit code the app shows under <b>Bfiluxe</b>.</li></ol>
+    <p class="small muted" style="margin:0 0 4px">Can't scan? In the app choose <b>Enter a setup key</b> and type this key (time-based):</p><div class="secret" id="secret"></div>
     <label class="f" for="code">6-digit code</label><input class="in code-in" id="code" inputmode="numeric" autocomplete="one-time-code" maxlength="6" pattern="\\d{6}" required>
     <button class="btn" type="submit">Turn on and continue</button><button class="btn btn-ghost" type="button" id="back" style="margin-top:8px">Cancel</button><p class="err" id="err"></p></form>`);
   const qr = String(data.totp.qr_code || "");
@@ -167,10 +168,25 @@ function bindCode(factorId) {
   document.getElementById("back").addEventListener("click", async () => { await sb.auth.signOut(); login(); });
   f.addEventListener("submit", async (e) => {
     e.preventDefault(); if (!/^\d{6}$/.test(c.value)) return;
-    const b = f.querySelector("button[type=submit]"); b.disabled = true;
-    const { error } = await sb.auth.mfa.challengeAndVerify({ factorId, code: c.value });
+    const b = f.querySelector("button[type=submit]"), err = document.getElementById("err"); b.disabled = true; err.textContent = "Checking…";
+    let error = null;
+    // Mobile networks (e.g. Jio) can switch internet address between the two steps; retry those.
+    for (let i = 0; i < 4; i++) {
+      ({ error } = await sb.auth.mfa.challengeAndVerify({ factorId, code: c.value }));
+      if (!error || !/ip address|mismatch/i.test(error.message || "") && error.code !== "mfa_ip_address_mismatch") break;
+      await new Promise((r) => setTimeout(r, 700));
+    }
     b.disabled = false;
-    if (error) { c.value = ""; document.getElementById("err").textContent = /rate|many/i.test(error.message) ? "Too many attempts. Wait a minute." : "That code didn't work. Check the time on your phone and try the newest code."; c.focus(); return; }
+    if (error) {
+      c.value = "";
+      const m = error.message || "";
+      err.textContent = /rate|many/i.test(m) ? "Too many attempts. Wait a minute, then try again."
+        : /mismatch|ip address/i.test(m) ? "Your internet connection changed while checking. Try once more, or switch from mobile data to Wi-Fi."
+        : /expired/i.test(m) ? "That code expired. Type the newest code from the app."
+        : "That code didn't match. Type the 6-digit code shown under Bfiluxe in your authenticator app (not a code from SMS or email). If it keeps failing, set your phone's time to automatic.";
+      c.focus(); return;
+    }
+    err.textContent = "";
     gate();
   });
   c.focus();
