@@ -12,7 +12,7 @@ from html import escape
 from pathlib import Path
 
 OUT = Path(__file__).resolve().parent.parent / "site"
-V = "20261126c"  # bump to bust browser caches for css/js
+V = "20261127a"  # bump to bust browser caches for css/js
 BASE = "https://bfiluxe.com"
 ART = "img/art/"
 IMGBASE = "https://oaosapkkzoynaqpnmvrj.supabase.co/storage/v1/object/public/site/"
@@ -110,7 +110,7 @@ def video_cards():
     for name, price, days, length, blurb, feats in VIDEO_PACKAGES:
         out.append(f'''<div class="pkg{' pkg-pop' if name == 'Premium' else ''}">
       <h3>{name}</h3><p class="muted" style="font-size:14.5px;margin-top:4px">{blurb}</p>
-      <p class="pkg-price">{was(VMRP[name], price)[0]} {inr(price)} {was(VMRP[name], price)[1]}</p><p class="pkg-time">{length} · ready in {days} after complete details and the 50% advance</p>
+      <p class="pkg-price">{wk("v", name)[0]} {pk("v", name)} {wk("v", name)[1]}</p><p class="pkg-time">{length} · ready in {dk("v", name)} after complete details and the 50% advance</p>
       <ul class="checks" style="margin:16px 0 20px">{"".join(f"<li>{icon(I['check'])}{f}</li>" for f in feats)}</ul>
       <a class="btn {'btn-primary' if name == 'Premium' else 'btn-outline'} btn-block" data-wa="Namaste Bfiluxe 🙏 I'd like the {name} invitation video ({inr(price)}).">Order the {name} video</a></div>''')
     return '<div class="pkgs">' + "".join(out) + "</div>"
@@ -124,6 +124,32 @@ DAYS = {"Basic": "3–5 working days", "Premium": "7–14 working days", "Luxury
 def was(mrp, pr):
     off = round((mrp - pr) * 100 / mrp)
     return f'<s class="mrp" aria-label="Regular price {inr(mrp)}">{inr(mrp)}</s>', f'<span class="save-off">{off}% off</span>'
+
+
+# Live prices: every price carries data-k="kind:tier:field" so the site can update it from the
+# admin's settings (kind p = invitation website packages, v = videos). The text here is the fallback.
+def _pk(kind):
+    return {n: (pr, d) for n, pr, d, *_ in (PACKAGES if kind == "p" else VIDEO_PACKAGES)}
+
+
+def pk(kind, t):
+    return f'<span data-k="{kind}:{t}:price">{inr(_pk(kind)[t][0])}</span>'
+
+
+def mk(kind, t, cls="mrp"):
+    m = (MRP if kind == "p" else VMRP)[t]
+    if cls == "plain":
+        return f'<span data-k="{kind}:{t}:mrp">{inr(m)}</span>'
+    return f'<s class="{cls}" data-k="{kind}:{t}:mrp">{inr(m)}</s>'
+
+
+def dk(kind, t):
+    return f'<span data-k="{kind}:{t}:days">{_pk(kind)[t][1]}</span>'
+
+
+def wk(kind, t):
+    m, pr = (MRP if kind == "p" else VMRP)[t], _pk(kind)[t][0]
+    return mk(kind, t), f'<span class="save-off" data-k="{kind}:{t}:off">{round((m - pr) * 100 / m)}% off</span>'
 
 
 PACKAGES = [
@@ -280,7 +306,7 @@ def hero_parts(slug):
         n = LIVE_HERO[slug]; t = next(x for x in LIVE if x[0] == n)
         chips = ""
         if slug == "pricing":
-            chips = "".join(f'<span class="lh-chip c{k}"><b>{nm}</b>{inr(pr)}</span>' for k, (nm, pr, *_r) in enumerate(PACKAGES))
+            chips = "".join(f'<span class="lh-chip c{k}"><b>{nm}</b>{pk("p", nm)}</span>' for k, (nm, pr, *_r) in enumerate(PACKAGES))
         elif slug == "videos":
             chips = '<span class="lh-chip c0"><b>9:16</b>Status &amp; Reels</span><span class="lh-chip c1"><b>Music</b>Shehnai · Santoor</span><span class="lh-chip c2"><b>{0}</b>From ₹1,499</span>'.format("Videos")
         art = (f'<div class="live-hero"><div class="lh-phone"><div class="lh-screen" data-lh><iframe src="live-demo-{n}/?preview=1" title="Live sample invitation: {t[1]} (fictional names)" loading="eager"></iframe></div></div>'
@@ -290,11 +316,11 @@ def hero_parts(slug):
     if slug == "invitations":
         art = ('<div class="fan">' + "".join(f'<img class="f{k}" src="{I_(n)}" alt="{a}" width="360" height="645">' for k, (n, a) in enumerate(
             [("cover-mor-pankh.webp", "Mor Pankh invitation"), ("cover-rajwada-royale.webp", "Rajwada Royale invitation"), ("cover-gulabi-bagh.webp", "Gulabi Bagh invitation")]))
-            + f'<span class="fan-badge"><b>8</b> designs<br>from {inr(3999)}</span></div>')
+            + f'<span class="fan-badge"><b>8</b> designs<br>from {pk("p", "Basic")}</span></div>')
         extra = '<div class="row hero-mini"><a class="btn btn-primary" href="#grid">Browse designs</a><a class="btn btn-ghost" href="demo.html">Open a live demo</a></div>'
         return "fan", extra, art, ""
     if slug == "pricing":
-        art = ('<ul class="tags">' + "".join(f'<li style="--i:{k}"><span>{n}</span><b><s class="mrp">{inr(MRP[n])}</s> {inr(pr)}</b><small>{d}</small></li>' for k, (n, pr, d, *_r) in enumerate(PACKAGES)) + '</ul>')
+        art = ('<ul class="tags">' + "".join(f'<li style="--i:{k}"><span>{n}</span><b>{mk("p", n)} {pk("p", n)}</b><small>{dk("p", n)}</small></li>' for k, (n, pr, d, *_r) in enumerate(PACKAGES)) + '</ul>')
         return "banner", "", art, f' style="--bg:url({I_("hero-pricing.jpg")})"'
     if slug == "how-it-works":
         steps = ["Choose", "Share details", "Preview", "Share"]
@@ -520,7 +546,7 @@ def package_cards(compact=False):
         pop = name == "Premium"
         out.append(f'''<div class="pkg{' pkg-pop' if pop else ''}">
       <h3>{name}</h3><p class="muted" style="font-size:14.5px;margin-top:4px">{blurb}</p>
-      <p class="pkg-price">{was(MRP[name], price)[0]} {inr(price)} {was(MRP[name], price)[1]}</p><p class="pkg-time">Ready in {days} after complete details and the 50% advance</p>
+      <p class="pkg-price">{wk("p", name)[0]} {pk("p", name)} {wk("p", name)[1]}</p><p class="pkg-time">Ready in {dk("p", name)} after complete details and the 50% advance</p>
       <ul class="checks" style="margin:16px 0 20px">{"".join(f"<li>{icon(I['check'])}{f}</li>" for f in (feats[:4] if compact else feats))}</ul>
       <a class="btn {'btn-primary' if pop else 'btn-outline'} btn-block" href="invitations.html?tier={name}">View {name} designs</a></div>''')
     return '<div class="pkgs">' + "".join(out) + "</div>"
@@ -528,7 +554,7 @@ def package_cards(compact=False):
 
 HOME_FAQ = [
     ("What is a digital Marwari wedding invitation?", "A mobile invitation website for your wedding: couple and family names, every function with date, time and Google Maps, plus music, photos and RSVP on higher packages. Guests open it from a WhatsApp link or a QR code."),
-    ("How much does it cost?", f"Basic {inr(3999)} (regular {inr(5999)}), Premium {inr(8999)} (regular {inr(14999)}) and Luxury {inr(24999)} (regular {inr(35999)}). You pay 50% to start and 50% after you approve. See <a href='pricing.html'>pricing</a>."),
+    ("How much does it cost?", f"Basic {pk('p', 'Basic')} (regular {mk('p', 'Basic', 'plain')}), Premium {pk('p', 'Premium')} (regular {mk('p', 'Premium', 'plain')}) and Luxury {pk('p', 'Luxury')} (regular {mk('p', 'Luxury', 'plain')}). You pay 50% to start and 50% after you approve. See <a href='pricing.html'>pricing</a>."),
     ("How fast will it be ready?", "Basic in 3–5 working days, Premium in 7–14 working days and Luxury in 15–21 working days, counted from when we have all your details and the advance."),
     ("Can it include Mayra, Pithi and other rituals?", "Yes. Add any function: Ganesh Sthapana, Mayra, Pithi, Mehendi, Mahila Sangeet, Baraat, Phere, Reception or your own family rituals."),
     ("Can the invitation be in Hindi or Marwari?", "Yes: English, Hindi, Marwari with Hindi, or bilingual, with traditional lines like ॥ श्री गणेशाय नमः ॥."),
@@ -563,7 +589,7 @@ def prod_card(inv):
   <button class="fav" data-fav="{inv["slug"]}" aria-pressed="false" aria-label="Save {inv["name"]} to favourites">{icon(I["heart"])}</button>
   <h3><a href="design-{inv["slug"]}.html">{inv["name"]}</a></h3>
   <p class="h-prod-desc">{inv["tagline"]}</p>
-  <p class="h-prod-meta"><span>From <b>{inr(inv["price"])}</b></span><a href="demo.html?design={inv["slug"]}">Live demo</a></p>
+  <p class="h-prod-meta"><span>From <b data-dp="{inv["slug"]}" data-tier="{inv["tier"]}">{inr(inv["price"])}</b></span><a href="demo.html?design={inv["slug"]}">Live demo</a></p>
 </article>"""
 
 
@@ -573,7 +599,7 @@ def plan_cards():
         rec = n == "Premium"
         checks = "".join(f"<li>{icon(I['check'])}{f}</li>" for f in feats[:5])
         out.append(f'<div class="h-plan{" rec" if rec else ""}">{"<span class=h-rec>Recommended</span>" if rec else ""}'
-                   f'<p class="h-plan-name">{n}</p><p class="h-plan-price">{was(MRP[n], pr)[0]}{inr(pr)}<small>{was(MRP[n], pr)[1]} · ready in {d}</small></p>'
+                   f'<p class="h-plan-name">{n}</p><p class="h-plan-price">{wk("p", n)[0]}{pk("p", n)}<small>{wk("p", n)[1]} · ready in {dk("p", n)}</small></p>'
                    f'<p class="h-plan-blurb">{bl}</p><ul class="checks">{checks}</ul>'
                    f'<a class="btn {"btn-primary" if rec else "btn-outline"} btn-block" href="invitations.html?tier={n}">See {n} designs</a></div>')
     return '<div class="h-plan-grid">' + "".join(out) + "</div>"
@@ -676,7 +702,7 @@ PICK = {"Basic": (["names", "venue"], "Your names, blessing and up to 3 function
 
 
 def picker_sec():
-    tabs = "".join(f'<button type="button" role="tab" aria-selected="{"true" if k == 0 else "false"}" data-tier="{n}"><b>{n}</b><span><s class="mrp">{inr(MRP[n])}</s> {inr(pr)}</span><small>Ready in {d}</small></button>'
+    tabs = "".join(f'<button type="button" role="tab" aria-selected="{"true" if k == 0 else "false"}" data-tier="{n}"><b>{n}</b><span>{mk("p", n)} {pk("p", n)}</span><small>Ready in {dk("p", n)}</small></button>'
                    for k, (n, pr, d, bl, f) in enumerate(PACKAGES))
     lists = "".join(f'<div class="pk-list" data-tier="{n}"{"" if k == 0 else " hidden"}><p>{PICK[n][1]}</p><ul class="checks">{"".join(f"<li>{icon(I['check'])}{x}</li>" for x in f[:5])}</ul></div>'
                     for k, (n, pr, d, bl, f) in enumerate(PACKAGES))
@@ -744,7 +770,7 @@ HOME = f'''
     <h1>Every ritual. Every name. <em>Every blessing.</em></h1>
     <p class="h-sub">Your wedding invitation as one beautiful link. It opens like a real card, with every function, a map for each venue, music and RSVP. Set by hand, ready from 3 working days.</p>
     <div class="row h-ctas"><a class="btn btn-primary" href="invitations.html" data-track="hero_explore">Explore designs</a><a class="btn btn-outline" href="live-demo-1/" target="_blank" rel="noopener" data-track="hero_demo">Open a live invitation</a></div>
-    <p class="h-note">From {inr(3999)} · Hindi &amp; English · balance paid after you approve</p>
+    <p class="h-note">From {pk("p", "Basic")} · Hindi &amp; English · balance paid after you approve</p>
   </div>
   <div class="h-stage" data-parallax aria-hidden="true">
     <span class="h-glow"></span>
@@ -801,7 +827,7 @@ HOME = f'''
   <h2 class="h-display center">Choose <em>your package.</em></h2>
   {plan_cards()}
   <p class="lx-fine center">Delivery times start once we have your complete details and the 50% advance.</p>
-  <a class="lx-video" href="videos.html"><span><b>Invitation videos</b> for WhatsApp, Reels and Status</span><span>{" · ".join(f"{n} <s class=mrp>{inr(VMRP[n])}</s> {inr(pr)}" for n, pr, *_ in VIDEO_PACKAGES)}</span><span class="tlink">See videos</span></a>
+  <a class="lx-video" href="videos.html"><span><b>Invitation videos</b> for WhatsApp, Reels and Status</span><span>{" · ".join(f"{n} {mk('v', n)} {pk('v', n)}" for n, pr, *_ in VIDEO_PACKAGES)}</span><span class="tlink">See videos</span></a>
 </div></section>
 
 {promises()}
@@ -875,8 +901,8 @@ def plan_pick(inv):
     out = []
     for k, (n, pr, d, bl, f) in enumerate(plan_opts(inv)):
         rec = '<span class="pp-rec">Recommended</span>' if n == "Premium" else ""
-        out.append(f'''<label class="pp-o pp-{n.lower()}">{rec}<input type="radio" name="plan" value="{n}" data-price="{inr(pr)}"{" checked" if k == 0 else ""}>
-          <span class="pp-top"><span class="pp-dot"></span><b>{n}</b><em><s class="mrp">{inr(MRP[n])}</s> {inr(pr)}</em></span><strong>{PLAN_SUB[n]}</strong><span class="pp-bl">{bl} Ready in {d}.</span>
+        out.append(f'''<label class="pp-o pp-{n.lower()}">{rec}<input type="radio" name="plan" value="{n}" data-price="{inr(pr)}" data-tier="{n}" data-dmin="{inv["slug"]}"{" checked" if k == 0 else ""}>
+          <span class="pp-top"><span class="pp-dot"></span><b>{n}</b><em>{mk("p", n)} <span data-dp="{inv["slug"]}" data-tier="{n}">{inr(pr)}</span></em></span><strong>{PLAN_SUB[n]}</strong><span class="pp-bl">{bl} Ready in {dk("p", n)}.</span>
           <details><summary>See everything included</summary><ul>{"".join(f"<li>{x}</li>" for x in f)}</ul></details></label>''')
     return "".join(out)
 
@@ -909,7 +935,7 @@ for inv in CATALOG:
       <div class="d-head"><h1 class="d-title">{inv["name"]}</h1>
         <button class="d-fav" data-fav="{inv["slug"]}" aria-pressed="false" aria-label="Save to favourites">{icon(I["heart"])}</button></div>
       <p class="d-tag">{inv["desc"]}</p>
-      <p class="d-from">From</p><p class="d-price">{was(MRP[inv["tier"]], inv["price"])[0]} {inr(inv["price"])} {was(MRP[inv["tier"]], inv["price"])[1]}</p>
+      <p class="d-from">From</p><p class="d-price">{wk("p", inv["tier"])[0]} <span data-dp="{inv["slug"]}" data-tier="{inv["tier"]}">{inr(inv["price"])}</span> {wk("p", inv["tier"])[1]}</p>
       <p class="d-sub">One payment per wedding · {len(plan_opts(inv))} level{"s" if len(plan_opts(inv)) > 1 else ""} of personalisation</p>
       <h2 class="d-h2">How personalised should it be?</h2>
       <p class="d-ticks"><span>RSVP built in</span><span>Hindi &amp; English</span><span>A map for every function</span></p>
@@ -985,7 +1011,7 @@ PRICING = f'''
 </div></section>
 <section class="sec sec-tint"><div class="wrap">
   <div class="sec-head center"><h2>Compare Packages</h2>{ORN}</div>
-  <div class="tbl-wrap"><table class="tbl"><thead><tr><th scope="col">Feature</th><th scope="col">Basic<br><small><s class="mrp">{inr(5999)}</s> {inr(3999)}</small></th><th scope="col" class="hl">Premium<br><small><s class="mrp">{inr(14999)}</s> {inr(8999)}</small></th><th scope="col">Luxury<br><small><s class="mrp">{inr(35999)}</s> {inr(24999)}</small></th></tr></thead>
+  <div class="tbl-wrap"><table class="tbl"><thead><tr><th scope="col">Feature</th><th scope="col">Basic<br><small>{mk("p", "Basic")} {pk("p", "Basic")}</small></th><th scope="col" class="hl">Premium<br><small>{mk("p", "Premium")} {pk("p", "Premium")}</small></th><th scope="col">Luxury<br><small>{mk("p", "Luxury")} {pk("p", "Luxury")}</small></th></tr></thead>
   <tbody>{"".join(f"<tr><th scope='row'>{a}</th><td>{b}</td><td class='hl'>{c}</td><td>{d}</td></tr>" for a, b, c, d in ROWS)}</tbody></table></div>
 </div></section>
 <section class="sec"><div class="wrap">
@@ -1048,9 +1074,9 @@ HOW = f'''
 <section class="sec sec-tint" style="padding-top:48px"><div class="wrap">
   <div class="sec-head center"><h2>Delivery Timeline</h2>{ORN}</div>
   <div class="timeline">
-    <div class="tl"><span class="tag">Basic · {inr(3999)}</span><p style="margin-top:12px"><b>3–5 working days</b></p><p class="muted">One design, your names and up to 3 events, share link and QR.</p></div>
-    <div class="tl tl-pop"><span class="tag">Premium · {inr(8999)}</span><p style="margin-top:12px"><b>7–14 working days</b></p><p class="muted">Up to 8 events, music, photo gallery, countdown and RSVP.</p></div>
-    <div class="tl"><span class="tag">Luxury · {inr(24999)}</span><p style="margin-top:12px"><b>15–21 working days</b></p><p class="muted">Our grandest or a bespoke design, unlimited pages, priority support.</p></div>
+    <div class="tl"><span class="tag">Basic · {pk("p", "Basic")}</span><p style="margin-top:12px"><b>{dk("p", "Basic")}</b></p><p class="muted">One design, your names and up to 3 events, share link and QR.</p></div>
+    <div class="tl tl-pop"><span class="tag">Premium · {pk("p", "Premium")}</span><p style="margin-top:12px"><b>{dk("p", "Premium")}</b></p><p class="muted">Up to 8 events, music, photo gallery, countdown and RSVP.</p></div>
+    <div class="tl"><span class="tag">Luxury · {pk("p", "Luxury")}</span><p style="margin-top:12px"><b>{dk("p", "Luxury")}</b></p><p class="muted">Our grandest or a bespoke design, unlimited pages, priority support.</p></div>
   </div>
 </div></section>
 <section class="sec"><div class="wrap lx-split">
@@ -1681,7 +1707,7 @@ LANDING = {
                   ("How to get one made", P_('Choose a design from the <a href="invitations.html">collection</a>, share your names and functions through our <a href="customize.html">form</a> or on WhatsApp, review the preview on your phone, then share the link. It takes 3–21 working days depending on the package.'))],
         faqs=[("Do guests need to install an app?", "No. The invitation opens in the phone's browser from a link or QR code."),
               ("Can I keep some functions for family only?", "Yes. Tell us which functions are for close family and we will mark them or keep them on a separate page."),
-              ("How much does it cost?", f"From {inr(3999)} (Basic) to {inr(24999)} (Luxury). See <a href='pricing.html'>pricing</a>.")]),
+              ("How much does it cost?", f"From {pk('p', 'Basic')} (Basic) to {pk('p', 'Luxury')} (Luxury). See <a href='pricing.html'>pricing</a>.")]),
     "marwari-kankotri-online": dict(design="gulmohar-classic", eyebrow="Online kankotri",
         title="Marwari Kankotri Online: Digital Kankotri with Traditional Wording | Bfiluxe",
         desc="What a Marwari kankotri is, the traditions around sending it, and how to make an online kankotri that keeps the blessings, family order and wording intact.",
@@ -1787,7 +1813,7 @@ LIVE_LLMS = ", ".join(f"[{t}]({BASE}/live-demo-{n}/) ({m})" for n, t, c, m, d in
 # ---------------- robots, sitemap, llms.txt, vCard ----------------
 PUBLIC = ["", "invitations.html", "pricing.html", "how-it-works.html", "demo.html", "features.html", "live-demo-1/", "live-demo-2/", "live-demo-3/", "live-demo-4/", "live-demo-5/", "guide.html", "resources.html", "digital-vs-printed-kankotri.html", "inviting-guests-mayra-pithi-phere.html", "marwari-wedding-invitation-website.html", "marwari-kankotri-online.html", "hindi-wedding-invitation.html", "wedding-invitation-website-rsvp.html", "rajasthani-digital-wedding-invitation.html", "partners.html", "videos.html", "free-cards.html", "faq.html", "contact.html", "customize.html",
           "privacy.html", "terms.html"] + [f"design-{i['slug']}.html" for i in CATALOG]
-(OUT / "robots.txt").write_text(f"User-agent: *\nAllow: /\nDisallow: /account.html\nDisallow: /login.html\n\nSitemap: {BASE}/sitemap.xml\n")
+(OUT / "robots.txt").write_text(f"User-agent: *\nAllow: /\nDisallow: /account.html\nDisallow: /login.html\nDisallow: /admin/\n\nSitemap: {BASE}/sitemap.xml\n")
 (OUT / "sitemap.xml").write_text('<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n' +
     "".join(f"  <url><loc>{BASE}/{p}</loc><lastmod>{TODAY}</lastmod></url>\n" for p in PUBLIC) + "</urlset>\n")
 (OUT / "llms.txt").write_text(f"""# Bfiluxe

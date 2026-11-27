@@ -4,10 +4,11 @@ DirectoryIndex index.html
 ErrorDocument 404 /404.html
 
 RewriteEngine On
-# Always use https and the bare domain (bfiluxe.com)
-RewriteCond %{HTTPS} off [OR]
-RewriteCond %{HTTP_HOST} ^www\. [NC]
+# Always use https; www goes to the bare domain (bfiluxe.com)
+RewriteCond %{HTTP_HOST} ^www\.bfiluxe\.com$ [NC]
 RewriteRule ^(.*)$ https://bfiluxe.com/$1 [R=301,L]
+RewriteCond %{HTTPS} off
+RewriteRule ^(.*)$ https://%{HTTP_HOST}/$1 [R=301,L]
 
 # Hide repository files
 RedirectMatch 404 /\.git
@@ -17,6 +18,8 @@ RedirectMatch 404 /README\.md$
   Header always set X-Content-Type-Options "nosniff"
   Header always set Referrer-Policy "strict-origin-when-cross-origin"
   Header always set X-Frame-Options "SAMEORIGIN"
+  Header always set Strict-Transport-Security "max-age=31536000"
+  Header always set Permissions-Policy "camera=(), microphone=(), geolocation=(), payment=(), usb=()"
   <FilesMatch "\.(css|js|webp|jpg|jpeg|png|svg|woff2|mp3|mp4)$">
     Header set Cache-Control "public, max-age=604800"
   </FilesMatch>

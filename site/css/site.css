@@ -2281,3 +2281,24 @@ s.mrp{color:#8a7d74;font-weight:400;text-decoration:line-through;text-decoration
 .h-plan-price>s.mrp,.pkg-price>s.mrp,.d-price>s.mrp{display:block;font-size:17px;line-height:1.2;margin:0 0 2px;vertical-align:0}
 .pkg-price>.save-off,.d-price>.save-off{font-size:11px}
 .h-plan .h-plan-price{white-space:nowrap}
+
+/* ===== Prices and plan names in the logo's typeface (Montserrat, wide-spaced) ===== */
+.h-plan .h-plan-name,.pp-top b,.pk-tabs b,.pkgs .pkg h3,.tags li>span,.tl .tag,.tbl thead th{font-family:var(--sans)!important;font-style:normal!important;font-weight:500!important;text-transform:uppercase;letter-spacing:.32em}
+.h-plan .h-plan-name{font-size:17px!important;line-height:1.2!important}
+.pp-top b{font-size:14px!important}
+.pk-tabs b{font-size:13px!important}
+.pkgs .pkg h3{font-size:17px!important}
+.h-plan-price,.pkg-price,.d-price{font-family:var(--sans)!important;font-weight:400!important;letter-spacing:.03em;font-variant-numeric:lining-nums tabular-nums}
+.h-plan-price{font-size:clamp(38px,3.6vw,46px)!important}
+.pkg-price{font-size:clamp(34px,3.4vw,42px)!important}
+.d-price{font-size:clamp(38px,4vw,46px)!important}
+.pp-top em,.pk-tabs span,.tags b,.lh-chip,.fan-badge,.h-facts b,.tl .tag,.card-meta b,.h-prod-meta b{font-family:var(--sans)!important;font-style:normal!important;font-variant-numeric:lining-nums tabular-nums;letter-spacing:.04em}
+.h-facts b{font-weight:400!important;font-size:clamp(34px,4.4vw,52px)!important}
+.pp-top em{font-weight:500;font-size:15px}
+s.mrp,[data-k$=":mrp"]{font-family:var(--sans)!important;letter-spacing:.04em}
+[data-k][hidden]{display:none!important}
+
+/* ===== Offer bar (turned on in the admin) ===== */
+.offer-bar{position:relative;z-index:60;display:flex;align-items:center;justify-content:center;gap:12px;background:var(--wine,#4B202A);color:#F6E3B8;font:500 12.5px/1.4 var(--sans);letter-spacing:.06em;padding:9px 44px;text-align:center}
+.offer-bar a{color:#fff;text-decoration:underline;text-underline-offset:3px}
+.offer-bar button{position:absolute;right:10px;top:50%;transform:translateY(-50%);background:transparent;border:0;color:#F6E3B8;font-size:20px;line-height:1;cursor:pointer;padding:4px 8px}
